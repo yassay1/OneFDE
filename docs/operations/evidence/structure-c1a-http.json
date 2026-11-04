@@ -1,0 +1,120 @@
+{
+  "started_at": "2026-11-04T06:00:30.077333+00:00",
+  "checks": [
+    {
+      "check": "development API docs available",
+      "status": 200
+    },
+    {
+      "check": "unauthenticated rejected",
+      "status": 401
+    },
+    {
+      "check": "login",
+      "status": 200
+    },
+    {
+      "check": "session retrieval",
+      "status": 200
+    },
+    {
+      "check": "invalid CSRF rejected",
+      "status": 403
+    },
+    {
+      "check": "create engagement",
+      "status": 201
+    },
+    {
+      "check": "engagement replay",
+      "status": 201
+    },
+    {
+      "check": "idempotency conflict",
+      "status": 409
+    },
+    {
+      "check": "create draft engineering task",
+      "status": 201
+    },
+    {
+      "check": "task replay",
+      "status": 201
+    },
+    {
+      "check": "invalid input",
+      "status": 422
+    },
+    {
+      "check": "missing task",
+      "status": 404
+    },
+    {
+      "check": "engagement survives process restart",
+      "status": 200
+    },
+    {
+      "check": "task survives process restart",
+      "status": 200
+    },
+    {
+      "check": "list engagements",
+      "status": 200
+    },
+    {
+      "check": "list tasks",
+      "status": 200
+    },
+    {
+      "check": "idempotency survives restart",
+      "status": 201
+    },
+    {
+      "check": "logout",
+      "status": 204
+    },
+    {
+      "check": "revoked session rejected",
+      "status": 401
+    }
+  ],
+  "first_process_id": 21880,
+  "second_process_id": 21552,
+  "engagement": {
+    "title": "C0+C1a HTTP 模拟验证",
+    "is_demo": true,
+    "goal": "证明草稿持久化，不运行 Agent",
+    "id": "e6a98ac2-3cf7-4865-9ac3-bcc9899ad87c",
+    "created_at": "2026-11-04T06:00:32.091301Z"
+  },
+  "task": {
+    "id": "f474910c-2885-4fb9-b306-084724b5ec86",
+    "engagement_id": "e6a98ac2-3cf7-4865-9ac3-bcc9899ad87c",
+    "state": "draft",
+    "revision": 1,
+    "spec_version": 1,
+    "spec": {
+      "title": "模拟工程草稿",
+      "objective": "检查控制接口",
+      "scope": "仅草稿",
+      "inputs": [
+        "模拟输入"
+      ],
+      "confirmed_rules": [],
+      "completion_criteria": [
+        "重启后可查回"
+      ],
+      "dependencies": [],
+      "capability_versions": []
+    },
+    "active_run_id": null,
+    "block_reason": null,
+    "owner_role": "fde",
+    "executor_role": "engineering",
+    "related_task_id": null,
+    "pending_input_count": 0,
+    "latest_run_id": null
+  },
+  "completed_at": "2026-11-04T06:00:33.657137+00:00",
+  "result": "passed"
+}

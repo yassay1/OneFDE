@@ -1,0 +1,319 @@
+{
+  "started_at": "2026-11-04T01:34:16.019004+00:00",
+  "scope": "C1b deterministic control only",
+  "real_model_calls": 0,
+  "worker_started": false,
+  "checks": [
+    {
+      "check": "unauthenticated rejected",
+      "status": 401
+    },
+    {
+      "check": "login",
+      "status": 200
+    },
+    {
+      "check": "create simulated engagement",
+      "status": 201
+    },
+    {
+      "check": "create task",
+      "status": 201
+    },
+    {
+      "check": "bad CSRF rejected",
+      "status": 403
+    },
+    {
+      "check": "record pending clarification",
+      "status": 201
+    },
+    {
+      "check": "adopt clarification",
+      "status": 200
+    },
+    {
+      "check": "same-key conflict",
+      "status": 409
+    },
+    {
+      "check": "stale revision rejected",
+      "status": 409
+    },
+    {
+      "check": "queue",
+      "status": 202
+    },
+    {
+      "check": "start",
+      "status": 202
+    },
+    {
+      "check": "completed question run releases slot",
+      "status": 200
+    },
+    {
+      "check": "read inputs",
+      "status": 200
+    },
+    {
+      "check": "record answer",
+      "status": 201
+    },
+    {
+      "check": "adopt answer and linked question",
+      "status": 200
+    },
+    {
+      "check": "continue",
+      "status": 202
+    },
+    {
+      "check": "fixed artifact metadata",
+      "status": 200
+    },
+    {
+      "check": "request changes",
+      "status": 201
+    },
+    {
+      "check": "adopt changes",
+      "status": 200
+    },
+    {
+      "check": "queue",
+      "status": 202
+    },
+    {
+      "check": "start",
+      "status": 202
+    },
+    {
+      "check": "accept fixed submission",
+      "status": 201
+    },
+    {
+      "check": "adoption replay precedes closed/revision checks",
+      "status": 200
+    },
+    {
+      "check": "read immutable versions",
+      "status": 200
+    },
+    {
+      "check": "read original version",
+      "status": 200
+    },
+    {
+      "check": "read three runs",
+      "status": 200
+    },
+    {
+      "check": "read two reviews",
+      "status": 200
+    },
+    {
+      "check": "read ordered task events",
+      "status": 200
+    },
+    {
+      "check": "read run events",
+      "status": 200
+    },
+    {
+      "check": "read profile metadata without secrets",
+      "status": 200
+    },
+    {
+      "check": "task survives process restart",
+      "status": 200
+    },
+    {
+      "check": "reviews survive process restart",
+      "status": 200
+    },
+    {
+      "check": "runs survive process restart",
+      "status": 200
+    },
+    {
+      "check": "versions survive process restart",
+      "status": 200
+    },
+    {
+      "check": "logout",
+      "status": 204
+    }
+  ],
+  "first_process_id": 14236,
+  "second_process_id": 17068,
+  "result": "passed",
+  "completed_at": "2026-11-04T01:34:21.045533+00:00",
+  "task": {
+    "id": "bf30604a-9492-47b4-9522-f34fbde44c11",
+    "engagement_id": "a94102a1-e397-4c03-8b7d-67904cafc2ee",
+    "state": "succeeded",
+    "revision": 19,
+    "spec_version": 4,
+    "spec": {
+      "title": "SIMULATED persistent task",
+      "objective": "验证输入采用与评审",
+      "scope": "SIMULATED revised control scope",
+      "inputs": [
+        "SIMULATED fixture"
+      ],
+      "confirmed_rules": [],
+      "completion_criteria": [
+        "核查控制状态"
+      ],
+      "dependencies": [],
+      "capability_versions": []
+    },
+    "active_run_id": null,
+    "block_reason": null,
+    "owner_role": "fde",
+    "executor_role": "engineering",
+    "related_task_id": null,
+    "pending_input_count": 0,
+    "latest_run_id": "63662ef0-7477-4a9c-9f37-36a4252a7617"
+  },
+  "run_ids": [
+    "25ea062a-9483-45cb-ba64-2541dac1c92a",
+    "50cd6192-4a1a-4b1c-ac37-b4722b4e1c60",
+    "63662ef0-7477-4a9c-9f37-36a4252a7617"
+  ],
+  "reviews": [
+    {
+      "id": "ae48649d-53b4-42ec-b8e1-e04b8a90273b",
+      "task_id": "bf30604a-9492-47b4-9522-f34fbde44c11",
+      "run_id": "50cd6192-4a1a-4b1c-ac37-b4722b4e1c60",
+      "task_spec_version": 3,
+      "artifact_ids": [
+        "57c6a27a-208e-463e-ab17-a423c2d40f5a"
+      ],
+      "verdict": "request_changes",
+      "reason": "SIMULATED changes",
+      "check_evidence": [],
+      "reviewer": "c1b-smoke-founder",
+      "created_at": "2026-11-04T01:34:19.174372Z"
+    },
+    {
+      "id": "cbf34706-b972-4a9a-ad98-9f2815833947",
+      "task_id": "bf30604a-9492-47b4-9522-f34fbde44c11",
+      "run_id": "63662ef0-7477-4a9c-9f37-36a4252a7617",
+      "task_spec_version": 4,
+      "artifact_ids": [
+        "0eb0c3ba-505a-4d0f-ac4c-57e61bbca2f2"
+      ],
+      "verdict": "accept",
+      "reason": "SIMULATED acceptance",
+      "check_evidence": [
+        "deterministic state check"
+      ],
+      "reviewer": "c1b-smoke-founder",
+      "created_at": "2026-11-04T01:34:19.391212Z"
+    }
+  ],
+  "versions": [
+    {
+      "task_id": "bf30604a-9492-47b4-9522-f34fbde44c11",
+      "spec_version": 1,
+      "spec": {
+        "title": "SIMULATED persistent task",
+        "objective": "验证输入采用与评审",
+        "scope": "control-only",
+        "inputs": [
+          "SIMULATED fixture"
+        ],
+        "confirmed_rules": [],
+        "completion_criteria": [
+          "核查控制状态"
+        ],
+        "dependencies": [],
+        "capability_versions": []
+      },
+      "applied_input_ids": [],
+      "actor": "c1b-smoke-founder",
+      "reason": "创建草稿",
+      "created_at": "2026-11-04T01:34:18.444169Z"
+    },
+    {
+      "task_id": "bf30604a-9492-47b4-9522-f34fbde44c11",
+      "spec_version": 2,
+      "spec": {
+        "title": "SIMULATED persistent task",
+        "objective": "验证输入采用与评审",
+        "scope": "control-only",
+        "inputs": [
+          "SIMULATED fixture"
+        ],
+        "confirmed_rules": [],
+        "completion_criteria": [
+          "核查控制状态"
+        ],
+        "dependencies": [],
+        "capability_versions": []
+      },
+      "applied_input_ids": [
+        "a8fa2435-df13-4fad-8fce-4636c665d3f7"
+      ],
+      "actor": "c1b-smoke-founder",
+      "reason": "SIMULATED adoption",
+      "created_at": "2026-11-04T01:34:18.546064Z"
+    },
+    {
+      "task_id": "bf30604a-9492-47b4-9522-f34fbde44c11",
+      "spec_version": 3,
+      "spec": {
+        "title": "SIMULATED persistent task",
+        "objective": "验证输入采用与评审",
+        "scope": "control-only",
+        "inputs": [
+          "SIMULATED fixture"
+        ],
+        "confirmed_rules": [],
+        "completion_criteria": [
+          "核查控制状态"
+        ],
+        "dependencies": [],
+        "capability_versions": []
+      },
+      "applied_input_ids": [
+        "a8fa2435-df13-4fad-8fce-4636c665d3f7",
+        "a5fe2bf2-d4cd-4888-aab9-f75b828cee9b",
+        "c77b48f3-118b-4614-9a65-021f263bf9a3"
+      ],
+      "actor": "c1b-smoke-founder",
+      "reason": "SIMULATED answer adopted",
+      "created_at": "2026-11-04T01:34:18.960858Z"
+    },
+    {
+      "task_id": "bf30604a-9492-47b4-9522-f34fbde44c11",
+      "spec_version": 4,
+      "spec": {
+        "title": "SIMULATED persistent task",
+        "objective": "验证输入采用与评审",
+        "scope": "SIMULATED revised control scope",
+        "inputs": [
+          "SIMULATED fixture"
+        ],
+        "confirmed_rules": [],
+        "completion_criteria": [
+          "核查控制状态"
+        ],
+        "dependencies": [],
+        "capability_versions": []
+      },
+      "applied_input_ids": [
+        "a8fa2435-df13-4fad-8fce-4636c665d3f7",
+        "a5fe2bf2-d4cd-4888-aab9-f75b828cee9b",
+        "c77b48f3-118b-4614-9a65-021f263bf9a3",
+        "dd4b1139-c4c7-4933-81f4-327b78021b05"
+      ],
+      "actor": "c1b-smoke-founder",
+      "reason": "SIMULATED revised spec adopted",
+      "created_at": "2026-11-04T01:34:19.248593Z"
+    }
+  ],
+  "event_count": 24
+}

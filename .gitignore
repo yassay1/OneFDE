@@ -1,0 +1,12 @@
+.env
+.env.worker
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+work/
+*.pyc
+.env.*
+!.env.example
+!.env.worker.example
+.planning/

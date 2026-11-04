@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17.7-bookworm@sha256:86e0b703649d7a792bd9243ee28afc9d8f7c6b2b5638077c9d6882d4d472bbfd
+    environment:
+      POSTGRES_USER: onefde
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in backend/.env}
+      POSTGRES_DB: onefde_dev
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - onefde_c0_pg:/var/lib/postgresql/data
+      - ./docker/init-test-db.sql:/docker-entrypoint-initdb.d/01-test.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onefde -d onefde_dev"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  onefde_c0_pg:

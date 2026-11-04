@@ -1,0 +1,8 @@
+{
+  "provider": "REPLACE_WITH_PROVIDER",
+  "model": "openai/REPLACE_WITH_SUPPORTED_MODEL",
+  "base_url": "https://provider.example/v1",
+  "secret_ref": "env:ONEFDE_MODEL_ENGINEERING",
+  "max_requests": 20,
+  "timeout_seconds": 60
+}

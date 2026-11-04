@@ -1,0 +1,1461 @@
+openapi: 3.1.0
+info:
+  title: OneFDE MVP control API
+  version: 0.2.0
+  description: '推荐设计稿，尚未实现。范围是登录、项目、工程 Task/Run 与产物读取。
+
+    Business/FDE 对话、Capability 编辑、文件上传和客户报价工具接口不在本版契约中。
+
+    实现后以 FastAPI/Pydantic 为字段源，导出并审查本文件，避免两套手工定义。
+
+    所有业务接口要求创始人会话。写请求校验可信 Origin；登录外还要求 X-CSRF-Token。
+
+    POST 创建和任务动作要求 Idempotency-Key，作用域为身份/方法/路径/key，保留24小时。
+
+    相同键和请求重放原响应；相同键不同请求返回409，幂等重放先于版本比较。
+
+    IDs 为不透明UUID；时间为UTC RFC3339。cursor 为不透明分页游标。
+
+
+    2026-11-04修订：持续Task、输入应用、轻量评审；Run为有界执行段，不等同SDK Session。
+
+    '
+servers:
+- url: /
+security:
+- cookieAuth: []
+paths:
+  /health:
+    get:
+      operationId: health
+      security: []
+      responses:
+        '200':
+          description: 仅进程存活，不宣称模型或执行端就绪
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                properties:
+                  status:
+                    type: string
+                    const: ok
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      security: []
+      description: 校验Origin和JSON类型，速率限制；不提供公开注册。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - username
+              - password
+              properties:
+                username:
+                  type: string
+                  minLength: 1
+                  maxLength: 128
+                password:
+                  type: string
+                  minLength: 1
+                  maxLength: 1024
+                  writeOnly: true
+      responses:
+        '200':
+          description: 设置Secure/HttpOnly会话Cookie，响应no-store
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: __Host-onefde_session；SameSite=Lax；Path=/；无Domain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnerSession'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/auth/session:
+    get:
+      operationId: getSession
+      responses:
+        '200':
+          description: 当前身份和CSRF token；no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnerSession'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/auth/logout:
+    post:
+      operationId: logout
+      parameters:
+      - $ref: '#/components/parameters/Csrf'
+      responses:
+        '204':
+          description: 吊销会话并清除Cookie
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/engagements:
+    get:
+      operationId: listEngagements
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 按created_at和id稳定排序的项目页
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                - next_cursor
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Engagement'
+                  next_cursor:
+                    type:
+                    - string
+                    - 'null'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createEngagement
+      parameters:
+      - $ref: '#/components/parameters/Csrf'
+      - $ref: '#/components/parameters/Idempotency'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EngagementCreate'
+      responses:
+        '201':
+          description: 项目已保存
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Engagement'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/engagements/{engagement_id}:
+    parameters:
+    - name: engagement_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: getEngagement
+      responses:
+        '200':
+          description: 项目上下文；首版不公开通用任意字段编辑
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Engagement'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/engagements/{engagement_id}/tasks:
+    parameters:
+    - name: engagement_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: listTasks
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 项目任务页
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                - next_cursor
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                  next_cursor:
+                    type:
+                    - string
+                    - 'null'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createTask
+      description: 首个切片只支持owner_role=fde、executor_role=engineering；related_task_id仅可关联同项目已知任务。保存draft不调用模型。
+      parameters:
+      - $ref: '#/components/parameters/Csrf'
+      - $ref: '#/components/parameters/Idempotency'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: 草稿已保存，revision和spec_version均从1开始
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/tasks/{task_id}:
+    parameters:
+    - $ref: '#/components/parameters/TaskId'
+    get:
+      operationId: getTask
+      responses:
+        '200':
+          description: 任务当前状态；可见活动页面约2秒轮询，终态停止
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        default:
+          $ref: '#/components/responses/Error'
+    patch:
+      operationId: updateTaskSpec
+      description: 仅无活动Run且无pending输入、任务非终态时替换完整spec；revision/spec_version递增并回draft。运行中修改用inputs记录，不能直接改快照。依赖环/跨项目关联409。
+      parameters:
+      - $ref: '#/components/parameters/Csrf'
+      - $ref: '#/components/parameters/Idempotency'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - expected_revision
+              - spec
+              properties:
+                expected_revision:
+                  type: integer
+                  minimum: 1
+                spec:
+                  $ref: '#/components/schemas/TaskSpec'
+      responses:
+        '200':
+          description: 规格已更新，状态回到draft，原运行历史保留
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/tasks/{task_id}/actions:
+    parameters:
+    - $ref: '#/components/parameters/TaskId'
+    post:
+      operationId: actOnTask
+      description: 'queue把准备好的draft/无活动Run的blocked置queued，不自动执行。start要求queued且输入/依赖/配额就绪，原子创建Run和作业。
+
+        retry要求blocked、旧执行已停止，创建新Run；continue要求waiting_input且原问题已答复/采用，创建新Run，可复用可信Session/代码。
+
+        start/retry/continue均拒绝pending输入，选择固定模型修订；continue不再继续同一应用Run。
+
+        cancel取消整个Task：无活动Run直接取消，有活动Run先记录停止意图；confirmed停止后进入cancelled。
+
+        stop_for_update只停止当前Run以处理补充，不取消Task；先cancel_requested，确认停止后completed/superseded，Task回draft。
+
+        expected_run_id在queue/start为null；continue/retry为最近的结束Run；stop_for_update/cancel有活动Run时为当前ID。
+
+        interrupted不能直接retry/强制解锁；先受控运维核查。终态Task不可重开。
+
+        所有命令检查expected_revision和授权，幂等优先重放；202只表示持久接单。'
+      parameters:
+      - $ref: '#/components/parameters/Csrf'
+      - $ref: '#/components/parameters/Idempotency'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskAction'
+      responses:
+        '202':
+          description: 操作已持久记录，未承诺已执行/成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionAccepted'
+        '409':
+          description: REVISION_CONFLICT、ACTIVE_RUN_EXISTS、INVALID_TRANSITION或DEPENDENCY_PENDING等
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/tasks/{task_id}/runs:
+    parameters:
+    - $ref: '#/components/parameters/TaskId'
+    get:
+      operationId: listRuns
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 运行历史页
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                - next_cursor
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Run'
+                  next_cursor:
+                    type:
+                    - string
+                    - 'null'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/runs/{run_id}:
+    parameters:
+    - $ref: '#/components/parameters/RunId'
+    get:
+      operationId: getRun
+      responses:
+        '200':
+          description: 当前运行及证据摘要，不返回原始密钥或完整协议日志
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Run'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/runs/{run_id}/events:
+    parameters:
+    - $ref: '#/components/parameters/RunId'
+    get:
+      operationId: listRunEvents
+      parameters:
+      - name: after_sequence
+        in: query
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 序号递增的脱敏事件；继续以最后序号查询，不宣称连接即执行状态
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                - last_sequence
+                - has_more
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RunEvent'
+                  last_sequence:
+                    type: integer
+                    minimum: 0
+                  has_more:
+                    type: boolean
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/runs/{run_id}/artifacts:
+    parameters:
+    - $ref: '#/components/parameters/RunId'
+    get:
+      operationId: listArtifacts
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 当前Run产物元数据页
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                - next_cursor
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Artifact'
+                  next_cursor:
+                    type:
+                    - string
+                    - 'null'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/artifacts/{artifact_id}/download-url:
+    parameters:
+    - name: artifact_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      operationId: getArtifactDownloadUrl
+      responses:
+        '200':
+          description: 范围校验后签发5分钟只读URL；no-store；到期前可能多次使用
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - url
+                - expires_at
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                  expires_at:
+                    type: string
+                    format: date-time
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/model-profiles:
+    get:
+      operationId: listModelProfiles
+      responses:
+        '200':
+          description: 已配置的有限模型修订列表，不含密钥；首版从部署配置管理
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ModelProfile'
+        default:
+          $ref: '#/components/responses/Error'
+  /api/v1/tasks/{task_id}/inputs:
+    parameters: &id002
+    - $ref: '#/components/parameters/TaskId'
+    get:
+      operationId: listTaskInputs
+      parameters:
+      - name: after_sequence
+        in: query
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 按Task内序号增量读取；最后序号作为下一次游标，断线可补读
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                - last_sequence
+                - has_more
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskInput'
+                  last_sequence:
+                    type: integer
+                    minimum: 0
+                  has_more:
+                    type: boolean
+                additionalProperties: false
+        default: &id001
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: appendTaskInput
+      parameters: &id003
+      - $ref: '#/components/parameters/Csrf'
+      - $ref: '#/components/parameters/Idempotency'
+      description: 可在活动Run期间保存pending输入，递增Task revision但不改spec_version。answer必须回复同Task问题。终态Task拒绝。HTTP仅创始人会话，Agent经受控工具调用同领域服务，不伪造公共身份。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInputCreate'
+      responses:
+        '201':
+          description: 已保存，不代表当前Run已读取/采用
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - input
+                - task
+                properties:
+                  input:
+                    $ref: '#/components/schemas/TaskInput'
+                  task:
+                    $ref: '#/components/schemas/Task'
+                additionalProperties: false
+        default: *id001
+  /api/v1/tasks/{task_id}/apply-inputs:
+    parameters: *id002
+    post:
+      operationId: applyTaskInputs
+      parameters: *id003
+      description: 要求无活动或状态不明Run。apply/reject集合不相交且属于本Task pending输入；拒绝必须有理由。采用question需要同时采用对应有效answer，不能替未答问题猜答案。采用clarification/change_request必须给完整spec；采用answer可沿用。非空apply使spec_version递增一次，拒绝本身不改spec_version；revision递增。记录处理事件且不自动派发。waiting_input可在原问题解决后continue；其余变更回draft，再queue/start。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInputsApply'
+      responses:
+        '200':
+          description: 输入已处理，新Run仍须显式启动
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        default: *id001
+  /api/v1/tasks/{task_id}/reviews:
+    parameters: *id002
+    get:
+      operationId: listTaskReviews
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 不可变评审记录页
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                - next_cursor
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskReview'
+                  next_cursor:
+                    type:
+                    - string
+                    - 'null'
+                additionalProperties: false
+        default: *id001
+    post:
+      operationId: reviewTask
+      parameters: *id003
+      description: 仅review且无活动Run，由创始人或受控FDE所有者工具执行；Engineering不能接受自己的提交。Run必须completed/submitted，task_spec_version匹配，artifact_ids属于该提交。accept须无pending输入/未答问题且检查证据满足完成条件，Task置succeeded；request_changes保存不可变评审并追加pending
+        change_request，Task回draft。轻量业务接受不授予生产发布权限。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskReviewCreate'
+      responses:
+        '201':
+          description: 评审与Task变化已同事务保存
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - review
+                - task
+                properties:
+                  review:
+                    $ref: '#/components/schemas/TaskReview'
+                  task:
+                    $ref: '#/components/schemas/Task'
+                additionalProperties: false
+        default: *id001
+  /api/v1/tasks/{task_id}/events:
+    parameters: *id002
+    get:
+      operationId: listTaskEvents
+      parameters:
+      - name: after_sequence
+        in: query
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 按Task内序号增量读取；最后序号作为下一次游标，断线可补读
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - items
+                - last_sequence
+                - has_more
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskEvent'
+                  last_sequence:
+                    type: integer
+                    minimum: 0
+                  has_more:
+                    type: boolean
+                additionalProperties: false
+        default: *id001
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: __Host-onefde_session
+  parameters:
+    Csrf:
+      name: X-CSRF-Token
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+    Idempotency:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    TaskId:
+      name: task_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    RunId:
+      name: run_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    Error:
+      description: '400请求语义错误；401未登录/会话过期；403权限/Origin/CSRF错误；404资源不可见；
+
+        409版本、状态、依赖或幂等冲突；422字段校验失败；429限流；500内部错误；503依赖不可用。
+
+        实现时统一FastAPI校验异常为本结构；前端禁止自动重试写操作，显式重试复用原幂等键。
+
+
+        409也包含INPUTS_PENDING、RUN_NOT_STOPPED、REVIEW_VERSION_MISMATCH、TASK_CLOSED；422用于字段/结构错误。
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+  schemas:
+    ApiError:
+      type: object
+      required:
+      - code
+      - message
+      - request_id
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        request_id:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+          description: 脱敏字段错误或当前版本，不包含凭据
+    OwnerSession:
+      type: object
+      required:
+      - username
+      - csrf_token
+      - expires_at
+      properties:
+        username:
+          type: string
+        csrf_token:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+    EngagementCreate:
+      type: object
+      additionalProperties: false
+      required:
+      - title
+      - is_demo
+      - goal
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        is_demo:
+          type: boolean
+        goal:
+          type: string
+          minLength: 1
+    Engagement:
+      type: object
+      required:
+      - id
+      - title
+      - is_demo
+      - goal
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        is_demo:
+          type: boolean
+        goal:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    TaskSpec:
+      type: object
+      additionalProperties: false
+      required:
+      - title
+      - objective
+      - scope
+      - inputs
+      - confirmed_rules
+      - completion_criteria
+      - dependencies
+      - capability_versions
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        objective:
+          type: string
+          minLength: 1
+        scope:
+          type: string
+          minLength: 1
+        inputs:
+          type: array
+          items:
+            type: string
+          description: 受控证据引用或明确标注的模拟输入，不得含密钥
+        confirmed_rules:
+          type: array
+          items:
+            type: string
+        completion_criteria:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        dependencies:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - task_id
+            - spec_version
+            - artifact_ids
+            properties:
+              task_id:
+                type: string
+                format: uuid
+              spec_version:
+                type: integer
+                minimum: 1
+              artifact_ids:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+        capability_versions:
+          type: array
+          items:
+            type: string
+          description: 已固定的条目版本引用
+    TaskCreate:
+      type: object
+      additionalProperties: false
+      required:
+      - request_id
+      - task_key
+      - original_request
+      - spec
+      - owner_role
+      - executor_role
+      properties:
+        request_id:
+          type: string
+          format: uuid
+        task_key:
+          type: string
+          minLength: 1
+          maxLength: 128
+        original_request:
+          type: string
+          minLength: 1
+        spec:
+          $ref: '#/components/schemas/TaskSpec'
+        owner_role:
+          type: string
+          enum:
+          - fde
+        executor_role:
+          type: string
+          enum:
+          - engineering
+        related_task_id:
+          type: string
+          format: uuid
+    Task:
+      type: object
+      required:
+      - id
+      - engagement_id
+      - state
+      - revision
+      - spec_version
+      - spec
+      - active_run_id
+      - block_reason
+      - owner_role
+      - executor_role
+      - pending_input_count
+      - latest_run_id
+      properties:
+        id:
+          type: string
+          format: uuid
+        engagement_id:
+          type: string
+          format: uuid
+        state:
+          type: string
+          enum:
+          - draft
+          - queued
+          - running
+          - waiting_input
+          - review
+          - blocked
+          - succeeded
+          - cancelled
+        revision:
+          type: integer
+          minimum: 1
+        spec_version:
+          type: integer
+          minimum: 1
+        spec:
+          $ref: '#/components/schemas/TaskSpec'
+        active_run_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        block_reason:
+          type:
+          - string
+          - 'null'
+        owner_role:
+          type: string
+          enum:
+          - fde
+        executor_role:
+          type: string
+          enum:
+          - engineering
+        related_task_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        pending_input_count:
+          type: integer
+          minimum: 0
+        latest_run_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+    TaskAction:
+      type: object
+      additionalProperties: false
+      required:
+      - command
+      - expected_revision
+      - expected_run_id
+      properties:
+        command:
+          type: string
+          enum:
+          - queue
+          - start
+          - retry
+          - continue
+          - cancel
+          - stop_for_update
+        expected_revision:
+          type: integer
+          minimum: 1
+        expected_run_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        model_profile_revision_id:
+          type: string
+          format: uuid
+          description: start/retry/continue必需；从已配置的有效修订选择，新Run固定该配置
+      allOf:
+      - if:
+          properties:
+            command:
+              enum:
+              - start
+              - retry
+              - continue
+        then:
+          required:
+          - model_profile_revision_id
+      - if:
+          properties:
+            command:
+              enum:
+              - queue
+              - start
+        then:
+          properties:
+            expected_run_id:
+              type: 'null'
+      - if:
+          properties:
+            command:
+              enum:
+              - retry
+              - continue
+              - stop_for_update
+        then:
+          properties:
+            expected_run_id:
+              type: string
+              format: uuid
+    ActionAccepted:
+      type: object
+      required:
+      - operation_id
+      - task
+      - run
+      properties:
+        operation_id:
+          type: string
+          format: uuid
+        task:
+          $ref: '#/components/schemas/Task'
+        run:
+          oneOf:
+          - $ref: '#/components/schemas/Run'
+          - type: 'null'
+    Run:
+      type: object
+      required:
+      - id
+      - task_id
+      - task_spec_version
+      - attempt
+      - state
+      - model_profile_revision_id
+      - result_summary
+      - error_code
+      - created_at
+      - outcome
+      - applied_input_ids
+      properties:
+        id:
+          type: string
+          format: uuid
+        task_id:
+          type: string
+          format: uuid
+        task_spec_version:
+          type: integer
+          minimum: 1
+        attempt:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum:
+          - queued
+          - running
+          - cancel_requested
+          - completed
+          - failed
+          - cancelled
+          - interrupted
+        model_profile_revision_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        result_summary:
+          type:
+          - string
+          - 'null'
+        error_code:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        outcome:
+          type:
+          - string
+          - 'null'
+          enum:
+          - submitted
+          - needs_input
+          - superseded
+          - null
+        applied_input_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+      allOf:
+      - if:
+          properties:
+            state:
+              const: completed
+        then:
+          properties:
+            outcome:
+              type: string
+              enum:
+              - submitted
+              - needs_input
+              - superseded
+        else:
+          properties:
+            outcome:
+              type: 'null'
+    RunEvent:
+      type: object
+      required:
+      - id
+      - sequence
+      - kind
+      - summary
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        sequence:
+          type: integer
+          minimum: 1
+        kind:
+          type: string
+          enum:
+          - state
+          - progress
+          - check
+          - artifact
+          - error
+        summary:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Artifact:
+      type: object
+      required:
+      - id
+      - engagement_id
+      - run_id
+      - name
+      - kind
+      - sha256
+      - size_bytes
+      properties:
+        id:
+          type: string
+          format: uuid
+        engagement_id:
+          type: string
+          format: uuid
+        run_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        name:
+          type: string
+        kind:
+          type: string
+        sha256:
+          type: string
+          pattern: ^[a-f0-9]{64}$
+        size_bytes:
+          type: integer
+          minimum: 0
+    ModelProfile:
+      type: object
+      required:
+      - id
+      - revision_id
+      - provider
+      - protocol
+      - model
+      - capabilities
+      - integration_status
+      properties:
+        id:
+          type: string
+          format: uuid
+        revision_id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+        protocol:
+          type: string
+          enum:
+          - openai_chat_completions
+        model:
+          type: string
+        capabilities:
+          type: array
+          items:
+            type: string
+        integration_status:
+          type: string
+          enum:
+          - configured
+          - smoke_passed
+          - unavailable
+          description: 当前配置实际接入状态，不是模型质量认证
+    TaskInputCreate:
+      type: object
+      required:
+      - expected_revision
+      - kind
+      - text
+      - evidence_artifact_ids
+      properties:
+        expected_revision:
+          type: integer
+          minimum: 1
+        kind: &id004
+          type: string
+          enum:
+          - clarification
+          - change_request
+          - question
+          - answer
+        text:
+          type: string
+          minLength: 1
+        evidence_artifact_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reply_to_input_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            kind:
+              const: answer
+        then:
+          required:
+          - reply_to_input_id
+        else:
+          not:
+            required:
+            - reply_to_input_id
+    TaskInput:
+      type: object
+      required:
+      - id
+      - task_id
+      - sequence
+      - kind
+      - text
+      - evidence_artifact_ids
+      - status
+      - reply_to_input_id
+      - origin_run_id
+      - author
+      - applied_spec_version
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        task_id:
+          type: string
+          format: uuid
+        sequence:
+          type: integer
+          minimum: 1
+        kind: *id004
+        text:
+          type: string
+        evidence_artifact_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        status:
+          type: string
+          enum:
+          - pending
+          - applied
+          - rejected
+        reply_to_input_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        origin_run_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        author:
+          type: string
+          description: 由认证身份或受控工具注入，客户端不能自称其他角色
+        applied_spec_version:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+        created_at:
+          type: string
+          format: date-time
+    TaskInputsApply:
+      type: object
+      required:
+      - expected_revision
+      - apply_ids
+      - reject_ids
+      - reason
+      properties:
+        expected_revision:
+          type: integer
+          minimum: 1
+        apply_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+        reject_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+        reason:
+          type: string
+          minLength: 1
+        spec:
+          $ref: '#/components/schemas/TaskSpec'
+      additionalProperties: false
+      anyOf:
+      - properties:
+          apply_ids:
+            minItems: 1
+      - properties:
+          reject_ids:
+            minItems: 1
+    TaskReviewCreate:
+      type: object
+      required:
+      - expected_revision
+      - run_id
+      - task_spec_version
+      - artifact_ids
+      - verdict
+      - reason
+      - check_evidence
+      properties:
+        expected_revision:
+          type: integer
+          minimum: 1
+        run_id: &id005
+          type: string
+          format: uuid
+        task_spec_version: &id006
+          type: integer
+          minimum: 1
+        artifact_ids: &id007
+          type: array
+          items:
+            type: string
+            format: uuid
+          minItems: 1
+          uniqueItems: true
+        verdict: &id008
+          type: string
+          enum:
+          - accept
+          - request_changes
+        reason: &id009
+          type: string
+          minLength: 1
+        check_evidence: &id010
+          type: array
+          items:
+            type: string
+            minLength: 1
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            verdict:
+              const: accept
+        then:
+          properties:
+            check_evidence:
+              minItems: 1
+    TaskReview:
+      type: object
+      required:
+      - id
+      - task_id
+      - run_id
+      - task_spec_version
+      - artifact_ids
+      - verdict
+      - reason
+      - check_evidence
+      - reviewer
+      - created_at
+      properties:
+        run_id: *id005
+        task_spec_version: *id006
+        artifact_ids: *id007
+        verdict: *id008
+        reason: *id009
+        check_evidence: *id010
+        id:
+          type: string
+          format: uuid
+        task_id:
+          type: string
+          format: uuid
+        reviewer:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    TaskEvent:
+      type: object
+      required:
+      - id
+      - task_id
+      - sequence
+      - kind
+      - summary
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        task_id:
+          type: string
+          format: uuid
+        sequence:
+          type: integer
+          minimum: 1
+        kind:
+          type: string
+          enum:
+          - input_recorded
+          - inputs_processed
+          - state_changed
+          - run_created
+          - review_recorded
+          - assignment_changed
+        summary:
+          type: string
+        created_at:
+          type: string
+          format: date-time

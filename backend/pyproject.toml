@@ -1,0 +1,30 @@
+[project]
+name = "onefde-backend"
+version = "0.1.0"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "fastapi>=0.141.1,<1", "uvicorn>=0.30,<1", "pydantic>=2.13.5,<3",
+  "pydantic-settings>=2.2,<3", "sqlalchemy>=2.1.7,<2.2",
+  "psycopg[binary]>=3.3.6,<4", "alembic>=1.20.1,<2", "argon2-cffi>=25.1,<26",
+]
+
+[project.optional-dependencies]
+worker = [
+    "openhands-sdk==1.59.0",
+    "openhands-tools==1.59.0",
+    "openhands-workspace==1.59.0",
+]
+[dependency-groups]
+dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.16,<1", "pyyaml>=6,<7"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+[build-system]
+requires = ["uv_build==0.12.5"]
+build-backend = "uv_build"
+[tool.uv.build-backend]
+module-name = "onefde"
+module-root = "src"
+[tool.ruff]
+target-version = "py313"
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

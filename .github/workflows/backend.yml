@@ -1,0 +1,60 @@
+name: backend
+on:
+  push:
+  pull_request:
+jobs:
+  postgres-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.7-bookworm@sha256:86e0b703649d7a792bd9243ee28afc9d8f7c6b2b5638077c9d6882d4d472bbfd
+        env:
+          POSTGRES_USER: onefde
+          POSTGRES_PASSWORD: disposable-ci-database-password
+          POSTGRES_DB: onefde_dev
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U onefde -d onefde_dev"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      ONEFDE_ENVIRONMENT: development
+      ONEFDE_COOKIE_SECURE: 'false'
+      ONEFDE_TRUSTED_ORIGIN: http://localhost:8000
+      ONEFDE_OWNER_USERNAME: founder
+      ONEFDE_DATABASE_URL: postgresql+psycopg://onefde:disposable-ci-database-password@localhost:5432/onefde_dev
+      ONEFDE_TEST_DATABASE_URL: postgresql+psycopg://onefde:disposable-ci-database-password@localhost:5432/onefde_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.5'
+          python-version: '3.13'
+      - run: uv sync --locked --extra worker
+      - name: Set disposable credentials and create isolated test database
+        run: |
+          uv run --locked --extra worker python - <<'PY'
+          import os
+          from pathlib import Path
+          from argon2 import PasswordHasher
+          import psycopg
+          password = 'disposable-ci-founder-password'
+          with open(os.environ['GITHUB_ENV'], 'a') as out:
+              out.write('ONEFDE_OWNER_PASSWORD_HASH=' + PasswordHasher().hash(password) + '\n')
+          Path('work').mkdir(exist_ok=True)
+          Path('work/smoke-password.txt').write_text(password)
+          with psycopg.connect(os.environ['ONEFDE_DATABASE_URL'].replace('postgresql+psycopg:', 'postgresql:'), autocommit=True) as db:
+              db.execute('CREATE DATABASE onefde_test OWNER onefde')
+          PY
+      - run: uv run --locked --extra worker alembic upgrade head
+      - run: uv run --locked --extra worker alembic check
+      - run: uv run --locked --extra worker ruff check src tests scripts migrations
+      - run: uv run --locked --extra worker ruff format --check src tests scripts migrations
+      - run: uv run --locked --extra worker python -m scripts.export_openapi --check
+      - run: uv run --locked --extra worker pytest -q --junitxml=work/pytest.xml
+      - run: uv run --locked --extra worker python -m scripts.http_smoke --password-file work/smoke-password.txt
+      - run: uv run --locked --extra worker python -m scripts.c2_smoke
+      - run: uv run --locked --extra worker python -m scripts.c1b_smoke
+      - run: uv build --out-dir work/dist

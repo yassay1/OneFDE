@@ -1,0 +1,50 @@
+{
+  "recorded_at": "2026-11-04T01:12:19.209678+00:00",
+  "database": "PostgreSQL 17.7, isolated onefde_test",
+  "tests": 23,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 4.491,
+  "cases": [
+    "test_authentication_and_csrf",
+    "test_cookie_rotation_and_hash_storage",
+    "test_session_expiry",
+    "test_credentials_rotation_revokes_sessions",
+    "test_login_origin_invalid_credentials_and_rate_limit",
+    "test_unauthenticated_and_missing_resources",
+    "test_creation_queries_and_app_restart",
+    "test_engagement_and_task_idempotency",
+    "test_concurrent_idempotency_across_sessions[engagement]",
+    "test_concurrent_idempotency_across_sessions[task]",
+    "test_failed_transaction_does_not_leave_business_or_idempotency_row",
+    "test_references_and_unsupported_dependencies",
+    "test_input_validation[patch0]",
+    "test_input_validation[patch1]",
+    "test_input_validation[patch2]",
+    "test_input_validation[patch3]",
+    "test_input_validation[patch4]",
+    "test_task_role_validation_and_request_errors",
+    "test_stable_pagination",
+    "test_task_pagination_scope_and_request_decomposition",
+    "test_database_unavailable_has_sanitized_error",
+    "test_idempotency_expiry_and_task_durable_uniqueness",
+    "test_secure_cookie_and_configuration"
+  ],
+  "warnings": [
+    "StarletteDeprecationWarning: httpx TestClient compatibility path deprecated; all tests passed"
+  ],
+  "versions": {
+    "fastapi": "0.162.0",
+    "pydantic": "2.14.2",
+    "pydantic-settings": "2.16.2",
+    "SQLAlchemy": "2.1.7",
+    "psycopg": "3.3.7",
+    "alembic": "1.20.1",
+    "argon2-cffi": "25.1.0",
+    "uvicorn": "0.54.0",
+    "pytest": "9.2.0",
+    "httpx": "0.28.1",
+    "ruff": "0.17.3"
+  }
+}
