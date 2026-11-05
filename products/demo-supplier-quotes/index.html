@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>模拟水果店报价比较</title>
+    <style>
+      :root {
+        --ink: #1c1917;
+        --muted: #57534e;
+        --paper: #fafaf9;
+        --line: #d6d3d1;
+        --ok: #166534;
+        --wait: #92400e;
+        --solo: #334155;
+        --accent: #0f766e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, #ccfbf1 0, transparent 40%),
+          linear-gradient(180deg, #f5f5f4, var(--paper));
+        min-height: 100vh;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 3rem;
+      }
+      h1 {
+        font-size: 1.75rem;
+        margin: 0 0 0.35rem;
+        letter-spacing: -0.02em;
+      }
+      .meta {
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.88);
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      button {
+        border: 0;
+        background: var(--accent);
+        color: white;
+        padding: 0.55rem 0.95rem;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+      }
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        padding: 0.55rem 0.4rem;
+        vertical-align: top;
+      }
+      tr.comparable td:nth-child(7) {
+        color: var(--ok);
+        font-weight: 600;
+      }
+      tr.pending td:nth-child(7) {
+        color: var(--wait);
+        font-weight: 600;
+      }
+      tr.incomparable td:nth-child(7) {
+        color: var(--solo);
+        font-weight: 600;
+      }
+      #limitations {
+        white-space: pre-wrap;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="meta">模拟演示产品 · 独立 Origin · <span id="version"></span></p>
+      <h1>供应商报价比较</h1>
+      <p class="meta">
+        仅比较商品、等级、规格一致且单位为 kg 的报价；缺净重或非 kg 标记待核对；不自动选定供应商。
+      </p>
+
+      <section class="panel actions">
+        <input id="file" type="file" accept=".csv,text/csv" />
+        <button id="run" type="button">比较</button>
+        <button id="export-all" type="button" disabled>导出全部结果 CSV</button>
+        <button id="export-pending" type="button" disabled>导出待核对 CSV</button>
+      </section>
+
+      <section class="panel">
+        <p id="summary">尚未导入</p>
+        <p id="limitations"></p>
+      </section>
+
+      <section class="panel">
+        <table id="result">
+          <thead>
+            <tr>
+              <th>供应商</th>
+              <th>商品</th>
+              <th>等级</th>
+              <th>规格</th>
+              <th>单位</th>
+              <th>报价</th>
+              <th>状态</th>
+              <th>原因</th>
+              <th>组内较低</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+    <script src="./compare.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -74,13 +74,16 @@ def claim_next(db, owner, lease_seconds):
     job.attempts += 1
     mark_run_started(db, run.id)
     db.flush()
+    # Old queued snapshots omit spec_version. Fill only this execution copy.
+    snapshot = copy.deepcopy(run.snapshot)
+    snapshot["spec_version"] = run.task_spec_version
     return {
         "operation_id": job.operation_id,
         "claim_token": token,
         "run_id": run.id,
         "task_id": task.id,
         "engagement_id": task.engagement_id,
-        "snapshot": copy.deepcopy(run.snapshot),
+        "snapshot": snapshot,
     }
 
 
@@ -110,11 +113,66 @@ def heartbeat_claim(db, operation_id, owner, token, lease_seconds):
     return run.state == "cancel_requested"
 
 
+def _normalize_runtime_ref(reference):
+    value = copy.deepcopy(reference)
+    if "resources" in value:
+        return value
+    if "container_id" in value or value.get("role") in ("engineering", "validation"):
+        item = {key: val for key, val in value.items() if key != "role"}
+        return {
+            "resources": [{**item, "role": value.get("role", "engineering")}],
+            "run_id": value.get("run_id"),
+            "session_ref": value.get("session_ref"),
+        }
+    # Deterministic fixtures and legacy single blobs stay intact.
+    return value
+
+
+def _merge_runtime_ref(current, reference):
+    incoming = _normalize_runtime_ref(reference)
+    if "resources" not in current or "resources" not in incoming:
+        return incoming if current == incoming or current == reference else None
+    merged = copy.deepcopy(current)
+    for item in incoming["resources"]:
+        existing = next(
+            (
+                row
+                for row in merged["resources"]
+                if row.get("container_id")
+                and row.get("container_id") == item.get("container_id")
+            ),
+            None,
+        )
+        if existing is not None:
+            if existing != item:
+                return None
+            continue
+        role = item.get("role")
+        if role and any(row.get("role") == role for row in merged["resources"]):
+            # Same role with a different container replaces only when previous stopped
+            # tracking already recorded; Worker must not silently swap live IDs.
+            return None
+        merged["resources"].append(copy.deepcopy(item))
+    for key in ("run_id", "session_ref"):
+        if incoming.get(key) and merged.get(key) not in (None, incoming.get(key)):
+            return None
+        if incoming.get(key):
+            merged[key] = incoming[key]
+    return merged
+
+
 def register_resource(db, operation_id, owner, token, reference):
     job = owned_job(db, operation_id, owner, token)
-    if job.runtime_ref is not None and job.runtime_ref != reference:
+    incoming = _normalize_runtime_ref(reference)
+    if job.runtime_ref is None:
+        job.runtime_ref = incoming
+        return
+    if job.runtime_ref == reference or job.runtime_ref == incoming:
+        return
+    merged = _merge_runtime_ref(job.runtime_ref, incoming)
+    if merged is None:
         conflict("RESOURCE_CONFLICT", "已登记的执行现场不可替换")
-    job.runtime_ref = copy.deepcopy(reference)
+    job.runtime_ref = merged
 
 
 def complete_claim(db, operation_id, owner, token, payload, artifact_keys, proof):

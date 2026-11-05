@@ -1,0 +1,15 @@
+**
+!backend/
+!backend/pyproject.toml
+!backend/uv.lock
+!backend/alembic.ini
+!backend/migrations/
+!backend/migrations/**
+!backend/src/
+!backend/src/**
+!deploy/
+!deploy/Dockerfile
+!deploy/ops/
+!deploy/ops/**
+**/__pycache__
+**/*.pyc

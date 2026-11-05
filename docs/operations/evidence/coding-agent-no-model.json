@@ -1,0 +1,38 @@
+﻿{
+  "scope": "coding_agent_no_model",
+  "model_called": false,
+  "checked_at_utc": "2026-11-04T13:49:52.658064+00:00",
+  "checks": [
+    "frozen source archive created without model",
+    "workspace compare blocks unknown drift and accepts matching tree",
+    "unrelated exit 0 and self-reported passed rejected for submission",
+    "validation container ran registered check; source mutation detected; stop confirmed",
+    "fixed-source validation passed with unchanged digest and typed submission"
+  ],
+  "task_id": "f5528d20-6a71-4102-835b-af3fdf99e239",
+  "run_id": "5a9ee244-d05d-43bb-80e6-039121496084",
+  "artifact": {
+    "sha256": "65e6d66fd262a9ac8f1a11e5910f8f748ad3e76c67c95935c532cb894a46f131",
+    "size_bytes": 321,
+    "local_key": "environment/coding-agent/5a9ee244-d05d-43bb-80e6-039121496084/workspace.tar.gz",
+    "file_count": 2
+  },
+  "source_digest": "d82902abc3e749b425aee606bbcd59bc9640ec5adc973283cc53e78a3bf764b7",
+  "validation": {
+    "passed": true,
+    "stopped": true,
+    "source_unchanged": true,
+    "results": [
+      {
+        "command": "sh /workspace/check.sh",
+        "exit_code": 0,
+        "timeout": false
+      }
+    ]
+  },
+  "source_comparison": {
+    "changed": [],
+    "removed": [],
+    "added_source_members": []
+  }
+}

@@ -16,11 +16,13 @@ Python应用为`backend/src/onefde`，通过`uv sync --locked`可编辑安装。
 | `infrastructure/db/` | SQLAlchemy Base/Engine、通用游标分页、供Alembic使用的模型注册汇总 |
 | `infrastructure/idempotency.py` | HTTP幂等记录和原有提交边界，无业务模块导入 |
 | `infrastructure/web/` | 共享请求Session/参数依赖和统一HTTP错误转换 |
-| `core/execution.py`、`infrastructure/runtime/` | 类型化执行端口与固定OpenHands适配；SDK不进入业务模块 |
+| `core/execution.py`、`core/engineering.py`、`infrastructure/runtime/` | 执行端口、纯检查派生/角色修订，及OpenHands适配（上下文/结果契约/固定验证）；SDK不进入业务模块 |
 | `infrastructure/artifacts.py` | 私有不可变本地blob与摘要校验；没有S3/下载能力 |
 | `modules/auth/` | 会话/账号模型与契约、认证服务、HTTP依赖和Cookie响应 |
 | `modules/engagements/` | 项目模型、契约、查询、创建服务和路由 |
 | `modules/tasks/` | Task/Input/版本/Run/评审及相关元数据；对外命令入口`service.py`，查询入口`queries.py` |
+| `modules/fde/` | P1薄FDE受控工具与项目交付详情聚合；调用tasks/engagements公开服务，不认领Worker作业、不接SDK |
+| `modules/knowledge/` | P3文件型能力库检索、权限过滤、Business交接；不接向量库/模型，不派发工程 |
 | `modules/tasks/commands/` | tasks、inputs、runs、reviews四组写用例；不接HTTP对象，不自行commit/rollback |
 | `modules/tasks/dispatch.py`、`configuration.py` | C2作业认领/租约/回填规则、不可变模型配置供给；调用方提交，未实现外部执行 |
 | `modules/tasks/policies.py` | 原有状态、版本、依赖等规则，函数语义保持不变 |

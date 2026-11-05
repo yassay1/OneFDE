@@ -1,6 +1,8 @@
 # OneFDE 后端与受控 Worker
 
-已实现单创始人 Cookie 会话、Engagement、工程 Task、输入记录/采用、不可变规格版本、Run/待派发记录、轻量评审和有序事件。Task 创建为 draft，固定 `owner_role=fde`、`executor_role=engineering`。C2新增独立Worker认领/心跳/停止确认/回填及固定OpenHands接线；真实Linux/模型冒烟受环境阻塞。202仅表示持久接单。Worker操作与限制见 [专用节点手册](WORKER.md)，本轮证据见 [C2验证](../docs/operations/c2-verification.md)。
+Windows上的本地工程环境采用[专用Ubuntu WSL2开发流程](local-wsl/README.md)，与下面既有Windows控制库独立；当前模型执行关闭。环境边界见[ADR0007](../docs/architecture/ADR/0007-local-wsl-development.md)。
+
+已实现单创始人 Cookie 会话、Engagement、工程 Task、输入记录/采用、不可变规格版本、Run/待派发记录、轻量评审和有序事件。Task 创建为 draft，固定 `owner_role=fde`、`executor_role=engineering`。C2新增独立Worker认领/心跳/停止确认/回填及固定OpenHands接线；真实Linux/模型冒烟受环境阻塞。202仅表示持久接单。Worker操作与限制见 [Worker手册](WORKER.md)，本轮证据见 [C2验证](../docs/operations/c2-verification.md)。
 
 ## 首次本地启动（PowerShell）
 
@@ -141,3 +143,9 @@ Invoke-RestMethod "$base/tasks/$($task.id)/events" -WebSession $browser
 后端为正式安装包`src/onefde`，使用auth/engagements/tasks业务模块、入口装配与基础设施适配。修改代码前按 [代码组织与依赖规则](../docs/development/code-structure.md) 找到所属模块；C1b后的结构重构保持原业务和两份迁移不变，历史证据见 [结构重构验证](../docs/operations/structure-refactor-verification.md)。之后C2按该边界新增worker控制器、SDK/私有产物适配及第三份增量迁移，原测试继续保留。
 
 `uv sync --locked`会可编辑安装当前包；无须设置PYTHONPATH或把src注入sys.path。需要分发检查时执行`uv build --out-dir work/dist`。仅验证纯规则和依赖可运行`uv run --locked pytest tests/unit tests/architecture -q`，不要求数据库；完整集成检查仍使用独立PostgreSQL测试库。
+
+## 本地单机Compose
+
+DeepSeek的用户配置入口为本目录`.env`：只填写`DEEPSEEK_API_KEY=`；官方地址和`deepseek-flash`默认值已准备。其余字段同步、受限secret挂载及接入由维护Agent按[Compose手册](../deploy/README.md)完成，不需要用户编辑WSL内部文件。保存配置不自动调用模型，费用/在线出口与真实C2仍需后续验证。
+
+API/PG/可信Worker的容器化、ecs_shared安全/资源验证及重启操作见[Compose手册](../deploy/README.md)，阶段结果与证据见[单机验收](../docs/operations/single-ecs-verification.md)。这是独立演示项目，API仅本地8002；Worker为不消费作业的standby，模型与费用仍未配置，C2真实工程未完成。原开发数据库保留，不对Compose开发库运行清表pytest。

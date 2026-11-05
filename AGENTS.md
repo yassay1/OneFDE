@@ -27,6 +27,8 @@
 
 ## 检查与交付
 
-文档变更检查内部链接、确认状态和需求关联。修改 HTTP 字段时核对 [OpenAPI](docs/architecture/openapi.yaml)；已实现字段以 Pydantic 模型为源导出同一路径并检查差异；`x-onefde-status` 区分已实现与规划中，运行契约另见 `openapi.implemented.json`。部署和凭据边界见[部署设计](docs/operations/deployment.md)。实现变更执行与当前切片相符的实际构建、启动和核心检查；命令从现有配置确认，不编造缺失脚本。
+文档变更检查内部链接、确认状态和需求关联。修改 HTTP 字段时核对 [OpenAPI](docs/architecture/openapi.yaml)；已实现字段以 Pydantic 模型为源导出同一路径并检查差异；`x-onefde-status` 区分已实现与规划中，运行契约另见 `openapi.implemented.json`。部署和凭据边界见[部署设计](docs/operations/deployment.md)；黑客松/MVP物理基线以[ADR0009](docs/architecture/ADR/0009-single-ecs-mvp.md)的单ECS+Compose为准，按可信Worker/无Socket工程容器区分权限，不把旧ADR的物理另机要求作为前置条件。实现变更执行与当前切片相符的实际构建、启动和核心检查；命令从现有配置确认，不编造缺失脚本。
+
+本地WSL工程环境配置、检查或模型接入前，读取[开发环境约定](docs/architecture/ADR/0007-local-wsl-development.md)及[操作手册](backend/local-wsl/README.md)，分别记录环境就绪、真实工程成功和正式隔离验证。
 
 仅文档阶段不初始化技术栈或安装依赖。完成当前任务后更新实施计划中的进度与证据；阶段未满足退出条件时注明缺口。

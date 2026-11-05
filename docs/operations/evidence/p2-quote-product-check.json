@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "product": "demo-supplier-quotes",
+  "version": "v1.1",
+  "checked": ["S01", "S02", "S03", "S05"],
+  "modification": "pending-only CSV export",
+  "command": "node products/demo-supplier-quotes/check.mjs",
+  "product_path": "products/demo-supplier-quotes",
+  "samples_path": "engagements/demo-supplier-quotes/samples",
+  "platform_task_run": null,
+  "notes": "Deterministic product checks passed. No Engineering Task/Run/accept recorded for this engagement in this slice."
+}

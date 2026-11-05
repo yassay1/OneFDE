@@ -72,13 +72,17 @@ def compare_fields(planned, actual):
                 continue
             before = planned["paths"].get(path, {}).get(method)
             if before is None:
-                if path not in (
-                    "/api/v1/tasks/{task_id}/versions",
-                    "/api/v1/tasks/{task_id}/versions/{spec_version}",
-                ):
+                reviewed = {
+                    "/api/v1/tasks/{task_id}/versions": "读取不可变版本快照",
+                    "/api/v1/tasks/{task_id}/versions/{spec_version}": "读取不可变版本快照",
+                    "/api/v1/engagements/{engagement_id}/delivery": "P1最小项目交付详情",
+                    "/api/v1/engagements/{engagement_id}/fde/tools": "P1薄FDE受控工具调用",
+                    "/api/v1/knowledge/tools": "P3 Knowledge受控工具调用",
+                }
+                if path not in reviewed:
                     raise RuntimeError("Unreviewed added operation: " + path)
                 lines.append(
-                    f"- 新增已实现接口：{method.upper()} `{path}`，用于读取不可变版本快照。"
+                    f"- 新增已实现接口：{method.upper()} `{path}`，用于{reviewed[path]}。"
                 )
                 continue
             assert operation["operationId"] == before["operationId"], (path, method)

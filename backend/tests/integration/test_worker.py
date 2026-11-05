@@ -293,6 +293,19 @@ def test_resource_reference_is_immutable_and_downgrade_preserves_c2_history(
     with pytest.raises(ApiException) as error:
         tx(c, tasks.register_resource, *args(job), {"container_id": "different"})
     assert error.value.code == "RESOURCE_CONFLICT"
+    # Validation may append a distinct role; swapping the engineering ID still fails.
+    tx(
+        c,
+        tasks.register_resource,
+        *args(job),
+        {"role": "validation", "container_id": "validation-fixture"},
+    )
+    with Session(c.app.state.engine) as db:
+        row = db.get(m.DispatchJob, job["operation_id"])
+        assert [item["role"] for item in row.runtime_ref["resources"]] == [
+            "engineering",
+            "validation",
+        ]
     monkeypatch.setenv("ONEFDE_DATABASE_URL", settings.database_url.get_secret_value())
     with pytest.raises(RuntimeError, match="history"):
         command.downgrade(Config("alembic.ini"), "4bf8db3c4ef3")
@@ -384,3 +397,79 @@ def test_lost_heartbeat_keeps_receipt_without_late_completion(
     expire(c)
     assert worker.run_once() is False
     assert c.client.get("/api/v1/runs/" + run["id"]).json()["state"] == "interrupted"
+
+
+def test_unconfirmed_validation_stop_does_not_release_the_slot(control):
+    c = control
+    run = c.start()
+    job = claim(c)
+    recorded = tx(
+        c,
+        tasks.complete_claim,
+        *args(job),
+        {
+            "state": "interrupted",
+            "summary": "验证异常且停止未知",
+            "error_code": "STOP_UNCONFIRMED",
+            "stopped": False,
+        },
+        (),
+        {"stopped": False},
+    )
+    assert recorded.state == "interrupted"
+    assert c.get()["active_run_id"] == run["id"]
+    assert c.get()["state"] == "blocked"
+    assert claim(c) is None
+
+
+def test_legacy_queued_snapshot_claims_trusted_spec_version(control):
+    """A queued snapshot stored before spec_version was persisted still claims."""
+    from onefde.infrastructure.runtime.engineering import build_context
+
+    c = control
+    c.action("queue")
+    task = c.get()
+    stored = {
+        "spec": task["spec"],
+        "inputs": [],
+        "actor": "founder",
+        "owner_role": "fde",
+        "executor_role": "engineering",
+        "permissions": ["engineering:task-workspace"],
+        "engineering": {"checks": []},
+    }
+    with Session(c.app.state.engine) as db, db.begin():
+        version = db.scalar(
+            select(m.TaskVersion).where(m.TaskVersion.task_id == UUID(c.tid))
+        )
+        run = m.Run(
+            task_id=UUID(c.tid),
+            task_spec_version=task["spec_version"],
+            attempt=1,
+            model_profile_revision_id=UUID(c.profile),
+            applied_input_ids=list(version.applied_input_ids),
+            snapshot=stored,
+        )
+        db.add(run)
+        db.flush()
+        db.add(m.DispatchJob(run_id=run.id, payload={"run_id": str(run.id)}))
+        row = db.get(m.Task, UUID(c.tid))
+        row.state = "running"
+        row.active_run_id = run.id
+        row.latest_run_id = run.id
+        run_id = run.id
+    job = claim(c)
+    assert job["snapshot"]["spec_version"] == task["spec_version"]
+    assert job["snapshot"]["spec"] == stored["spec"]
+    with Session(c.app.state.engine) as db:
+        persisted = db.get(m.Run, run_id)
+        assert "spec_version" not in persisted.snapshot
+        assert persisted.snapshot == stored
+    context = build_context(
+        job["snapshot"],
+        task_id=job["task_id"],
+        run_id=job["run_id"],
+        engagement_id=job["engagement_id"],
+        spec_version=job["snapshot"]["spec_version"],
+    )
+    assert context["identity"]["spec_version"] == task["spec_version"]

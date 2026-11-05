@@ -4,6 +4,7 @@ from uuid import uuid4, uuid5
 
 from sqlalchemy import func, select
 
+from onefde.core.engineering import CONTEXT_REVISION, ROLE_REVISION, derive_checks
 from onefde.core.security import digest
 from onefde.modules.tasks import events, input_records
 from onefde.modules.tasks import models as m
@@ -18,6 +19,26 @@ from onefde.modules.tasks.policies import (
     validate_spec,
 )
 from onefde.modules.tasks.queries import require_run
+
+
+def trusted_prior_source(db, task_id):
+    """Latest source archive from a confirmed-stopped completed or failed Run.
+
+    Interrupted runs are not a baseline. The caller still compares the workspace
+    to this archive and blocks unknown drift.
+    """
+    return db.scalar(
+        select(m.Artifact)
+        .join(m.Run, m.Run.id == m.Artifact.run_id)
+        .where(
+            m.Run.task_id == task_id,
+            m.Artifact.kind == "source-snapshot",
+            m.Run.finished_at.is_not(None),
+            m.Run.state.in_(("completed", "failed")),
+        )
+        .order_by(m.Run.finished_at.desc(), m.Artifact.created_at.desc())
+        .limit(1)
+    )
 
 
 def current_prior(db, task, expected_id, state):
@@ -105,6 +126,25 @@ def action(db, task_id, data, actor):
             db.scalar(select(func.max(m.Run.attempt)).where(m.Run.task_id == task.id))
             or 0
         ) + 1
+        prior_source = trusted_prior_source(db, task.id)
+        prior_failures = [
+            {
+                "run_id": str(item.id),
+                "state": item.state,
+                "error_code": item.error_code,
+                "summary": item.result_summary,
+            }
+            for item in db.scalars(
+                select(m.Run)
+                .where(
+                    m.Run.task_id == task.id,
+                    m.Run.state.in_(("failed", "cancelled", "interrupted")),
+                )
+                .order_by(m.Run.finished_at.desc())
+                .limit(5)
+            )
+        ]
+        checks = derive_checks(version.spec)
         run = m.Run(
             task_id=task.id,
             task_spec_version=task.spec_version,
@@ -112,6 +152,7 @@ def action(db, task_id, data, actor):
             model_profile_revision_id=profile.revision_id,
             applied_input_ids=copy.deepcopy(version.applied_input_ids),
             snapshot={
+                "spec_version": task.spec_version,
                 "spec": copy.deepcopy(version.spec),
                 "inputs": [
                     s.TaskInput.model_validate(i).model_dump(mode="json")
@@ -125,6 +166,24 @@ def action(db, task_id, data, actor):
                 ),
                 "config": copy.deepcopy(profile.config),
                 "permissions": ["engineering:task-workspace"],
+                "engineering": {
+                    "role_revision": ROLE_REVISION,
+                    "context_revision": CONTEXT_REVISION,
+                    "checks": checks,
+                    "prior_source": (
+                        {
+                            "artifact_id": str(prior_source.id),
+                            "object_key": prior_source.object_key,
+                            "sha256": prior_source.sha256,
+                            "size_bytes": prior_source.size_bytes,
+                            "run_id": str(prior_source.run_id),
+                        }
+                        if prior_source
+                        else None
+                    ),
+                    "prior_failures": prior_failures,
+                    "workspace_policy": "compare_or_block",
+                },
             },
         )
         db.add(run)

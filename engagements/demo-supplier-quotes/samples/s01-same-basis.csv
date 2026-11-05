@@ -1,0 +1,3 @@
+supplier,product,grade,spec,unit,unit_price,currency,note
+示例供应商A,富士苹果,一级,净重明确按公斤报价,kg,8.0,CNY,模拟-同口径
+示例供应商B,富士苹果,一级,净重明确按公斤报价,kg,7.5,CNY,模拟-同口径

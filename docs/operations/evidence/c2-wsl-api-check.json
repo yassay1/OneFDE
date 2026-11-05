@@ -1,0 +1,11 @@
+{
+  "scope": "local_control_environment_only",
+  "model_called": false,
+  "health": 200,
+  "login": 200,
+  "session": 200,
+  "logout": 204,
+  "development_task_count": 0,
+  "development_run_count": 0,
+  "model_profile_count": 0
+}

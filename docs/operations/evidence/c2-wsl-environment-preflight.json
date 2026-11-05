@@ -1,0 +1,15 @@
+{
+  "exit_code": 0,
+  "report": {
+    "scope": "environment_only",
+    "execution_mode": "local_wsl",
+    "model_execution_enabled": false,
+    "sdk_versions": {
+      "openhands-sdk": "1.59.0",
+      "openhands-workspace": "1.59.0",
+      "openhands-tools": "1.59.0"
+    },
+    "blockers": [],
+    "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+  }
+}

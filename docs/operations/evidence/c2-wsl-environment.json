@@ -1,0 +1,47 @@
+{
+  "checked_at_utc": "2026-11-04T08:52:56.895228+00:00",
+  "scope": "environment_only_not_C2_engineering",
+  "model_called": false,
+  "task_run_created": false,
+  "python": "3.13.5",
+  "kernel": "6.18.54.1-microsoft-standard-WSL2",
+  "docker": "29.1.3",
+  "checks": [
+    "Windows disks not automounted; interop disabled in distro configuration",
+    "Engineering internal IPv4 network separated from control database network",
+    "Restricted Worker DB role can read dispatch metadata but has no auth/DDL/test DB/admin privileges",
+    "Real pinned Agent Server healthy; private mounts, no non-loopback published ports, credentials exclusion and CPU/memory/PID verified",
+    "SDK command executed: actual file/session writes and TCP denials for host/control DB/internet",
+    "Daemon confirmed stopped; workspace/session survive; immutable archive SHA256 verified"
+  ],
+  "network_targets": {
+    "host_listener": [
+      "172.18.0.1",
+      44241
+    ],
+    "host_listener_reachable_from_worker": true,
+    "control_database": [
+      "172.19.0.2",
+      5432
+    ],
+    "internet": [
+      "1.1.1.1",
+      443
+    ]
+  },
+  "command": "python -c 'import pathlib,socket,json\npathlib.Path('\"'\"'/workspace/environment.txt'\"'\"').write_text('\"'\"'real container command passed\\n'\"'\"')\npathlib.Path('\"'\"'/session/environment.txt'\"'\"').write_text('\"'\"'session mount persisted\\n'\"'\"')\nassert not pathlib.Path('\"'\"'/var/run/docker.sock'\"'\"').exists()\ntargets=[('\"'\"'172.18.0.1'\"'\"', 44241), ('\"'\"'172.19.0.2'\"'\"', 5432), ('\"'\"'1.1.1.1'\"'\"', 443)]\nfor host,port in targets:\n try:\n  connection=socket.create_connection((host,port),timeout=2)\n except OSError:\n  continue\n else:\n  connection.close(); raise AssertionError('\"'\"'unexpected network access'\"'\"')\nprint(json.dumps({'\"'\"'file_write'\"'\"':True,'\"'\"'docker_socket_absent'\"'\"':True,'\"'\"'network_denials'\"'\"':len(targets)}))\n'",
+  "command_result": {
+    "command": "python -c 'import pathlib,socket,json\npathlib.Path('\"'\"'/workspace/environment.txt'\"'\"').write_text('\"'\"'real container command passed\\n'\"'\"')\npathlib.Path('\"'\"'/session/environment.txt'\"'\"').write_text('\"'\"'session mount persisted\\n'\"'\"')\nassert not pathlib.Path('\"'\"'/var/run/docker.sock'\"'\"').exists()\ntargets=[('\"'\"'172.18.0.1'\"'\"', 44241), ('\"'\"'172.19.0.2'\"'\"', 5432), ('\"'\"'1.1.1.1'\"'\"', 443)]\nfor host,port in targets:\n try:\n  connection=socket.create_connection((host,port),timeout=2)\n except OSError:\n  continue\n else:\n  connection.close(); raise AssertionError('\"'\"'unexpected network access'\"'\"')\nprint(json.dumps({'\"'\"'file_write'\"'\"':True,'\"'\"'docker_socket_absent'\"'\"':True,'\"'\"'network_denials'\"'\"':len(targets)}))\n'",
+    "exit_code": 0,
+    "stdout": "{\"file_write\": true, \"docker_socket_absent\": true, \"network_denials\": 3}\n",
+    "stderr": "",
+    "timeout_occurred": false
+  },
+  "stopped": true,
+  "artifact": {
+    "sha256": "5fa5ecfec40b9d656647680da4c16e47a3335a13a30869a662d4601dd3a9be55",
+    "size_bytes": 936,
+    "file_count": 3,
+    "local_key": "environment/913b4992-07a7-42cd-af2a-6b560a06e480/workspace.tar.gz"
+  }
+}

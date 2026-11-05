@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "slice": "P4-product-origin",
+  "checked_at_utc": "2026-11-05T04:30:21.289335+00:00",
+  "product": "demo-supplier-quotes",
+  "version": "v1.1",
+  "product_origin": "http://127.0.0.1:8765",
+  "bind": "127.0.0.1:8765",
+  "workbench_origins": [
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:8002"
+  ],
+  "workbench_probes": [
+    {
+      "origin": "http://127.0.0.1:8000",
+      "running": false,
+      "error": "URLError"
+    },
+    {
+      "origin": "http://127.0.0.1:8002",
+      "running": false,
+      "error": "URLError"
+    }
+  ],
+  "sample_check": {
+    "command": "node products/demo-supplier-quotes/check.mjs",
+    "exit_code": 0,
+    "stdout": "{\n  \"ok\": true,\n  \"product\": \"demo-supplier-quotes\",\n  \"version\": \"v1.1\",\n  \"checked\": [\n    \"S01\",\n    \"S02\",\n    \"S03\",\n    \"S05\"\n  ],\n  \"modification\": \"pending-only CSV export\"\n}",
+    "stderr": ""
+  },
+  "failures": [],
+  "model_called": false,
+  "public_deployment": false,
+  "notes": "Loopback static origin only. HTML/JS are not served by the workbench API. Cloud HTTPS, demo video, and thin workbench pages are outside this check."
+}

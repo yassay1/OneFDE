@@ -1,0 +1,296 @@
+{
+  "checked_at_utc": "2026-11-04T13:28:59.871157+00:00",
+  "scope": "local S1/S2 only; no LLM or paid/cloud resources",
+  "services": [
+    {
+      "name": "/onefde-local-api-1",
+      "image_id": "sha256:ea98041e0edd6f3dea5e1ee1ab9da0521e9dfcaee20edf96d02cf965ab0b5e7b",
+      "image_reference": "onefde-local-app:locked",
+      "user": "10001:10001",
+      "networks": [
+        "onefde-local-access",
+        "onefde-local-control"
+      ],
+      "ports": {
+        "8000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8002"
+          }
+        ]
+      },
+      "limits": {
+        "NanoCpus": 500000000,
+        "Memory": 536870912,
+        "MemorySwap": 536870912,
+        "PidsLimit": 128,
+        "ReadonlyRootfs": true,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges:true"
+        ],
+        "LogConfig": {
+          "Type": "local",
+          "Config": {
+            "max-file": "3",
+            "max-size": "10m"
+          }
+        }
+      },
+      "mounts": [
+        {
+          "source": "/srv/onefde-local/private/api_url",
+          "destination": "/run/secrets/api_url",
+          "rw": false
+        },
+        {
+          "source": "/srv/onefde-local/private/owner_hash",
+          "destination": "/run/secrets/owner_hash",
+          "rw": false
+        }
+      ]
+    },
+    {
+      "name": "/onefde-local-worker-1",
+      "image_id": "sha256:ea98041e0edd6f3dea5e1ee1ab9da0521e9dfcaee20edf96d02cf965ab0b5e7b",
+      "image_reference": "onefde-local-app:locked",
+      "user": "10001:10001",
+      "networks": [
+        "onefde-local-control",
+        "onefde-local-sandbox"
+      ],
+      "ports": {},
+      "limits": {
+        "NanoCpus": 500000000,
+        "Memory": 1073741824,
+        "MemorySwap": 1073741824,
+        "PidsLimit": 128,
+        "ReadonlyRootfs": true,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges:true"
+        ],
+        "LogConfig": {
+          "Type": "local",
+          "Config": {
+            "max-file": "3",
+            "max-size": "10m"
+          }
+        }
+      },
+      "mounts": [
+        {
+          "source": "/srv/onefde-local/worker",
+          "destination": "/srv/onefde-local/worker",
+          "rw": true
+        },
+        {
+          "source": "/var/run/docker.sock",
+          "destination": "/var/run/docker.sock",
+          "rw": false
+        },
+        {
+          "source": "/srv/onefde-local/private/worker_url",
+          "destination": "/run/secrets/worker_url",
+          "rw": false
+        }
+      ]
+    },
+    {
+      "name": "/onefde-local-postgres-1",
+      "image_id": "sha256:86e0b703649d7a792bd9243ee28afc9d8f7c6b2b5638077c9d6882d4d472bbfd",
+      "image_reference": "postgres:17.7-bookworm@sha256:86e0b703649d7a792bd9243ee28afc9d8f7c6b2b5638077c9d6882d4d472bbfd",
+      "user": "",
+      "networks": [
+        "onefde-local-control"
+      ],
+      "ports": {
+        "5432/tcp": null
+      },
+      "limits": {
+        "NanoCpus": 500000000,
+        "Memory": 402653184,
+        "MemorySwap": 402653184,
+        "PidsLimit": 128,
+        "ReadonlyRootfs": false,
+        "CapDrop": null,
+        "SecurityOpt": null,
+        "LogConfig": {
+          "Type": "local",
+          "Config": {
+            "max-file": "3",
+            "max-size": "10m"
+          }
+        }
+      },
+      "mounts": [
+        {
+          "source": "/srv/onefde-local/private/admin_password",
+          "destination": "/run/secrets/admin_password",
+          "rw": false
+        },
+        {
+          "source": "/var/lib/docker/volumes/onefde-local_pgdata/_data",
+          "destination": "/var/lib/postgresql/data",
+          "rw": true
+        }
+      ]
+    },
+    {
+      "name": "/onefde-local-egress-1",
+      "image_id": "sha256:6a097f68bae708cedbabd6188d68c7e2e7a38cedd05a176e1cc0ba29e3bbe029",
+      "image_reference": "ubuntu/squid@sha256:6a097f68bae708cedbabd6188d68c7e2e7a38cedd05a176e1cc0ba29e3bbe029",
+      "user": "13:13",
+      "networks": [
+        "onefde-local-offline-out",
+        "onefde-local-sandbox"
+      ],
+      "ports": {
+        "3128/tcp": null
+      },
+      "limits": {
+        "NanoCpus": 250000000,
+        "Memory": 134217728,
+        "MemorySwap": 134217728,
+        "PidsLimit": 64,
+        "ReadonlyRootfs": true,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges:true"
+        ],
+        "LogConfig": {
+          "Type": "local",
+          "Config": {
+            "max-file": "3",
+            "max-size": "10m"
+          }
+        }
+      },
+      "mounts": [
+        {
+          "source": "/home/onefde/OneFDE/deploy/squid.conf",
+          "destination": "/etc/squid/squid.conf",
+          "rw": false
+        },
+        {
+          "source": "/var/lib/docker/volumes/6df7ea1392bfee469e437a32ec114562c93c86f9b112d42434405a4ace616e80/_data",
+          "destination": "/var/log/squid",
+          "rw": true
+        },
+        {
+          "source": "/var/lib/docker/volumes/5d82bd21ecae2df577b348737122ba4a97c5d36383cba64cef8a537f7977c9c8/_data",
+          "destination": "/var/spool/squid",
+          "rw": true
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "deploy/setup_local.py": "0d1ea9a10b0fd9bbb18a19e7ae18b1f9abb0d80974a30a661fdda4f969077bc6",
+    "deploy/verify_control.py": "4641b4ad9485b569c8a2ad524031a38a8f161a23db78b158671190399a9a3784",
+    "deploy/verify_local.py": "d42fb90496c4a4cc9ef8489c279f4687e7e47bf484ea51371778a3b0c9a78fdc",
+    "deploy/verify_recovery.py": "6896de9e43e553eea8258770f4f079f07df5873ffc19eba17743ff976e1d6221",
+    "deploy/ops/initialize.py": "6eb95ab40ccf519a26ec43ba229b30b067315b2981790b8e9cc321607b66af0e",
+    "deploy/ops/launch.py": "13eaa1a84b40b6a31b96bd65508b8ff72a1caeec73a1c9f1dfe40c1511ca6eaf",
+    "deploy/ops/probe.py": "8b8cbe86d9aed57d9d0d7b6b203f42521314de0468ab2a245771a6a70ae3d0ff",
+    "deploy/ops/verify_inside.py": "cb820d19cc7fd2de87e85231cb9faec0a49bdd858895cc877015bd9d382e0a3f",
+    "deploy/compose.yaml": "8aa2dedc4352a2b0f7943a1f5896da3125fb3c59ab8bade8ef09e255bc21e321",
+    "deploy/Dockerfile": "8a7fc960e95162e370c338538f23df1c8eba43b6c6051d5f19a514a42842af1a",
+    "deploy/squid.conf": "435d41ad0d802168f47228b7b06b3ee31edd88227eff506d8ead7bb8b705e6fa",
+    "deploy/network-policy.sh": "2bee0ee2519dce05d6c4a8e17fa2a5fe37d080864a18347bdc3de09defd52fdc",
+    "backend/src/onefde/worker/config.py": "de469c35dc17dd223ca7bf440f509411801a86d184279c4b9d93c0237c93b74f",
+    "backend/src/onefde/worker/controller.py": "65f19d59c099dd586242ef1941aec98b2f77739c575f2dfae7872ff13c7668e5",
+    "backend/src/onefde/worker/__init__.py": "802b28e24ab8897cf4261fb7ab890b6d2c159f89590baf7c38efab81bf733769",
+    "backend/src/onefde/entrypoints/worker.py": "029c0b626041b44eabe135f7c832737e85295012024bae3059c7ac993c698fdf",
+    "backend/src/onefde/infrastructure/runtime/openhands.py": "2b8549056c1b4a8c1387f464fccc69687d877771c419b5dfbbaee791bb2175d5"
+  },
+  "commands": [
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml build worker",
+      "working_directory": "/home/onefde/OneFDE",
+      "result": "success; locked offline uv; pinned base images"
+    },
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml up -d --wait postgres",
+      "result": "success"
+    },
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml --profile ops run --rm migrate",
+      "result": "success; head d5454eda0523"
+    },
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml --profile ops run --rm initialize",
+      "result": "success; separate restricted DB roles"
+    },
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml up -d --wait api worker egress",
+      "result": "success"
+    },
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml --profile checks up -d probe",
+      "result": "success; isolated offline fixture only"
+    },
+    {
+      "command": "backend/.venv/bin/python deploy/verify_local.py",
+      "result": "9 real SDK environment groups, 3 resource probes; repeated after distro restart"
+    },
+    {
+      "command": "backend/.venv/bin/python deploy/verify_control.py",
+      "result": "4 HTTP control/persistence groups; fixture Run never claimed and cancelled"
+    },
+    {
+      "command": "wsl --terminate OneFDE",
+      "working_directory": "Windows PowerShell",
+      "result": "success; only OneFDE distribution restarted"
+    },
+    {
+      "command": "iptables -C DOCKER-USER -s 172.29.241.0/24 -j ONEFDE-SHARED && iptables -C INPUT -i ofde-shared0 -j ONEFDE-SHARED-INPUT && mountpoint -q /srv/onefde-local/worker && systemctl is-active docker onefde-shared-storage",
+      "identity": "root in OneFDE after restart",
+      "result": "exit 0; both services active; no manual policy reapplication"
+    },
+    {
+      "command": "backend/.venv/bin/python deploy/verify_recovery.py",
+      "result": "success; prior Task/Run/archive preserved; environment preflight 0, execution preflight 2"
+    },
+    {
+      "command": "uv run --locked --extra worker pytest -q --junitxml=work/shared-tests.xml",
+      "working_directory": "/home/onefde/OneFDE/backend",
+      "result": "106 passed, 0 skipped, 1 existing Starlette deprecation warning, 20.01 seconds"
+    },
+    {
+      "command": "uv run --locked --extra worker ruff check src tests scripts migrations ../deploy",
+      "working_directory": "/home/onefde/OneFDE/backend",
+      "result": "passed"
+    },
+    {
+      "command": "uv run --locked --extra worker ruff format --check src tests scripts migrations ../deploy",
+      "working_directory": "/home/onefde/OneFDE/backend",
+      "result": "passed; 103 files"
+    },
+    {
+      "command": "uv run --locked --extra worker python -m scripts.export_openapi --check",
+      "working_directory": "/home/onefde/OneFDE/backend",
+      "result": "3 contract files unchanged"
+    },
+    {
+      "command": "uv run --locked --extra worker alembic check",
+      "working_directory": "/home/onefde/OneFDE/backend",
+      "result": "no new upgrade operations"
+    },
+    {
+      "command": "uv build --out-dir work/shared-dist",
+      "working_directory": "/home/onefde/OneFDE/backend",
+      "result": "sdist and wheel successfully built"
+    },
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml --profile checks stop probe",
+      "result": "success; no sandbox/resource-check containers retained"
+    }
+  ]
+}

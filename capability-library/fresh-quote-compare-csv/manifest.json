@@ -1,0 +1,33 @@
+{
+  "id": "fresh-quote-compare-csv",
+  "name": "生鲜报价 CSV 同口径比较",
+  "type": "business_module",
+  "version": "1.1.0",
+  "updated_at": "2026-11-04",
+  "visibility": "internal",
+  "reuse_scope": "cross_project_internal",
+  "verification_status": "limited",
+  "problem": "多家供应商报价字段混杂时，按约定口径比较单位价并标出待核对项",
+  "applicable_when": [
+    "输入为 P0 八列 CSV",
+    "仅比较 product+grade+spec+unit 且 unit=kg",
+    "不需要运费/起订量/送货总落地成本"
+  ],
+  "not_applicable_when": [
+    "需要 box↔kg 等未确认换算",
+    "Excel 专有格式为主输入",
+    "自动选定供应商或下单"
+  ],
+  "inputs": ["CSV: supplier,product,grade,spec,unit,unit_price,currency,note"],
+  "outputs": ["比较结果表", "待核对原因", "可选待核对单独导出"],
+  "implementation_ref": "products/demo-supplier-quotes@v1.1",
+  "source_engagement": "demo-supplier-quotes",
+  "evidence": [
+    "docs/operations/evidence/p2-quote-product-check.json",
+    "docs/operations/evidence/p2-quote-control.json",
+    "products/demo-supplier-quotes/CHANGELOG.md"
+  ],
+  "verified_samples": ["S01", "S02", "S03", "S05"],
+  "keywords": ["报价", "CSV", "生鲜", "供应商", "待核对", "比较", "kg"],
+  "public_summary": "模拟水果店报价比较模块（内部复用）；不可用于对外宣称客户收益。"
+}

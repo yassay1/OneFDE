@@ -1,5 +1,7 @@
 # C2 Worker与SDK接入检查
 
+最新状态：本地WSL/S1/S2与DeepSeek环境已就绪；2026-11-04本地真实模型网页冒烟已通过（Task/Run/产物/验证/接受），详见[CA验证](coding-agent-verification.md)。云端单ECS生产部署与费用账单级核对仍未实施；历史物理另机要求已由[ADR0009](../architecture/ADR/0009-single-ecs-mvp.md)取代。
+
 2026年11月4日本地检查。结果：**可测试控制/适配部分已实现，C2真实工程退出条件未完成**。缺少专用Linux执行节点、受控网络、Worker生产服务连接/私有目录、受限模型凭据与费用额度；未启动工程容器、未调用真实模型、无前端或公网部署。
 
 ## 保留与实现
@@ -53,3 +55,51 @@ HTTP证据包含API进程ID、Task/Run/Engagement UUID和通过条目，不含Co
 新增：`core/execution.py`、`worker/{config,controller}.py`、`entrypoints/worker.py`、`infrastructure/{artifacts.py,runtime/openhands.py}`、`modules/tasks/{dispatch,configuration}.py`，对应包初始化文件；迁移d5454eda0523；`.env.worker.example`、`model-profile.example.json`、`WORKER.md`；`tests/integration/test_worker.py`、两份runtime/SDK单元测试、`tests/e2e/c2_smoke.py`、`scripts/{c2_smoke,check_migrations}.py`；本记录与ADR0006。
 
 修改：tasks models/service/runs支持受信任Worker归属与真实产物key；bootstrap与OpenAPI生成说明；迁移head断言/架构检查；pyproject/uv.lock、CI和.gitignore；README、后端说明、实施计划、代码组织、架构/数据模型、部署/测试文档及现有规划文件。PRD/产品定义、原迁移及已有依赖版本未改。
+
+## 2026年11月4日本地WSL开发环境准备
+
+授权：用户明确选择WSL2+Docker本地方案并要求同步约定；DeepSeek稍后配置，禁止模型调用及付费资源。边界以[ADR0007](../architecture/ADR/0007-local-wsl-development.md)为准，命令与恢复方式见[WSL手册](../../backend/local-wsl/README.md)。本轮没有创建业务Task/Run、模型修订或评审，不使用环境检查产物冒充Engineering提交。
+
+### 配置事实
+
+- 新增`OneFDE` Ubuntu24.04.5 WSL2发行版，D盘50GB动态虚拟盘；Python3.13.5、uv0.12.5，worker extra按原锁安装，SDK三包1.59.0，原Agent Server镜像digest不变。
+- 独立Ubuntu签名仓库Docker29.1.3/Compose2.40.3；不与Docker Desktop共享daemon。原Windows数据库与凭据保留，新演示开发库和独立测试库迁移到d5454eda0523。
+- Worker身份无超级用户/建库/建角色/DDL/认证表读取/测试库连接权限；私有根700、配置600。Linux用户UID10001匹配固定镜像，未放宽挂载权限。
+- 本发行版关闭Windows盘自动挂载/程序互操作；实际仅重启OneFDE验证，不全局关闭WSL。工程网络internal且禁IPv6，独立桥INPUT规则拒绝容器到宿主的新连接，systemd随Docker启动恢复；数据库在另一个网络、端口仅绑定127.0.0.1:55433。
+- 工程1 CPU/2GiB/256 PID；数据库0.5 CPU/384MiB/128 PID；Worker仍15分钟/最多20次SDK迭代。未改影响其他发行版的全局内存设置。模型开关false、费用未设置、模型配置0条。
+
+### 实际命令与结果
+
+以下Linux命令从`/home/onefde/OneFDE/backend`执行；初始化与Windows源同步命令见手册。
+
+| 命令/检查 | 实际结果/证据 |
+| --- | --- |
+| `uv sync --locked --extra worker`，开发库`alembic upgrade head`/`alembic check` | 安装成功，head为d5454eda0523，无漂移；没有升级应用锁文件 |
+| `uv run --locked --extra worker python -m onefde.entrypoints.worker check --environment-only` | **退出0，无环境阻塞**，不检查模型效果/预算，见[环境预检](evidence/c2-wsl-environment-preflight.json) |
+| 同命令去掉`--environment-only` | **退出2**，明确模型执行关闭、费用/配额缺失；见[执行预检](evidence/c2-wsl-execution-preflight.json) |
+| `uv run --locked --extra worker python local-wsl/check_environment.py` | **6组真实环境检查通过**：Windows挂载/互操作配置、internal控制网分离、受限DB、固定SDK容器/资源/挂载、真实命令/三类TCP拒绝（宿主使用已验证可连接的临时监听端口）、停止/文件Session持久化/不可变归档；见[完整命令及结果](evidence/c2-wsl-environment.json) |
+| `uv run --locked --extra worker pytest -q --junitxml=work/wsl-tests.xml` | **100 passed，0 skipped，17.46秒**；1条既有Starlette弃用警告。见[JUnit](evidence/c2-wsl-tests.xml) |
+| 临时`uvicorn`进程绑定127.0.0.1:8001，经真实HTTP health/login/session/logout后关闭 | **200/200/200/204**；开发库Task/Run/ModelProfile均0条，未输出密码/Cookie/CSRF。见[API检查](evidence/c2-wsl-api-check.json) |
+| Windows `ruff check`、`ruff format --check`、`scripts.export_openapi --check` | 通过；无HTTP字段或数据库结构变更 |
+
+环境归档SHA256为`5fa5ecfec40b9d656647680da4c16e47a3335a13a30869a662d4601dd3a9be55`（936字节，3个文件），私有blob位于Worker根下的environment前缀；不是业务Artifact版本。实际命令经真实Agent Server执行，没有Agent/LLM调用。
+
+### 联调修复与限制
+
+真实接入暴露并修复两处原适配问题：SDK健康检查timeout是keyword-only；`--rm`容器在清单与inspect之间删除时，需要再取得一次成功清单证明不存在，不能把inspect失败本身当作停止。绑定替身改为真实参数签名，并覆盖停止竞态的成功/不可达分支。
+
+环境联调另处理：UID1000与镜像10001不匹配导致私有Session不可写；Docker29 internal网络不发布请求的回环端口，改用受信任Docker inspect取得专用桥地址，由同宿主Worker访问Agent Server，不开放外网。一次未启动数据库的连接失败通过启动检查和演示DB重启策略处理。原生下载慢时使用临时、限WSL地址的本机代理中继；安装后已关闭并移除临时daemon代理配置。失败轮次不计通过。
+
+SDK导入首次尝试读取公开模型价格表后回退，本轮未发送模型推理请求；环境检查现强制使用内置价格表。SDK cleanup在已自动删除容器后可能输出“no such container”，停止证据由独立成功清单核实，不依赖该输出。
+
+**未完成/未验证**：DeepSeek非秘密配置/本地密钥/费用额度、模型出口白名单及其实际拒绝检查、真实模型生成网页/检查脚本、Backend→Worker→Engineering回填与业务评审、真实请求计数/费用封顶/停止延迟、正式专用节点隔离及公网部署。当前只完成环境准备，C2整体保持未完成。
+
+## 后续本地单机Compose适配（2026年11月4日）
+
+按用户授权完成S1/S2：API/PG/可信Worker容器化，ecs_shared创建时硬化/限额与私网SDK连接、无模型standby、离线白名单探测、2GiB整体持久盘硬边界、认领前容量拒绝和重启恢复。Linux106项零skip通过；九组真实SDK环境检查与三类资源触顶探测通过，HTTP队列始终未认领后取消。逐项范围、命令/Task/Run/归档摘要及JSON/XML证据统一见[单机验收](single-ecs-verification.md)。
+
+本轮环境归档不是业务提交；没有Agent/LLM推理、真实Engineering成功或业务接受。C2真实模型网页任务、费用计数/停止延迟继续未完成；云端E07—E11/在线模型/生产配额、正式交付与备份继续待验收。旧WSL记录及其中阻塞保留为当时事实，以本节与单机验收为最新状态。
+
+## 后续DeepSeek环境配置（仅环境，不运行C2）
+
+用户已填写Key，并明确只配环境、不执行最小调用或C2网页任务。已完成.env选定字段同步、私有600文件与Worker实际加载、非秘密模型修订供给及DeepSeek域名代理/TLS检查；[脱敏证据](evidence/deepseek-environment.json)记录无提供方HTTP/模型请求、无Task/Run创建。Worker仍standby、模型关闭，执行预检退出2。Key的API有效性、模型/SDK工具兼容性和费用/真实工程闭环仍未验证；不把TLS连通或configured状态当作smoke_passed。之前记录中的空Key/无配置为各轮历史事实。

@@ -2,7 +2,9 @@
 
 能力库保存可跨项目复用的行业知识、业务模块和工程经验。每个条目应说明它解决什么问题、何时适用、依赖什么，以及依据哪些实现和样例验证过。
 
-当前没有已验证资产。首版优先从实际交付中整理少量条目，并在第二次需求中检验复用。能力库不等于聊天历史、项目原始资料或一组 Agent Skills。
+已有黑客松最小资产：[`fresh-quote-compare-csv`](fresh-quote-compare-csv/CAPABILITY.md)（限制使用，内部复用）。另有权限夹具 `fixture-restricted-supplier-notes`（不可列表/读取）。能力库不等于聊天历史、项目原始资料或一组 Agent Skills。
+
+第二项目采用与再检查见 [demo-supplier-quotes-reuse](../engagements/demo-supplier-quotes-reuse/brief.md) 与 [P3 证据](../docs/operations/evidence/p3-reuse-recheck.json)。网页冒烟或模型总结不能自动标为已验证；本条仅为列明样例范围内的限制使用。
 
 ## Knowledge、能力库与业务资料
 
@@ -68,6 +70,15 @@ Knowledge 返回获准资产 ID/固定版本或业务来源版本、相关实现
 | 已弃用 | 保留历史来源和使用关联，后续检索应说明不再推荐使用的原因及替代项 |
 
 这是条目状态的初步记录约定。条目提升验证状态时必须有明确证据与适用范围；具体检查阈值随资产类型在阶段 B/E 细化。模型生成总结、一次运行返回成功或检索排名靠前，均不足以自动标为已验证。
+
+## 黑客松最小资产与第二项目验收入口
+
+| 检查项 | 最低要求 | 当前 |
+| --- | --- | --- |
+| 候选资产条目 | 稳定 ID、来源 Engagement/Task、固定实现或资料版本、适用条件、权限、验证状态 | `fresh-quote-compare-csv@1.1.0`（限制使用） |
+| 三角色咨询 | Business/FDE/Engineering 可按权限直接查询或请求 Knowledge；身份由程序注入 | `POST /api/v1/knowledge/tools`（无模型循环） |
+| 第二项目采用 | 记录选用版本、适配改动与重新检查；不是粘贴上轮聊天 | `demo-supplier-quotes-reuse` + 再检查证据 |
+| 权限反例 | 无授权看不到受限正文/标题/链接（HM07） | 夹具 + 集成测试通过 |
 
 ## 复用流程
 

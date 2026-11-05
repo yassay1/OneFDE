@@ -1,0 +1,144 @@
+﻿{
+  "scope": "c2_real_webpage_smoke",
+  "checked_at_utc": "2026-11-04T14:20:35.870198+00:00",
+  "model_provider": "deepseek",
+  "max_cost_usd": 1.0,
+  "model_called": true,
+  "steps": [
+    {
+      "name": "http_start",
+      "state": "queued",
+      "http_status": 202
+    },
+    {
+      "name": "execution_preflight",
+      "exit_code": 0,
+      "report": {
+        "scope": "execution_preflight",
+        "execution_mode": "ecs_shared",
+        "model_execution_enabled": true,
+        "sdk_versions": {
+          "openhands-sdk": "1.59.0",
+          "openhands-workspace": "1.59.0",
+          "openhands-tools": "1.59.0"
+        },
+        "blockers": [],
+        "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+      }
+    },
+    {
+      "name": "worker_once",
+      "exit_code": 0,
+      "elapsed_seconds": 28.24,
+      "stdout_tail": "true\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue\n{\"processed\": true}\n",
+      "stderr_tail": "    %(kind)s::VARCHAR,                                 \n                             %(summary)s::VARCHAR,                              \n                             %(actor)s::VARCHAR, %(data)s::JSONB,               \n                             %(created_at)s::TIMESTAMP WITH TIME                \n                             ZONE)                                              \n[11/04/26 22:21:05] INFO     [cached since 26.97s ago] [SQL         base.py:1927\n                             parameters hidden due to                           \n                             hide_parameters=True]                              \n[11/04/26 22:21:05] INFO     UPDATE dispatch_jobs SET               base.py:1868\n                             completed_at=%(completed_at)s::TIMESTA             \n                             MP WITH TIME ZONE,                                 \n                             result_digest=%(result_digest)s::VARCH             \n                             AR,                                                \n                             result_payload=%(result_payload)s::JSO             \n                             NB WHERE dispatch_jobs.operation_id =              \n                             %(dispatch_jobs_operation_id)s::UUID               \n[11/04/26 22:21:05] INFO     [generated in 0.00072s] [SQL           base.py:1927\n                             parameters hidden due to                           \n                             hide_parameters=True]                              \n[11/04/26 22:21:05] INFO     COMMIT                                 base.py:2704\n[11/04/26 22:21:05] INFO     Pool disposed. Pool size: 5             impl.py:227\n                             Connections in pool: 0 Current                     \n                             Overflow: -5 Current Checked out                   \n                             connections: 0                                     \n[11/04/26 22:21:05] INFO     Pool recreating                         impl.py:202\n"
+    }
+  ],
+  "model_profile_revision_id": "488fa83c-a2d7-410b-8981-b55cbb053c9d",
+  "model": "openai/deepseek-flash",
+  "engagement_id": "5599b2ca-1e1a-472c-9a85-5e95cf56353f",
+  "task_id": "a2d797a5-ed37-4403-8645-46b26074b125",
+  "run_id": "523cad22-acfd-40e7-9f84-9c739e34afe1",
+  "task_state": "review",
+  "run": {
+    "state": "completed",
+    "outcome": "submitted",
+    "summary": "Created /workspace/index.html with the exact heading <h1>OneFDE C2 Smoke</h1> plus a paragraph stating it is a local demo page, and /workspace/check.sh (chmod +x) which greps index.html for that exact string and exits 0 only if present. Built a negative probe in /tmp with a wrong heading and confirmed the script logic exits 1 there. Registered check 'sh /workspace/check.sh' run as its own command and exited 0. No installs, remotes, deployment, or secrets used.",
+    "error_code": null,
+    "spec_version": 1
+  },
+  "artifacts": [
+    {
+      "id": "9754c94b-ff7d-46a3-a627-fb81c8a34867",
+      "name": "workspace.tar.gz",
+      "kind": "source-snapshot",
+      "sha256": "2e4c070bb9b8942933386f07dd6b4d3b5e5894e703aeca682404d52f95704ea1",
+      "size_bytes": 482
+    }
+  ],
+  "event_kinds": [
+    "state",
+    "state",
+    "artifact",
+    "state"
+  ],
+  "dispatch": {
+    "attempts": 1,
+    "claim_owner": "onefde-c2-smoke-once",
+    "runtime_roles": [
+      "engineering",
+      "validation"
+    ],
+    "stopped": true,
+    "source_digest": "900ba72d708890e41a46813348628687aea684d650027c6f86b0e1da2320cdcd",
+    "check_coverage": [
+      {
+        "id": "auto-1",
+        "cwd": "/workspace",
+        "kind": "automatic",
+        "source": "completion_criteria",
+        "status": "passed",
+        "command": "sh /workspace/check.sh",
+        "matched": true,
+        "evidence": {
+          "cwd": null,
+          "command": "sh /workspace/check.sh",
+          "timeout": false,
+          "exit_code": 0
+        },
+        "criterion": "[auto] sh /workspace/check.sh"
+      },
+      {
+        "id": "review-2",
+        "kind": "business_review",
+        "source": "completion_criteria",
+        "status": "pending_review",
+        "matched": false,
+        "criterion": "Page content matches the frozen demo heading"
+      }
+    ],
+    "validation": {
+      "passed": true,
+      "stopped": true,
+      "source_unchanged": true,
+      "error_code": null,
+      "results": [
+        {
+          "id": "auto-1",
+          "cwd": "/workspace",
+          "command": "sh /workspace/check.sh",
+          "timeout": false,
+          "exit_code": 0
+        }
+      ]
+    },
+    "context_revisions": {
+      "role": "engineering-role-v1",
+      "context": "engineering-context-v1"
+    }
+  },
+  "workspace_files": [
+    ".git/HEAD",
+    ".git/config",
+    ".git/description",
+    ".git/hooks/applypatch-msg.sample",
+    ".git/hooks/commit-msg.sample",
+    ".git/hooks/fsmonitor-watchman.sample",
+    ".git/hooks/post-update.sample",
+    ".git/hooks/pre-applypatch.sample",
+    ".git/hooks/pre-commit.sample",
+    ".git/hooks/pre-merge-commit.sample",
+    ".git/hooks/pre-push.sample",
+    ".git/hooks/pre-rebase.sample",
+    ".git/hooks/pre-receive.sample",
+    ".git/hooks/prepare-commit-msg.sample",
+    ".git/hooks/push-to-checkout.sample",
+    ".git/hooks/sendemail-validate.sample",
+    ".git/hooks/update.sample",
+    ".git/info/exclude",
+    "check.sh",
+    "index.html"
+  ],
+  "index_has_heading": true,
+  "index_preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>OneFDE C2 Smoke</title>\n</head>\n<body>\n  <h1>OneFDE C2 Smoke</h1>\n  <p>This is a local demo page.</p>\n</body>\n</html>\n"
+}

@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "slice": "P3-knowledge",
+  "test": "tests/integration/test_knowledge_tools.py",
+  "unit": "tests/unit/test_knowledge_access.py",
+  "command": "uv run --locked pytest tests/unit/test_knowledge_access.py tests/integration/test_knowledge_tools.py -q",
+  "result": "passed",
+  "path": [
+    "search_assets delivery finds fresh-quote-compare-csv",
+    "restricted fixture never listed",
+    "public_marketing strips implementation_ref",
+    "get_asset restricted → 404 without body leak",
+    "record_business_handoff business only; engineering 403",
+    "handoff writes demo sources without dispatching engineering"
+  ],
+  "asset": "capability-library/fresh-quote-compare-csv",
+  "model_called": false
+}

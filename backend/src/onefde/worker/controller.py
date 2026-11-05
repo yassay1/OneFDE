@@ -1,4 +1,5 @@
 import json
+import logging
 import threading
 
 from sqlalchemy.orm import Session
@@ -13,6 +14,7 @@ class Worker:
         self.engine, self.settings, self.adapter = engine, settings, adapter
         self.store = PrivateArtifactStore(settings.root / "artifacts")
         self.shutdown = threading.Event()
+        self.last_admission = []
 
     def transaction(self, function, *args):
         with Session(self.engine, expire_on_commit=False) as db:
@@ -22,6 +24,15 @@ class Worker:
     def run_once(self):
         if self.shutdown.is_set():
             return False
+        issues = self.settings.capacity_blockers()
+        if issues:
+            if issues != self.last_admission:
+                logging.getLogger(__name__).warning(
+                    "Worker admission blocked: %s", issues
+                )
+            self.last_admission = issues
+            return False
+        self.last_admission = []
         claim = self.transaction(
             tasks.claim_next, self.settings.worker_id, self.settings.lease_seconds
         )

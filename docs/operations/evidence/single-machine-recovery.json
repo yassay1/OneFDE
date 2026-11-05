@@ -1,0 +1,92 @@
+{
+  "model_called": false,
+  "boot_id": "8c7b67f4-f47d-447d-af06-cbbd64dc773c",
+  "persistent_task_ids": [
+    "11648d14-906d-4091-8837-077eb7840cdd",
+    "d3a0561d-567b-4edc-b936-536483b5efae"
+  ],
+  "persistent_run_id": "24aaa137-728b-409f-ace2-71015cd63a15",
+  "artifact_sha256": "a8180247faeb56bf5270f02dbd8f11a7b8d7eccbb26d257198d96c2136774630",
+  "bounded_filesystem_bytes": 2040373248,
+  "preflight": {
+    "check": {
+      "exit_code": 0,
+      "report": {
+        "scope": "environment_only",
+        "execution_mode": "ecs_shared",
+        "model_execution_enabled": false,
+        "sdk_versions": {
+          "openhands-sdk": "1.59.0",
+          "openhands-workspace": "1.59.0",
+          "openhands-tools": "1.59.0"
+        },
+        "blockers": [],
+        "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+      }
+    },
+    "execution-check": {
+      "exit_code": 2,
+      "report": {
+        "scope": "execution_preflight",
+        "execution_mode": "ecs_shared",
+        "model_execution_enabled": false,
+        "sdk_versions": {
+          "openhands-sdk": "1.59.0",
+          "openhands-workspace": "1.59.0",
+          "openhands-tools": "1.59.0"
+        },
+        "blockers": [
+          "模型执行未启用；当前禁止消费工程作业",
+          "缺少明确的模型费用上限及提供方配额"
+        ],
+        "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+      }
+    }
+  },
+  "services": [
+    {
+      "name": "/onefde-local-api-1",
+      "image": "sha256:ea98041e0edd6f3dea5e1ee1ab9da0521e9dfcaee20edf96d02cf965ab0b5e7b",
+      "started_at": "2026-11-04T13:26:10.086416964Z",
+      "health": "healthy",
+      "ports": {
+        "8000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8002"
+          }
+        ]
+      }
+    },
+    {
+      "name": "/onefde-local-worker-1",
+      "image": "sha256:ea98041e0edd6f3dea5e1ee1ab9da0521e9dfcaee20edf96d02cf965ab0b5e7b",
+      "started_at": "2026-11-04T13:26:10.091076428Z",
+      "health": "healthy",
+      "ports": {}
+    },
+    {
+      "name": "/onefde-local-postgres-1",
+      "image": "sha256:86e0b703649d7a792bd9243ee28afc9d8f7c6b2b5638077c9d6882d4d472bbfd",
+      "started_at": "2026-11-04T13:26:10.079710551Z",
+      "health": "healthy",
+      "ports": {
+        "5432/tcp": null
+      }
+    },
+    {
+      "name": "/onefde-wsl-postgres-1",
+      "image": "sha256:86e0b703649d7a792bd9243ee28afc9d8f7c6b2b5638077c9d6882d4d472bbfd",
+      "started_at": "2026-11-04T13:26:10.09342175Z",
+      "health": "healthy",
+      "ports": {
+        "5432/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "55433"
+          }
+        ]
+      }
+    }
+  ]
+}

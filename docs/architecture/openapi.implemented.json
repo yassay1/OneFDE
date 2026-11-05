@@ -3609,6 +3609,450 @@
           }
         ]
       }
+    },
+    "/api/v1/engagements/{engagement_id}/delivery": {
+      "get": {
+        "tags": [
+          "fde"
+        ],
+        "summary": "最小项目交付详情",
+        "operationId": "getEngagementDelivery",
+        "security": [
+          {
+            "APIKeyCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "engagement_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Engagement Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/engagements/{engagement_id}/fde/tools": {
+      "post": {
+        "tags": [
+          "fde"
+        ],
+        "summary": "调用 FDE 受控工具",
+        "description": "身份与项目范围由程序注入；模型不得自报 owner_role 或跨项目操作。白名单工具复用既有 Task 服务，不含 Worker 认领或发布。",
+        "operationId": "invokeFdeTool",
+        "security": [
+          {
+            "APIKeyCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "engagement_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Engagement Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "\\S",
+              "title": "Idempotency-Key"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "必填；缺失或错误返回403",
+              "title": "X-Csrf-Token"
+            },
+            "description": "必填；缺失或错误返回403"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FdeToolCall"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FdeToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/knowledge/tools": {
+      "post": {
+        "tags": [
+          "knowledge"
+        ],
+        "summary": "调用 Knowledge 受控工具",
+        "description": "caller_role/purpose 由受信任调用方显式传入（当前单创始人演示）；权限过滤在服务端执行。不派发工程、不提升验证状态。",
+        "operationId": "invokeKnowledgeTool",
+        "security": [
+          {
+            "APIKeyCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "\\S",
+              "title": "Idempotency-Key"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "必填；缺失或错误返回403",
+              "title": "X-Csrf-Token"
+            },
+            "description": "必填；缺失或错误返回403"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KnowledgeToolCall"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KnowledgeToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3731,6 +4175,134 @@
         ],
         "title": "Artifact"
       },
+      "DeliveryDetail": {
+        "properties": {
+          "engagement": {
+            "$ref": "#/components/schemas/Engagement"
+          },
+          "sources_note": {
+            "type": "string",
+            "title": "Sources Note"
+          },
+          "unknowns": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unknowns"
+          },
+          "scheme_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheme Summary"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryTaskSummary"
+            },
+            "type": "array",
+            "title": "Tasks"
+          },
+          "latest_checks": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Latest Checks"
+          },
+          "fixed_version_hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fixed Version Hint"
+          }
+        },
+        "type": "object",
+        "required": [
+          "engagement",
+          "sources_note",
+          "unknowns",
+          "scheme_summary",
+          "tasks",
+          "latest_checks",
+          "fixed_version_hint"
+        ],
+        "title": "DeliveryDetail",
+        "description": "Minimal project delivery view for the thin workbench detail page."
+      },
+      "DeliveryTaskSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "objective": {
+            "type": "string",
+            "title": "Objective"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "pending_input_count": {
+            "type": "integer",
+            "title": "Pending Input Count"
+          },
+          "latest_run_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Run Id"
+          },
+          "revision": {
+            "type": "integer",
+            "title": "Revision"
+          },
+          "spec_version": {
+            "type": "integer",
+            "title": "Spec Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "state",
+          "title",
+          "objective",
+          "scope",
+          "pending_input_count",
+          "latest_run_id",
+          "revision",
+          "spec_version"
+        ],
+        "title": "DeliveryTaskSummary"
+      },
       "Dependency": {
         "properties": {
           "task_id": {
@@ -3831,6 +4403,80 @@
         ],
         "title": "EngagementCreate"
       },
+      "FdeToolCall": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "read_project",
+              "create_task",
+              "save_input",
+              "adopt_inputs",
+              "request_execution",
+              "get_task",
+              "get_run",
+              "propose_review"
+            ],
+            "title": "Tool"
+          },
+          "arguments": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Arguments"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tool"
+        ],
+        "title": "FdeToolCall"
+      },
+      "FdeToolResult": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "read_project",
+              "create_task",
+              "save_input",
+              "adopt_inputs",
+              "request_execution",
+              "get_task",
+              "get_run",
+              "propose_review"
+            ],
+            "title": "Tool"
+          },
+          "role_revision": {
+            "type": "string",
+            "title": "Role Revision"
+          },
+          "engagement_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Engagement Id"
+          },
+          "actor": {
+            "type": "string",
+            "title": "Actor"
+          },
+          "result": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "role_revision",
+          "engagement_id",
+          "actor",
+          "result"
+        ],
+        "title": "FdeToolResult"
+      },
       "Health": {
         "properties": {
           "status": {
@@ -3842,6 +4488,104 @@
         },
         "type": "object",
         "title": "Health"
+      },
+      "KnowledgeToolCall": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "search_assets",
+              "get_asset",
+              "record_business_handoff"
+            ],
+            "title": "Tool"
+          },
+          "caller_role": {
+            "type": "string",
+            "enum": [
+              "business",
+              "fde",
+              "engineering"
+            ],
+            "title": "Caller Role"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "delivery",
+              "internal_research",
+              "public_marketing"
+            ],
+            "title": "Purpose",
+            "default": "delivery"
+          },
+          "arguments": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Arguments"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tool",
+          "caller_role"
+        ],
+        "title": "KnowledgeToolCall"
+      },
+      "KnowledgeToolResult": {
+        "properties": {
+          "tool": {
+            "type": "string",
+            "enum": [
+              "search_assets",
+              "get_asset",
+              "record_business_handoff"
+            ],
+            "title": "Tool"
+          },
+          "role_revision": {
+            "type": "string",
+            "title": "Role Revision"
+          },
+          "caller_role": {
+            "type": "string",
+            "enum": [
+              "business",
+              "fde",
+              "engineering"
+            ],
+            "title": "Caller Role"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "delivery",
+              "internal_research",
+              "public_marketing"
+            ],
+            "title": "Purpose"
+          },
+          "actor": {
+            "type": "string",
+            "title": "Actor"
+          },
+          "result": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tool",
+          "role_revision",
+          "caller_role",
+          "purpose",
+          "actor",
+          "result"
+        ],
+        "title": "KnowledgeToolResult"
       },
       "Login": {
         "properties": {

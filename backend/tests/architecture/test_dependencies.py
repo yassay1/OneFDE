@@ -91,12 +91,37 @@ def test_layer_dependencies_point_inward():
                 ), module
             if module.startswith("onefde.modules.auth."):
                 assert not any(
-                    d.startswith(("onefde.modules.engagements", "onefde.modules.tasks"))
+                    d.startswith(
+                        (
+                            "onefde.modules.engagements",
+                            "onefde.modules.tasks",
+                            "onefde.modules.fde",
+                            "onefde.modules.knowledge",
+                        )
+                    )
                     for d in dependencies
                 ), module
             if module.startswith("onefde.modules.engagements."):
                 assert not any(
-                    d.startswith("onefde.modules.tasks") for d in dependencies
+                    d.startswith(
+                        (
+                            "onefde.modules.tasks",
+                            "onefde.modules.fde",
+                            "onefde.modules.knowledge",
+                        )
+                    )
+                    for d in dependencies
+                ), module
+            if module.startswith("onefde.modules.tasks."):
+                assert not any(
+                    d.startswith(
+                        ("onefde.modules.fde", "onefde.modules.knowledge")
+                    )
+                    for d in dependencies
+                ), module
+            if module.startswith("onefde.modules.fde."):
+                assert not any(
+                    d.startswith("onefde.modules.knowledge") for d in dependencies
                 ), module
 
 

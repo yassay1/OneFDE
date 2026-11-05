@@ -1,8 +1,8 @@
 # OneFDE 核心验证与验收场景
 
-本文列出首版需要验证的行为与证据，供产品设计、工程任务和后续测试使用。C0+C1a 已执行23项后端测试和19项真实 HTTP 检查，见 [验证记录](c0-c1a-verification.md)；其余完整业务场景尚未验收。可复现命令见 [后端 README](../../backend/README.md)。
+本文列出首版需要验证的行为与证据，供产品设计、工程任务和后续测试使用。C0+C1a 已执行23项后端测试和19项真实 HTTP 检查，见 [验证记录](c0-c1a-verification.md)；本地真实网页冒烟见 [CA验证](coding-agent-verification.md)。黑客松切片的通过范围以文末 HM 表为准，未标注通过的项保持未执行。可复现命令见 [后端 README](../../backend/README.md)。
 
-产品完成条件以 [PRD](../product/PRD.md) 为依据；报价案例的规则和样例维护在[演示项目记录](../../engagements/demo-supplier-quotes/brief.md)，不在此重复定义另一套价格规则。
+产品完成条件以 [PRD](../product/PRD.md) 为依据；参赛切片见[黑客松实施方案](../product/hackathon-proposal.md)；报价案例的规则和样例维护在[演示项目记录](../../engagements/demo-supplier-quotes/brief.md)，不在此重复定义另一套价格规则。
 
 ## 证据与结果
 
@@ -21,7 +21,7 @@
 | V05 | P05 | 将一个项目拆成多个有关联任务；前置产物不足时不启动依赖工作，更新规则后识别受影响任务 | 任务输入输出、依赖、版本和交接结果 | 未执行 |
 | V06 | P06 | 工程 Agent 实际修改文件、运行构建/启动并检查报价案例，失败如实回传 | 修改内容、命令、退出结果及下表中的比较结果 | 未执行 |
 | V07 | P07 | 同 Task 多轮输入、问题/答复、续作与轻量评审；重复启动、取消、重试、迟到结果及恢复 | 输入采用版本、Task/Run/评审、占用与外部副作用核查 | 未执行 |
-| V08 | P08 | 构建部署指定版本，从约定交付入口访问并操作核心功能；说明入口有效期或限制 | 部署结果、版本、实际访问与功能检查 | 未执行 |
+| V08 | P08 | 在单ECS一体化环境受控发布固定产品版本；检查公司站/工作台认证/各产品边界、TLS及回退；停止Worker/Sandbox后客户产品仍可用；说明入口有效期与单机故障限制 | 发布授权、Task/Run及固定产物、实际部署/访问/功能/边界/回退；详见单ECS验收E08—E11，本地预览不算上线 | 未执行 |
 | V09 | P09 | 收集Business/FDE/Engineering来源明确的反馈，区分原业务记录、咨询答复与候选资产 | 三角色反馈/条目引用和用途授权，客户资料未直接变通用资产 | 未执行 |
 | V10 | P10 | 三角色获取知识支持，第二组方案/工程需求实际复用，并检查Business案例材料使用范围 | 请求方/用途/来源版本，实际适配及重新检查结果，公开授权不混同内部可见 | 未执行 |
 
@@ -31,15 +31,15 @@
 
 | 场景 | 预期行为 | 依赖与当前状态 |
 | --- | --- | --- |
-| S01 同口径报价 | 在已确认同商品、等级、规格和单位的模拟数据上得出正确单位价格关系 | 当前仅有样例提案，未执行 |
-| S02 缺失净重 | 展示待核对与缺失原因，不以盒价推断更划算 | 未执行 |
-| S03 规格或等级不同 | 不强行进行跨口径最低价比较 | 未执行 |
-| S04 单位换算 | 换算依据、单位价格与后续确认的样例预期一致；未知规则不猜测 | 换算表与精度待确认，未执行 |
-| S05 混合内容 | 可比较项与待核对项都能定位，后者不会被静默丢弃 | 未执行 |
-| 限制说明 | 结果明确未计入运费、起订量和送货条件，也不自动采购 | 已确认范围，功能未执行 |
-| 导入与导出 | 支持约定 Excel/CSV 样例，导出内容可与界面结果核对 | 文件兼容和导出格式待确认，未执行 |
+| S01 同口径报价 | 导入 [s01-same-basis.csv](../../engagements/demo-supplier-quotes/samples/s01-same-basis.csv)：B 的 7.5 低于 A 的 8.0；不做采购结论 | **产品检查通过**（`node products/demo-supplier-quotes/check.mjs`）；平台 Run 未挂 |
+| S02 缺失净重 | 导入 [s02-missing-net-weight.csv](../../engagements/demo-supplier-quotes/samples/s02-missing-net-weight.csv)：待核对；不以盒价选最低 | **产品检查通过**；平台 Run 未挂 |
+| S03 规格或等级不同 | 导入 [s03-different-grade.csv](../../engagements/demo-supplier-quotes/samples/s03-different-grade.csv)：不跨等级单一最低价 | **产品检查通过**；平台 Run 未挂 |
+| S04 单位换算 | 换算依据、单位价格与后续确认的样例预期一致；未知规则不猜测 | 换算表与精度待确认，无样例文件，未执行 |
+| S05 混合内容 | 导入 [s05-mixed.csv](../../engagements/demo-supplier-quotes/samples/s05-mixed.csv)：可比较与待核对/不可比并存，后者不静默丢弃 | **产品检查通过**；平台 Run 未挂 |
+| 限制说明 | 结果明确未计入运费、起订量和送货条件，也不自动采购 | 产品文案与结果字段已带限制说明；平台验收未挂 |
+| 导入与导出 | 黑客松优先约定 CSV；Excel 扩展后置。导出可与界面核对 | CSV 导入/全部导出/待核对导出已实现；Excel 仍后置 |
 
-空值、重复报价、同价、无效数值、编码与日期等行为在阶段 B 确认后补入相应预期；不能因没有约定就由测试反向发明业务规则。
+空值、重复报价、同价、无效数值、编码与日期等行为在规则确认后补入相应预期；不能因没有约定就由测试反向发明业务规则。P0 已固定最小字段与 S01/S02/S03/S05 预期，不等于换算表或导出细节已确定。
 
 ## 协调与恢复的重点
 
@@ -70,13 +70,38 @@ C0+C1a 已实际执行 PostgreSQL 测试与真实 HTTP 重启检查，详见 [�
 
 OpenAPI 由 Pydantic 导出后检查差异和关键响应，不为只复述每个字段增加冗余测试。报价计算用确认后的预期样例验证，不以实现反推正确答案；依赖和恢复测试只覆盖当前切片实际使用的部分。
 
+## 单ECS部署验收
+
+MVP物理拓扑采用用户指定的单ECS+Compose，可信Worker与无Socket工程容器分开，见[部署设计](deployment.md)。具体E01—E11与阶段状态仅在[单ECS实施与验收](single-ecs-verification.md)维护；本轮S1/S2的独立Compose/真实SDK/资源与恢复证据已单列；E07—E11仍未执行，不能用既有本地100项测试/WSL环境证据替代。
+
 ## 模型与工程链路验证
+
+本地WSL环境先按[WSL手册](../../backend/local-wsl/README.md)执行无模型的真实SDK/Docker检查：目录/挂载、实际命令、CPU/内存/PID、控制库/宿主/外网拒绝、停止核实和不可变源码归档。检查不创建业务Task/Run；环境就绪不能替代下述C01/C02真实模型任务或V06验收。正式节点隔离另外验证，边界见[ADR0007](../architecture/ADR/0007-local-wsl-development.md)。
 
 修订后的 C01—C05 安排见[实施计划](../development/implementation-plan.md)。接入时复用官方示例跑一个含工具往返的小任务，只确认本项目实际配置；遇到自定义适配或具体失败再追加检查，不重跑全部上游协议/行为测试。OneFDE 的状态、幂等与业务规则检查随实现进行，可使用确定性替身验证控制逻辑，无需全部调用真实模型。保留配置与 SDK/镜像版本，并区分已有能力、未接入和检查通过。
 
-取消应检验 cancel_requested 后已停止与现场不明两种结果；stop_for_update 只结束本轮以处理输入，不取消整个 Task。completed/needs_input 后已结束 Run 不再执行，continue 创建新 Run；interrupted 尚未核查时禁止新写入。旧结果不能满足新 spec_version。不同工程任务同时启动也只占一个全局名额，不能只测同任务唯一索引。
+取消应检验 cancel_requested 后已停止与现场不明两种结果；stop_for_update 只结束本轮以处理输入，不取消整个 Task。completed/needs_input 后已结束 Run 不再执行，continue 创建新 Run；interrupted 尚未核查时禁止新写入。旧结果不能满足新 spec_version。缺少 `spec_version` 的旧排队快照仍应能被认领，执行副本使用 Run.task_spec_version，持久化快照保持原样。不同工程任务同时启动也只占一个全局名额，不能只测同任务唯一索引。
 
 首个持续流程使用同一个 Task：Run 1 提问题并结束 → 保存/采用回答 → Run 2 提交工程成果 → 要求修改 → 应用输入 → Run 3 再提交 → 接受固定版本。另检查 pending 输入在提交前到达的竞争：原成果留历史，Task 不自动进入已接受或允许旧版本评审。无需把整个流程每次都用真实模型执行；控制分支用确定性适配，至少一次真实工具闭环提供工程证据。
+
+## Coding Agent细化验收
+
+以下为[Coding Agent设计](../architecture/coding-agent.md)工程验收；详细命令与限制见[本轮验证记录](coding-agent-verification.md)。不用控制替身或上游 benchmark 冒充真实模型工程。
+
+| 编号 | 场景与预期 | 证据 / 需求 / 阶段 |
+| --- | --- | --- |
+| CA01 | 固定清单只含当前版本已采用输入和获准资料；加入pending输入及附件内越权指令后，执行授权与规格不变 | 确定性通过（单元）；P05/P07，C3 |
+| CA02 | 在规则明确的小任务真实改文件、运行相关检查并保存固定源码；停止已核实 | **通过**：DeepSeek 网页冒烟；见[CA验证](coding-agent-verification.md)；P06，C2 |
+| CA03 | 检查失败回到同一SDK循环修复，保存失败与最终结果；耗尽限额后停止并保留现场 | 未执行（需模型）；P06/P07，C3 |
+| CA04 | 任意无关exit 0、缺必需检查、伪造passed或无效Final均不能形成满足新门槛的submitted；完整证据才进入review | 通过：单元 + 真实无模型容器；P06/P07，C3 |
+| CA05 | 最终验证使用固定源码副本及登记检查；新增、修改或删除源码，以及旧构建或旧日志，都不能满足当前验收；已取消或超过 Run 总期限时不创建验证容器；Agent与验证容器顺序执行并均可核实停止，停止不明则不释放名额 | 通过：无模型容器 + 真实 Run validation；本轮替身补取消/超时/新增源码/停止未知；P06/P07，C3 |
+| CA06 | 同Task工程提问结束Run，回答记录/采用后新Run续作；要求修改后再提交；Engineering无自接受权限 | 控制多轮 + 本轮真实提交/接受；续作多轮仍以 c1b 为主；P05/P07，C3 |
+| CA07 | 新Run核对Task目录与归档，未知差异先阻塞；已确认停止且有可信归档的失败现场可续作，interrupted 不能当基准；从固定源码和业务事实重建新Conversation，保留旧现场 | 通过：比对/恢复单元与脚本；失败归档续作已由独立测试库覆盖；P07，C3 |
+| CA08 | 取消/停止更新/失租覆盖工程和验证阶段；已取消时不再创建验证容器或执行后续检查；停止不明保持interrupted与占用；迟到结果不覆盖当前版本 | 控制路径保留；验证阶段取消/超时由替身覆盖；真实模型中途取消未测；P07，C3 |
+| CA09 | Engineering查询/Knowledge咨询只返回当前身份与用途获准内容，原问题/版本有引用；无结果明确未知，答复不自动采用或入库 | 未执行（D/E）；P10 |
+| CA10 | 工程submitted进入review，接受绑定固定产物；无发布权限不能上线，临时预览不作交付 | **通过（本轮接受）**；发布仍未接；P07/P08，C3 |
+
+实现时针对新增适配做类型、事件关联、事务、路径/摘要及拒绝分支检查；少量真实任务验证本项目配置，固定版本验证器使用真实命令核对源码关联。日志和原始资料留在受控存储，状态回填到本表相关执行记录后才记通过。
 
 ## 四角色协作与知识权限检查
 
@@ -115,4 +140,22 @@ OpenAPI 由 Pydantic 导出后检查差异和关键响应，不为只复述每�
 
 新增9项回环HTTP检查使用独立API进程、真实Worker控制器、PostgreSQL和明确模拟的执行端，证明停止请求经心跳确认、产物保留、结果归一、重启查询及不重复执行。原19/35项HTTP回归另行通过。SDK绑定测试使用固定1.59.0真实Agent/LLM/Tool类型，Docker/Conversation是替身，不证明真实改文件/模型效果。执行方法、原始证据与准确限制见 [C2验证](c2-verification.md) 和 [Worker手册](../../backend/WORKER.md)。
 
-V06真实工程/C01-C02接入检查尚未执行：缺少专用Linux执行节点、隔离网络、受限模型凭据与明确额度。准备后只跑一次真实小任务，核对实际文件变化/命令/保存结果、请求计数/费用/停止延迟及真实容器挂载/网络，再更新C2退出状态。不得用测试产物或SDK上游结果替代该证据。
+本地真实网页小任务已有证据：Task `a2d797a5-ed37-4403-8645-46b26074b125` succeeded，Run `523cad22-acfd-40e7-9f84-9c739e34afe1` completed/submitted，Review `a3fbf2d6-c3ab-4aaf-842c-a0e1977ffeaa` accept；见 [c2-webpage-smoke.json](evidence/c2-webpage-smoke.json)、[c2-webpage-review.json](evidence/c2-webpage-review.json) 与 [CA验证](coding-agent-verification.md)。路径为 Compose API + 宿主 venv Worker，可作为 Engineering 子能力证据，**不能**扩大为 V06 报价业务、四角色协作、容器化 Worker 全最新代码或生产部署通过。提供方账单/费用硬上限仍未核验；SDK 观测成本 0.0 不能当免费证明。云端单 ECS 边界按 ADR0009 另验。
+
+## 黑客松切片验收
+
+独立编号 HM01—HM09 覆盖用户已确认的参赛主线；与 V01—V10 / S01—S05 并行，不替换既有场景。P0—P4 状态见[实施计划](../development/implementation-plan.md)。未标注通过的项保持未执行；网页冒烟只作 Engineering 子能力旁证。
+
+| 编号 | 关联 | 操作与检查重点 | 所需证据 | 当前结果 |
+| --- | --- | --- | --- | --- |
+| HM01 | P01/P02，P0/P3 | Business 整理有来源的模拟需求并交接 FDE；不自行承诺价格/合同，不直接派客户工程 | 来源引用、模拟标记、交接记录；无越权派工 | **工具子集通过**：`record_business_handoff` 写入来源/未知项且 `dispatched_engineering=false`；Engineering 调用 403（`test_knowledge_tools.py`） |
+| HM02 | P03/P05/P07，P1 | FDE 澄清至少一项未知条件，形成有范围与检查条件的 Task；保存/采用输入与版本一致；越权动作被拒绝 | 问题/答复/采用记录、Task 规格版本、拒绝证据 | **后端子集通过**：`tests/integration/test_fde_tools.py` 覆盖 create_task/save/adopt、跨项目 `FDE_SCOPE_DENIED`、未知工具校验；尚无模型驱动 FDE 会话 |
+| HM03 | P02/P05/P07，P1 | 最薄三入口可用：项目列表含业务交接、项目交付详情、少量能力条目；详情展示来源/未知项、方案、Task/Run 摘要、检查与固定版本 | 实际页面或等价受控 API 操作记录；非完整 CRM/IDE | **交付详情 API 已有**（`GET /engagements/{id}/delivery`）；三入口页面未执行 |
+| HM04 | P06/R01—R05，P2 | 按确认 CSV 样例真实开发报价工具；同口径得出约定结果；缺净重/不同等级不伪造最低价；价格计算由普通程序完成 | 真实 Run、固定源码、检查退出码、客户工具可操作结果 | **产品+控制链通过**：产品检查见[p2-quote-product-check.json](evidence/p2-quote-product-check.json)；平台 FDE→Run→评审见[p2-quote-control.json](evidence/p2-quote-control.json)。Run 结果为确定性回填，**非** OpenHands/模型工程 |
+| HM05 | P07，P2 | 同一 Task 一次范围内修改：采用修改输入→新 Run→新固定版本；旧产物保留；不另开无关聊天重生成 | 输入/版本关联、两次产物、评审记录 | **控制链通过**：同 Task `request_changes`→采用→新 Run→接受（`test_p2_quote_fde_delivery.py`）；产品 CHANGELOG v1.0→v1.1 对齐。真实模型续作未跑 |
+| HM06 | P04/P09/P10，P3 | Knowledge 按权限检索来源/版本，整理获准候选资产；三角色可直接咨询；第二模拟项目实际采用并重新检查 | 资产条目、权限过滤、第二项目引用与再检查 | **通过子集**：资产`fresh-quote-compare-csv`；Knowledge 工具检索；第二项目[adopt.json](../../engagements/demo-supplier-quotes-reuse/adopt.json)+[再检查](evidence/p3-reuse-recheck.json)。无 Knowledge 模型循环 |
+| HM07 | P04/P10，P3 | 权限反例：无授权请求看不到受限正文/标题/链接；公开用途不混同内部可见 | 拒绝或空结果证据，无泄漏日志 | **通过**：受限夹具不出现在列表；`get_asset`→404 且无正文泄漏；`public_marketing` 不含 `implementation_ref` |
+| HM08 | P08，P4 | 客户产品独立 Origin（或受限预览）；生成 HTML/JS 不在工作台认证 Origin 内直接执行；工作台仅可信元数据与入口 | 产品入口、Origin 边界、访问检查 | **本地通过**：产品 Origin `http://127.0.0.1:8765`，见[p4-product-origin.json](evidence/p4-product-origin.json)。页面不引用工作台 Origin，产品端口不提供 `/api/v1`。检查时 `8000`/`8002` 未监听，没有在线 API 对照；公网 HTTPS 未做 |
+| HM09 | 演示材料，P4 | 从干净状态可复现主链；真实演示录像或运行说明可审阅；失败时切换历史真实记录，不伪造实时工具结果 | 复现步骤、录像/Run ID、备用固定版本说明 | **运行说明通过**：[p4-demo.md](p4-demo.md) 含复现命令、备用证据与网页冒烟 Run 的使用边界。演示录像未做；平台 pytest 本轮未重跑 |
+
+字段映射、换算、精度、重复/无效报价与导出未确认前，HM04 不得用自行发明的业务规则“通过”。三分钟演示节奏是准备建议，不是已知赛事硬性时限。

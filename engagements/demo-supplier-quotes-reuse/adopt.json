@@ -1,0 +1,10 @@
+{
+  "engagement_id": "demo-supplier-quotes-reuse",
+  "adopted_asset_id": "fresh-quote-compare-csv",
+  "adopted_version": "1.1.0",
+  "implementation_ref": "products/demo-supplier-quotes@v1.1",
+  "adaptation": "none-rule-change",
+  "recheck_command": "node products/demo-supplier-quotes/check.mjs",
+  "source_engagement": "demo-supplier-quotes",
+  "is_demo": true
+}

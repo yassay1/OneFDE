@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "slice": "P3-reuse",
+  "engagement": "demo-supplier-quotes-reuse",
+  "adopted_asset": "fresh-quote-compare-csv@1.1.0",
+  "adopt_record": "engagements/demo-supplier-quotes-reuse/adopt.json",
+  "recheck": {
+    "ok": true,
+    "product": "demo-supplier-quotes",
+    "version": "v1.1",
+    "checked": [
+      "S01",
+      "S02",
+      "S03",
+      "S05"
+    ],
+    "modification": "pending-only CSV export"
+  },
+  "knowledge_tests": "tests/integration/test_knowledge_tools.py",
+  "model_called": false
+}

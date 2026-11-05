@@ -1,0 +1,3 @@
+supplier,product,grade,spec,unit,unit_price,currency,note
+示例供应商A,蜜桔,一级,盒装未标明净重,box,25.0,CNY,模拟-缺净重
+示例供应商B,蜜桔,一级,盒装未标明净重,box,22.0,CNY,模拟-缺净重

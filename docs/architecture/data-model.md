@@ -1,6 +1,8 @@
 # OneFDE 首版数据模型与状态约束
 
-2026 年 11 月 4 日协作推荐基线；C0+C1b持久控制已有验证，C2新增Worker认领/租约/停止确认/结果回填及固定SDK绑定，真实工程环境尚未验证，运维解锁仍未实现，见 [C2验证](../operations/c2-verification.md)。本文件是对象、版本和生命周期的权威来源；HTTP字段以 [OpenAPI](openapi.yaml) 为准。PostgreSQL是业务事实源，SDK Session、作业租约和页面消息均不替代业务状态。
+2026 年 11 月 4 日协作推荐基线；C0+C1b持久控制已有验证，C2新增Worker认领/租约/停止确认/结果回填及固定SDK绑定，本地无模型环境已验证，真实模型工程尚未执行，运维解锁仍未实现，见 [C2验证](../operations/c2-verification.md)。本文件是对象、版本和生命周期的权威来源；HTTP字段以 [OpenAPI](openapi.yaml) 为准。PostgreSQL是业务事实源，SDK Session、作业租约和页面消息均不替代业务状态。
+
+Engineering内部上下文清单、结果提案和检查证据见[Coding Agent设计](coding-agent.md)。已通过现有Run快照的`engineering`字段、执行端口与作业`proof`承载清单/检查覆盖/验证结果，**不新增表、HTTP字段或生命周期状态**；固定源码验证属于同一Run的执行阶段，资源以`dispatch_jobs.runtime_ref.resources[]`登记。无模型证据见[CA验证](../operations/coding-agent-verification.md)；真实模型仍未验收。
 
 ## 身份与边界
 
@@ -108,7 +110,7 @@ completed 的 outcome 仅为 submitted（提交工程成果）、needs_input（�
 
 ## 并发、授权与派发不变量
 
-- revision 是并发行版本，任何任务相关写入都递增；用户命令携带 expected_revision。spec_version 是已采用规格/输入版本；状态、事件和 pending 输入不能悄悄改变它。Run 固定内容与 applied_input_ids 快照。
+- revision 是并发行版本，任何任务相关写入都递增；用户命令携带 expected_revision。spec_version 是已采用规格/输入版本；状态、事件和 pending 输入不能悄悄改变它。Run 固定内容与 applied_input_ids 快照。新 Run 的持久化快照写入 `spec_version`；更早的排队快照可能没有该键。认领时只在返回给执行方的快照副本上补入该 Run 的 `task_spec_version`，不回写已持久化的 snapshot。
 - active_run_id 对应 queued/running/cancel_requested/interrupted。runs.task_id 对这些状态建立部分唯一索引；每次认领校验当前 Run、规格、权限和依赖。Task waiting_input/review 没有活动 Run。
 - 一个活动工程 Run 是全局执行配额，不是只按 Task 唯一。start/continue/retry 在共同事务级 advisory lock 下检查活动总量并登记 Run，提交后释放数据库锁；执行期间不持连接锁。
 - Worker lease 是作业认领，不是旧写入者死亡证明。失租时冻结新派发、核查现场；若不能确认停止，保留 interrupted。先单 Worker，真正多执行者才引入能在写入端校验的 fencing；仅把 fencing 数字存数据库不能阻止旧 shell 写文件。

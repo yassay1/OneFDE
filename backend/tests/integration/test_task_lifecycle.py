@@ -1,5 +1,6 @@
 """PostgreSQL control tests. All runtime results/artifacts are deterministic fixtures."""
 
+import hashlib
 from concurrent.futures import ThreadPoolExecutor
 from uuid import UUID, uuid4
 
@@ -14,6 +15,7 @@ from onefde.entrypoints.api import create_app
 from onefde.modules.tasks import events
 from onefde.modules.tasks import schemas as s
 from onefde.modules.tasks import service as tasks
+from onefde.modules.tasks.commands.runs import trusted_prior_source
 from tests.support import models as m
 from tests.support.constants import ORIGIN, PASSWORD
 from tests.support.factories import create_task
@@ -522,4 +524,80 @@ def test_sequence_pagination_versions_auth_and_missing(control):
             f"/api/v1/tasks/{c.tid}/apply-inputs", json={}, headers={"Origin": ORIGIN}
         ).status_code
         == 403
+    )
+
+
+def _source_artifact(payload: bytes):
+    return {
+        "name": "workspace.tar.gz",
+        "kind": "source-snapshot",
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "size_bytes": len(payload),
+    }
+
+
+def test_run_snapshot_records_the_fixed_spec_version(control):
+    c = control
+    run = c.start()
+    with Session(c.app.state.engine) as db:
+        snapshot = db.get(m.Run, UUID(run["id"])).snapshot
+    assert (
+        snapshot["spec_version"] == run["task_spec_version"] == c.get()["spec_version"]
+    )
+    assert snapshot["spec"]["inputs"] == ["明确标注的模拟输入"]
+
+
+def test_retry_uses_confirmed_failed_source_instead_of_older_completed(control):
+    c = control
+    first = c.start()
+    c.claim(first)
+    c.finish(
+        first, outcome="needs_input", artifacts=[_source_artifact(b"completed-v1")]
+    )
+    question = c.client.get(f"/api/v1/tasks/{c.tid}/inputs").json()["items"][0]
+    answer = c.input("answer", reply_to_input_id=question["id"])["input"]
+    c.adopt([answer["id"]])
+    second = c.action("continue", expected_run_id=first["id"])["run"]
+    with Session(c.app.state.engine) as db:
+        continued = db.get(m.Run, UUID(second["id"])).snapshot["engineering"][
+            "prior_source"
+        ]
+    assert continued["artifact_id"] == c.artifact(first)
+    assert continued["run_id"] == first["id"]
+    c.claim(second)
+    c.finish(
+        second,
+        state="failed",
+        outcome=None,
+        error_code="SIMULATED_FAILURE",
+        artifacts=[_source_artifact(b"failed-v2")],
+    )
+    third = c.action("retry", expected_run_id=second["id"])["run"]
+    with Session(c.app.state.engine) as db:
+        repair = db.get(m.Run, UUID(third["id"])).snapshot["engineering"][
+            "prior_source"
+        ]
+    assert repair["artifact_id"] == c.artifact(second)
+    assert repair["run_id"] == second["id"]
+    assert repair["artifact_id"] != c.artifact(first)
+
+
+def test_interrupted_source_is_not_a_repair_baseline(control):
+    c = control
+    run = c.start()
+    c.claim(run)
+    c.finish(
+        run,
+        state="interrupted",
+        outcome=None,
+        error_code="STOP_UNCONFIRMED",
+        artifacts=[_source_artifact(b"unknown-stop")],
+    )
+    assert c.get()["active_run_id"] == run["id"]
+    assert c.artifact(run)
+    with Session(c.app.state.engine) as db:
+        assert trusted_prior_source(db, UUID(c.tid)) is None
+    assert (
+        c.action("retry", expected_run_id=run["id"], status=409)["code"]
+        == "RUN_NOT_STOPPED"
     )

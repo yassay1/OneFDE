@@ -1,0 +1,15 @@
+{
+  "model_called": false,
+  "engineering_executed": false,
+  "checks": [
+    "unauthenticated HTTP denied; authenticated create works",
+    "two tasks cannot create parallel active Runs",
+    "model-disabled standby leaves queued job unclaimed (attempts=0)",
+    "core Compose restarted; authenticated Task/Run and immutable artifact digest unchanged"
+  ],
+  "task_ids": [
+    "11648d14-906d-4091-8837-077eb7840cdd",
+    "d3a0561d-567b-4edc-b936-536483b5efae"
+  ],
+  "run_id": "24aaa137-728b-409f-ace2-71015cd63a15"
+}

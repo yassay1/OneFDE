@@ -9,6 +9,8 @@ from onefde.infrastructure.db.session import make_engine
 from onefde.infrastructure.web.errors import install_handlers
 from onefde.modules.auth import router as auth
 from onefde.modules.engagements import router as engagements
+from onefde.modules.fde import router as fde
+from onefde.modules.knowledge import router as knowledge
 from onefde.modules.tasks import router as tasks
 
 
@@ -51,4 +53,6 @@ def create_app(settings: Settings | None = None):
     app.include_router(engagements.router)
     app.include_router(tasks.business_router)
     app.include_router(tasks.router)
+    app.include_router(fde.router)
+    app.include_router(knowledge.router)
     return app

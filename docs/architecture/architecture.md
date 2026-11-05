@@ -1,6 +1,8 @@
 # OneFDE 首版推荐技术方案与架构
 
-本稿连接 [PRD](../product/PRD.md)、[关键交互](../design/design.md)与[数据模型](data-model.md)。2026 年 11 月 4 日C0+C1b持久控制已本地验证；C2已实现独立Worker控制与固定SDK适配，真实Linux/模型接入仍受阻，前端未实施，见 [C2验证](../operations/c2-verification.md)及 [ADR0006](ADR/0006-c2-worker-sdk-boundary.md)。下列组合是开发默认路线，推荐范围不等于已运行成果。
+本稿连接 [PRD](../product/PRD.md)、[关键交互](../design/design.md)与[数据模型](data-model.md)。2026年11月4日C0+C1b持久控制、本地环境及Engineering真实网页提交/接受已有证据，见[CA验证](../operations/coding-agent-verification.md)；P1已落地薄FDE受控工具与交付详情API（`modules/fde`），尚无独立FDE模型循环。P2已有独立静态报价产品与FDE平台控制链（确定性Run回填，见[控制证据](../operations/evidence/p2-quote-control.json)）。P3已有文件型能力库条目与`modules/knowledge`受控检索/权限/Business交接，第二项目复用见[P3证据](../operations/evidence/p3-reuse-recheck.json)。真实模型Engineering与工作台前端仍未实现；无向量库。固定SDK边界见[ADR0006](ADR/0006-c2-worker-sdk-boundary.md)。下列组合是开发默认路线，推荐范围不等于已运行成果。
+
+用户已确认[黑客松实施切片](../product/hackathon-proposal.md)，范围以PRD为准：优先薄FDE—Engineering—客户产品主链，再补三角色可查询的Knowledge与Business最小交接。复用现有Task/Input/Run、受控工具、固定SDK和单ECS+Compose边界；不增加四套常驻进程、通用图编排器或第五个协调模型。不能因现有owner_role=fde字段或工具白名单就称完整FDE Agent（含模型会话）已完成。
 
 ## 系统总架构图
 
@@ -46,7 +48,7 @@ flowchart TB
     Runtime -->|Engineering 工程执行| Sandbox["独立工程沙盒<br/>编辑、命令、构建、测试、预览"]
     Sandbox --> Git["Git / 任务工作区<br/>源码与版本"]
     Sandbox -->|实际结果与检查证据| Runtime
-    Worker --> Objects["私有对象存储<br/>文件、产物、日志、恢复材料"]
+    Worker --> Objects["私有产物存储<br/>MVP本地不可变blob，跨机再接对象存储"]
 
     Tasks --> Publish["受控发布<br/>固定版本与发布权限"]
     Publish --> Product["独立客户软件<br/>首个案例：报价比较工具"]
@@ -68,7 +70,7 @@ flowchart TB
 | 项目状态、源代码和大文件的使用方式不同 | PostgreSQL 管关系/状态，Git 管代码版本，对象存储管文件/产物；数据库记录三者之间的引用与归属 |
 | 客户软件要长期使用，开发环境可能随时回收 | 固定版本独立发布，客户入口与内部工作台、临时工程预览分开；可交付不依赖 Agent 一直运行 |
 
-这些边界服务于一个小型交付闭环，不要求一开始建设大型基础设施。API/Auth、Domain、Task 和事件逻辑先放同一个后端代码工程；Worker 是独立进程，Runtime 是它使用的执行层。具体部署时控制节点运行 API/数据库，专用执行节点运行可信 Worker 和工程容器，见[部署拓扑](../operations/deployment.md)。
+这些边界服务于一个小型交付闭环，不要求一开始建设大型基础设施。API/Auth、Domain、Task 和事件逻辑先放同一个后端代码工程；Worker 是独立进程，Runtime 是它使用的执行层。黑客松/MVP在同一ECS上以不同容器承载API/数据库、可信Worker和工程执行，不要求物理另机；具体服务、网络、配额和发布边界见[部署拓扑](../operations/deployment.md)。
 
 Domain Service 与 Task Service 分开命名，是为了区分“客户业务依据是什么”和“某项工作正在怎样推进”。它们仍可共享数据库与事务。Dispatcher 的规则可以由程序确定，不需要第五个模型先重新判断 FDE 已明确指定的执行角色。
 
@@ -87,11 +89,13 @@ Domain Service 与 Task Service 分开命名，是为了区分“客户业务依
 
 ## 架构目标与推荐
 
+本地开发使用已授权的WSL2+Docker演示环境，见[ADR0007](ADR/0007-local-wsl-development.md)。云端黑客松/MVP以[ADR0009](ADR/0009-single-ecs-mvp.md)的单ECS一体化为准，替代必须另设执行主机的旧假设；环境检查不代表模型工程或单ECS公网验收已通过。
+
 首版采用一个业务控制后端维护项目与任务，通过可替换适配连接模型、工程执行与部署。FDE 承担业务诊断、能力适用判断、方案和任务拆分；程序 Coordinator 承担权限、版本、依赖、去重、运行生命周期和结果归属。暂不增加第五个常驻 LLM Orchestrator，也不把平台后端直接作为任意代码执行宿主。
 
-采用 OpenAI-compatible Chat Completions 形式的配置接入，Agent 运行复用 OpenHands SDK，工程使用 DockerWorkspace。工程工作区在专用 Linux 执行环境，代码、工具与进程与控制数据分开。E2B 仅作后备，不与 DockerWorkspace 同时接入；采用上游示例完成一次接入冒烟，随后开发业务切片。
+采用 OpenAI-compatible Chat Completions 形式的配置接入，Agent 运行复用 OpenHands SDK，工程使用 DockerWorkspace。工程工作区在Linux上的受限动态Sandbox容器内，挂载、工具/进程权限与控制数据分开；MVP物理同机。E2B 仅作后备，不与 DockerWorkspace 同时接入；采用上游示例完成一次接入冒烟，随后开发业务切片。
 
-后端中的 Coordinator 是模块边界，不要求独立微服务。首版用一个 API 进程和一个有界执行 Worker 实现串行闭环；API 位于控制节点，可信 Worker 位于专用执行节点，直接用当地 DockerWorkspace 管理容器。Worker 通过私网以受限服务身份访问任务数据库和产物存储，生成代码容器不继承这些权限。不增加自研远程 Runner 服务或开放 Docker TCP API；容器镜像和 Python 依赖锁定一致的 SDK 系列，不追踪 main 或 latest 浮动标签。
+后端中的 Coordinator 是模块边界，不要求独立微服务。首版用一个 API 进程和一个有界执行 Worker 实现串行闭环；API与可信Worker是同ECS的独立Compose服务，Worker通过宿主DockerWorkspace创建无Socket的兄弟工程容器，四角色为按需运行配置而非四个常驻进程。Worker通过内部网络及受限服务身份访问数据库/私有产物，工程容器不继承这些权限；容器化Worker的路径/私网接线仍待实现。不增加自研远程 Runner 服务或开放 Docker TCP API；容器镜像和 Python 依赖锁定一致的 SDK 系列，不追踪 main 或 latest 浮动标签。
 
 ## 推荐技术组合
 
@@ -102,12 +106,12 @@ Domain Service 与 Task Service 分开命名，是为了区分“客户业务依
 | 业务后端 | Python 3.13、FastAPI、Pydantic 2 | 与 OpenHands Python SDK 同语言；HTTP 请求校验与 OpenAPI 由类型模型维护 |
 | 事务与迁移 | SQLAlchemy 2.1、psycopg 3、Alembic | 应用和 Worker 使用同一领域服务与迁移；数据库会话按请求/作业创建，不跨线程共享 |
 | 业务存储 | PostgreSQL 17 | 保存项目、任务、运行、幂等和待派发记录；开发/测试同数据库类型，首版不以 SQLite 模拟关键锁语义 |
-| 文件与日志 | S3 兼容对象存储与私有桶 | 数据库保存元数据和对象 key；工作区临时文件在回收前导出，提供者与区域按账号条件选择 |
+| 文件与日志 | MVP私有本地不可变blob及持久卷 | DB保存摘要/归属；异机备份另授权，跨机执行时再接对象存储，不增加MinIO前提 |
 | Agent 与模型 | OpenHands SDK、其内置 LiteLLM 适配 | 四角色使用角色化配置/工具集，Engineering 才有工程终端；不额外引入 LangGraph、独立网关或自研 Harness |
 | 调度 | PostgreSQL 待派发记录与独立 Python Worker | 一次持久接单、事务外执行；首版一个活动工程 Run，不新增 Redis/Celery |
 | 进度读取 | REST 查询与短轮询 | 页面可见且任务活动时约 2 秒刷新，终态停止；SDK 内部事件仍消费，但不首发自建 WebSocket/SSE 推送层 |
 | 登录 | 单创始人账号、服务端 Cookie 会话、CSRF token | 无注册、多租户或 SSO；平台密钥不发给前端，登录配置和发布权限保持独立 |
-| 部署 | Linux、Docker Compose、Caddy | 控制节点与专用执行节点分开；客户工具独立部署项目/入口，不与工程预览混用 |
+| 部署 | 单台阿里云ECS、Linux、Docker Compose、Caddy | API/PG/Worker/Agent Sandbox/站点同机，服务/权限/资源分开；客户产品独立版本，不复用工程容器 |
 | 开发与检查 | uv、pnpm；pytest、Vitest、Playwright | 依赖与锁文件随实现产生；控制逻辑用确定性测试，少量真实端到端验收，不跑全量上游测试 |
 | 首个客户报价工具 | 独立 React 静态应用、SheetJS Community Edition | 浏览器解析结构化文件；同一库承接 Excel/CSV，不先加客户服务端；文件类型范围与导出格式按项目规则确认 |
 
@@ -159,6 +163,8 @@ OpenHands TaskToolSet 已提供阻塞子 Agent 和 Session 续用，但 SDK task
 显式命令不等于每步都要创始人点击：角色工具可在已授任务范围与额度内提交继续/运行请求，由程序校验；新商业范围、额度提升和正式发布回创始人。C 初期人工代行所有者是实施顺序，不是长期要求人监督所有内部动作；本轮不引入主动监听或自动触发来源。
 
 ## 四个 Agent 的运行配置
+
+设计或修改Engineering的上下文、工具、工程检查、提交和续作时，读取[Coding Agent细化设计](coding-agent.md)；直接复用/自有适配/后置范围及上游版本差异见其中清单与[参考依据](coding-agent-research.md)。本轮只细化设计，未新增执行能力、模型调用或HTTP契约。
 
 四类 Agent 共用 Runtime 和模型接入能力，每次运行组合“角色规则、受控上下文、工具白名单、模型配置及限额”，输出结构化结果、问题或工作请求。角色不等于一个永久进程或一个全局 Session；同一角色服务不同工作时取得各自范围内的资料。职责和业务产出以 PRD 的角色表为准，这里只维护运行边界。
 
@@ -222,14 +228,14 @@ MiMo 官方集成示例使用 OpenAI-compatible 配置；其部分模型的多�
 | 候选 | 参考价值与代价 | 当前推荐 |
 | --- | --- | --- |
 | 直接在开发机运行 | 最容易尝试，但生成代码和凭据/个人文件容易混用，恢复也依赖本机 | 不作为默认工程执行路线 |
-| OpenHands SDK 与 DockerWorkspace | 官方提供 Agent Server、容器生命周期与远程 Conversation；部署者仍负责挂载、网络、资源与宿主权限 | 本轮首选，使用专用 Linux 执行环境及预构建、固定版本镜像，接入时短冒烟 |
+| OpenHands SDK 与 DockerWorkspace | 官方提供 Agent Server、容器生命周期与远程 Conversation；部署者仍负责挂载、网络、资源与宿主权限 | 本轮首选，同ECS受限动态容器及固定镜像；可信Worker与Sandbox权限分开，接入时短冒烟 |
 | OpenHands Cloud Workspace | 托管执行可减少运维，但需核对账号、区域、限额、费用与数据路径 | 自管运维负担过高时比较，不默认开通 |
 | E2B | VM 型沙盒及网络、生命周期控制明确；与所选工程 SDK 的适配、产物保存和成本须另验 | 后备候选，不假定即插即用 |
 | 自研完整 Harness | 灵活但需自行处理工具循环、恢复和会话协议 | 首版不优先 |
 
 DockerWorkspace 已有官方示例；容器结束可清理运行环境，因此源码、必要日志、运行证据和可恢复资料必须在回收前保留。[OpenHands Docker Sandbox](https://docs.openhands.dev/sdk/guides/agent-server/docker-sandbox)
 
-容器隔离是否有效取决于实际配置。生成代码不取得 Docker daemon socket、宿主敏感目录或平台数据库凭据；限制用户权限、挂载、CPU/内存、出网、运行时长与并发。专用执行宿主与控制数据分开，不把“不同目录”称为客户隔离保证。[Docker 官方安全说明](https://docs.docker.com/engine/security/)
+容器隔离是否有效取决于实际配置。生成代码不取得 Docker daemon socket、宿主敏感目录或平台数据库凭据；限制用户权限、挂载、CPU/内存、出网、运行时长与并发。MVP共享物理宿主，但Docker管理权限只给可信Worker，工程容器不取得控制数据；不把不同目录/普通容器称为强敌对租户隔离。[Docker 官方安全说明](https://docs.docker.com/engine/security/)
 
 E2B 的沙盒有暂停/恢复/终止与连续运行边界，默认可出网并可配置限制；若改用它，仍须核对回收、出口和产物持久化。[生命周期](https://docs.e2b.dev/sandbox)、[网络控制](https://docs.e2b.dev/network/internet-access)
 
@@ -241,7 +247,7 @@ OpenHands 的 API-based Sandbox 页面注明其 Runtime API 主要面向 benchma
 
 平台后端与 Worker 使用 Compose 管理的长期进程。首个报价工具推荐独立的 React 静态应用，在浏览器解析已约定的结构化文件并比较/导出，文件不必上传平台；这减少服务端托管与客户数据留存。文件大小/兼容/计算要求超出浏览器能力时再增加独立 Python 服务，不把 OneFDE 平台数据库当作客户报价数据库。客户端处理是技术建议，业务字段与换算规则仍按项目确认。
 
-该静态产物首选部署为独立静态站点，可用现有 Caddy 的独立站点目录；需要外部分发托管时采用 Vercel 静态部署备选。具体公开域名和可用时长在发布前配置，客户访问入口不具备内部工作台权限。长期后端或状态需求出现后改用单独容器服务，不把一次函数请求当作通用工程运行。[Vercel Functions 限制](https://vercel.com/docs/functions/limitations)
+用户最新指定单ECS一体化部署整个OneFDE及客户产品，见[ADR0009](ADR/0009-single-ecs-mvp.md)。独立发布指站点、版本、运行配置和权限独立，不要求每产品或每角色独占服务器；正式产品不复用可写工程容器。具体服务、域名、受控发布、备份与资源估算仅在[部署设计](../operations/deployment.md)维护，分阶段验收见[单ECS计划](../operations/single-ecs-verification.md)。本地S1/S2已按授权适配并验证，详见单ECS计划中的逐项证据；未购买ECS或公网部署，完整生产拓扑尚未落地。
 
 结构化表格解析推荐 SheetJS CE，初始化时按官方发行源固定版本并记录完整性信息，不将旧 registry 包或运行时 CDN 浮动脚本当默认依赖。只读取约定数据单元格，不执行宏或假设能重新计算工作簿公式；公式/缓存值如何处置及具体 Excel 兼容范围在 D 的输入规则中明确。[SheetJS 官方安装说明](https://docs.sheetjs.com/docs/getting-started/installation/frameworks/)
 

@@ -1,0 +1,104 @@
+{
+  "checked_at_utc": "2026-11-04T14:05:41.835519+00:00",
+  "scope": "DeepSeek environment only; user explicitly excluded inference/C2 tests",
+  "model_called": false,
+  "credentials": {
+    "key_loaded_in_standby_process": true,
+    "secret_mode": "600",
+    "profile_revision_ids": [
+      "488fa83c-a2d7-410b-8981-b55cbb053c9d"
+    ],
+    "database_contains_references_only": true,
+    "model_execution_enabled": false,
+    "model_called": false
+  },
+  "preflight": {
+    "scope": "environment_only",
+    "execution_mode": "ecs_shared",
+    "model_execution_enabled": false,
+    "sdk_versions": {
+      "openhands-sdk": "1.59.0",
+      "openhands-workspace": "1.59.0",
+      "openhands-tools": "1.59.0"
+    },
+    "blockers": [],
+    "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+  },
+  "network": {
+    "tls_hostname": "api.deepseek.com",
+    "tls_verified": true,
+    "tls_version": "TLSv1.3",
+    "proxy_denied_hosts": [
+      "example.com",
+      "100.100.100.200",
+      "169.254.169.254"
+    ],
+    "direct_tcp_denials": 5,
+    "host_positive_control": true,
+    "authorization_header_sent": false,
+    "http_request_sent_to_provider": false,
+    "model_called": false
+  },
+  "task_or_run_created": false,
+  "commands": [
+    {
+      "command": "uv run --locked --project backend --extra worker python deploy/sync_deepseek.py",
+      "result": "selected fields synchronized; no key output"
+    },
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml --profile ops run --rm configure-model",
+      "result": "configured revision; second invocation reused same revision"
+    },
+    {
+      "command": "docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml up -d --no-deps --force-recreate --wait worker egress",
+      "result": "healthy; Worker remains standby"
+    },
+    {
+      "command": "backend/.venv/bin/python deploy/check_deepseek_environment.py",
+      "result": "private key equality/metadata, TLSv1.3, 3 denied proxy destinations and 5 denied direct TCP targets passed; no provider HTTP request"
+    },
+    {
+      "command": "uv run --locked --extra worker pytest tests/unit tests/architecture -q",
+      "result": "47 passed; no inference/C2 task tests"
+    }
+  ],
+  "execution_preflight": {
+    "exit_code": 2,
+    "report": {
+      "scope": "execution_preflight",
+      "execution_mode": "ecs_shared",
+      "model_execution_enabled": false,
+      "sdk_versions": {
+        "openhands-sdk": "1.59.0",
+        "openhands-workspace": "1.59.0",
+        "openhands-tools": "1.59.0"
+      },
+      "blockers": [
+        "模型执行未启用；当前禁止消费工程作业",
+        "缺少明确的模型费用上限及提供方配额"
+      ],
+      "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+    }
+  },
+  "actual_key_absent_from_evidence": true,
+  "checks_summary": {
+    "environment_preflight_exit": 0,
+    "execution_preflight_exit": 2,
+    "pure_tests_passed": 47,
+    "python_files_formatted": 113,
+    "openapi_unchanged": true,
+    "api_health": "ok",
+    "provider_http_requests_sent": 0,
+    "inference_requests_sent": 0,
+    "task_or_run_created": false
+  },
+  "configuration_sha256": {
+    "deploy/compose.yaml": "8e3cd476972375fe6f1b99924a0496fbcf0a64ff58212570cd2ef086a4b49b95",
+    "deploy/squid.conf": "8bcdf300cacb47a51575cbd1a907b56c7ba68b3fea580687140300d2abc226c3",
+    "deploy/network-policy.sh": "a5d09155e3323ffc8dafcf0b69408d714ce1cd59a1096e8c229cf85301d68e82",
+    "deploy/ops/check_model.py": "ec292388d1b9b347bbdd92dee257856c31836e5925e011d376f44ffa5799df71",
+    "deploy/ops/provision_model.py": "b626ffad09f912175ef330d800b666471963d62bb50bb061eeb564cb916e0542",
+    "backend/src/onefde/worker/config.py": "b98484c16712ac859e247757e0299396779bf19ef413066867c8dc83924b7928",
+    "backend/src/onefde/infrastructure/runtime/openhands.py": "1e3b8975c281b76f46f3f8151188cc6f936dc1f85e1b76cfcc7db0adea10cc85"
+  }
+}

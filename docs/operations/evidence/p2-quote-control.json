@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "slice": "P2-platform-control",
+  "test": "tests/integration/test_p2_quote_fde_delivery.py",
+  "command": "uv run --locked pytest tests/integration/test_p2_quote_fde_delivery.py -q",
+  "result": "passed",
+  "path": [
+    "FDE create_task",
+    "FDE save_input + adopt_inputs (P0 clarify)",
+    "FDE request_execution queue/start",
+    "deterministic mark_run_started + record_run_result submitted (v1.0)",
+    "FDE propose_review request_changes",
+    "FDE adopt_inputs (pending export modification)",
+    "FDE queue/start",
+    "deterministic submitted (v1.1)",
+    "FDE propose_review accept → succeeded",
+    "delivery detail fixed_version_hint",
+    "cross-engagement get_task → FDE_SCOPE_DENIED"
+  ],
+  "product_check_evidence": "docs/operations/evidence/p2-quote-product-check.json",
+  "model_called": false,
+  "notes": "Control-path evidence only. Run results use deterministic fixtures, not OpenHands/DeepSeek. Product S01—S05 checks remain separate deterministic Node evidence."
+}

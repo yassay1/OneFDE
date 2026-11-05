@@ -44,9 +44,9 @@ def test_pinned_sdk_binding_and_cleanup(tmp_path, monkeypatch, failure):
         def __init__(self, **kwargs):
             captured["workspace"] = kwargs
             self._container_id = identifier
-            self._wait_for_health(60)
+            self._wait_for_health(timeout=60)
 
-        def _wait_for_health(self, timeout):
+        def _wait_for_health(self, *, timeout):
             if failure == "health":
                 raise RuntimeError("health failed after allocation")
 
@@ -62,6 +62,10 @@ def test_pinned_sdk_binding_and_cleanup(tmp_path, monkeypatch, failure):
         def send_message(self, message):
             assert "frozen fixture" in message and "adopted fixture" in message
             assert "scoped-fixture-only" not in message
+            assert (
+                "engineering-role-v1"
+                in captured["conversation"]["agent"].agent_context.system_message_suffix
+            )
 
         def run(self, *, blocking):
             assert blocking is False and actions[0] == "update"
@@ -83,7 +87,16 @@ def test_pinned_sdk_binding_and_cleanup(tmp_path, monkeypatch, failure):
                     else json.dumps(value)
                 },
             )()
-            observation = type("TerminalObservation", (), {"exit_code": 0})()
+            observation = type(
+                "TerminalObservation",
+                (),
+                {
+                    "exit_code": 0,
+                    "command": "python -m pytest -q",
+                    "cwd": "/workspace",
+                    "timeout": False,
+                },
+            )()
             for callback in captured["conversation"]["callbacks"]:
                 callback(SimpleNamespace(action=action, observation=observation))
 
@@ -113,7 +126,11 @@ def test_pinned_sdk_binding_and_cleanup(tmp_path, monkeypatch, failure):
         task_id=uuid4(),
         engagement_id=uuid4(),
         snapshot={
-            "spec": {"objective": "frozen fixture"},
+            "spec_version": 1,
+            "spec": {
+                "objective": "frozen fixture",
+                "completion_criteria": ["[review] owner accepts"],
+            },
             "inputs": [{"text": "adopted fixture"}],
             "config": {
                 "adapter": "openhands",
@@ -124,11 +141,23 @@ def test_pinned_sdk_binding_and_cleanup(tmp_path, monkeypatch, failure):
                 "protocol": "openai_chat_completions",
                 "model": "openai/fixture",
             },
+            "engineering": {
+                "role_revision": "engineering-role-v1",
+                "context_revision": "engineering-context-v1",
+                "checks": [
+                    {
+                        "id": "review-1",
+                        "kind": "business_review",
+                        "criterion": "owner accepts",
+                    }
+                ],
+            },
         },
         on_resource=lambda value: captured.update(resource=value),
     )
     result = binding.OpenHandsAdapter(settings).execute(request, stop)
     assert captured["resource"]["container_id"] == identifier
+    assert captured["resource"]["role"] == "engineering"
     assert "stop" in actions and "ps" in actions
     assert captured["workspace"]["forward_env"] == [
         "OH_SESSION_API_KEYS_0",
@@ -152,4 +181,5 @@ def test_pinned_sdk_binding_and_cleanup(tmp_path, monkeypatch, failure):
         )
         assert captured["conversation"]["max_iteration_per_run"] == 20
         assert captured["conversation"]["max_budget_per_run"] == 0.1
+        assert result.proof["context_revisions"]["role"] == "engineering-role-v1"
     assert (tmp_path / "private" / str(request.run_id) / "session.key").is_file()

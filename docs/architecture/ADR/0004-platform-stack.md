@@ -6,7 +6,9 @@
 
 OneFDE 是单创始人的内部工作台，需要持久任务状态和真实工程执行，首版没有 SEO、多租户或大规模并发需求。采用 React/TypeScript/Vite、Ant Design、React Router、TanStack Query；后端采用 Python 3.13、FastAPI/Pydantic 2、SQLAlchemy 2.1/psycopg 3/Alembic、PostgreSQL 17。Agent 使用 OpenHands SDK 内的 LiteLLM 接入，不另造 Agent loop。依赖精确版本在初始化时锁定，SDK 相关包作为兼容组合更新。
 
-PostgreSQL 事务保存任务、Run 和 dispatch_jobs，独立 Worker 认领执行；首版一个活动工程 Run。界面 REST 短轮询，私有 S3 兼容存储保留产物，单账号 Cookie 会话认证。Linux/Compose/Caddy 管理控制服务，工程在专用执行节点；客户软件独立发布。
+PostgreSQL 事务保存任务、Run 和 dispatch_jobs，独立 Worker 认领执行；首版一个活动工程 Run。界面 REST 短轮询，私有 S3 兼容存储保留产物，单账号 Cookie 会话认证。Linux/Compose/Caddy管理服务，客户软件独立发布；MVP物理拓扑以后续ADR0009为准。
+
+最新MVP拓扑见[ADR0009](0009-single-ecs-mvp.md)：整个OneFDE及客户产品在单ECS+Compose，工程按容器/权限/资源分开。ADR0008的物理另机假设已被取代；此调整不改变技术栈或独立发布语义。
 
 ## 比较与代价
 

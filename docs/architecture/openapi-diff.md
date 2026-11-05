@@ -26,6 +26,9 @@
 - ModelProfile: 无缺失字段；原必填字段均保留。新增字段：[]。
 - 新增已实现接口：GET `/api/v1/tasks/{task_id}/versions`，用于读取不可变版本快照。
 - 新增已实现接口：GET `/api/v1/tasks/{task_id}/versions/{spec_version}`，用于读取不可变版本快照。
+- 新增已实现接口：GET `/api/v1/engagements/{engagement_id}/delivery`，用于P1最小项目交付详情。
+- 新增已实现接口：POST `/api/v1/engagements/{engagement_id}/fde/tools`，用于P1薄FDE受控工具调用。
+- 新增已实现接口：POST `/api/v1/knowledge/tools`，用于P3 Knowledge受控工具调用。
 
 所有已实现操作的 operationId、成功状态码、请求字段和原必填字段已自动核对。
 
@@ -45,7 +48,7 @@
 - Artifact只有元数据读取，无上传/签名下载；有原始证据时必须同项目，评审必须同Run。未认领作业可在事务内证明未执行并撤销；已开始的停止只记录意图，确认停止前保留占用。
 - 非空 dependencies 返回409 DEPENDENCIES_NOT_SUPPORTED；capability_versions 仅保存引用文本，尚无能力库校验。
 
-## 已实现（25 个操作）
+## 已实现（28 个操作）
 
 - GET `/health`
 - POST `/api/v1/auth/login`
@@ -72,6 +75,9 @@
 - GET `/api/v1/tasks/{task_id}/events`
 - GET `/api/v1/tasks/{task_id}/versions`
 - GET `/api/v1/tasks/{task_id}/versions/{spec_version}`
+- GET `/api/v1/engagements/{engagement_id}/delivery`
+- POST `/api/v1/engagements/{engagement_id}/fde/tools`
+- POST `/api/v1/knowledge/tools`
 
 ## 规划中（1 个操作）
 

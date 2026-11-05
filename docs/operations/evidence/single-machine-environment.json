@@ -1,0 +1,86 @@
+{
+  "scope": "ecs_shared_environment_only",
+  "model_called": false,
+  "checked_at_utc": "2026-11-04T13:26:37.985694+00:00",
+  "checks": [
+    "real capacity refusal for low disk/memory before any DB claim",
+    "restricted Worker DB identity; no auth-table or DDL access",
+    "bridge Worker -> real pinned SDK authenticated; wrong key rejected; no host port",
+    "create-time CPU/memory/PID/read-only/NNP/cap-drop and minimal mounts verified",
+    "actual SDK file/session writes; UID, sudo denial and forbidden filesystem checks",
+    "active host/Worker listeners, PG, metadata, internet and IPv6 denied; offline allowlist CONNECT succeeds, others 403",
+    "Sandbox restarted; workspace/session files survived (no Conversation resume claim)",
+    "bounded persistent filesystem returned actual ENOSPC; test file removed",
+    "stopped proof, persistent workspace/session and immutable archive digest verified"
+  ],
+  "network_targets": [
+    [
+      "172.29.241.2",
+      46057
+    ],
+    [
+      "172.29.241.1",
+      34621
+    ],
+    [
+      "172.29.240.3",
+      5432
+    ],
+    [
+      "100.100.100.200",
+      80
+    ],
+    [
+      "169.254.169.254",
+      80
+    ],
+    [
+      "1.1.1.1",
+      443
+    ]
+  ],
+  "container_id": "e0915664200aaa0c302e84ca2c029579f914db59bebd2804f74c9e28fbda3479",
+  "image": "sha256:96038f92dc66228e389a95c2e5081dfc2cd4f5d307f051a7df9b1d50ccb86be7",
+  "create_time_limits": {
+    "NanoCpus": 1000000000,
+    "Memory": 2147483648,
+    "MemorySwap": 2147483648,
+    "PidsLimit": 256,
+    "ReadonlyRootfs": true,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges:true"
+    ]
+  },
+  "wrong_key_status": 401,
+  "command_result": {
+    "command": "python -c 'import os,pathlib,socket,subprocess,json,errno\nassert os.getuid()==10001\nstatus=pathlib.Path('\"'\"'/proc/self/status'\"'\"').read_text()\nassert '\"'\"'NoNewPrivs:\\t1'\"'\"' in status and '\"'\"'CapEff:\\t0000000000000000'\"'\"' in status and '\"'\"'Seccomp:\\t2'\"'\"' in status\nfor p in ['\"'\"'/var/run/docker.sock'\"'\"','\"'\"'/run/secrets/worker_url'\"'\"','\"'\"'/srv/onefde-local/private'\"'\"','\"'\"'/srv/onefde-local/worker/tasks'\"'\"']:\n assert not pathlib.Path(p).exists(),p\ntry: pathlib.Path('\"'\"'/etc/onefde-forbidden'\"'\"').write_text('\"'\"'bad'\"'\"')\nexcept OSError as e: assert e.errno in (errno.EACCES,errno.EROFS)\nelse: raise AssertionError('\"'\"'root writable'\"'\"')\nsudo=subprocess.run(['\"'\"'sudo'\"'\"','\"'\"'-n'\"'\"','\"'\"'id'\"'\"','\"'\"'-u'\"'\"'],capture_output=True,timeout=3)\nassert sudo.returncode!=0\npathlib.Path('\"'\"'/workspace/environment.txt'\"'\"').write_text('\"'\"'shared SDK command persisted\\n'\"'\"')\npathlib.Path('\"'\"'/session/environment.txt'\"'\"').write_text('\"'\"'private session persisted\\n'\"'\"')\nfor host,port in [('\"'\"'172.29.241.2'\"'\"', 46057), ('\"'\"'172.29.241.1'\"'\"', 34621), ('\"'\"'172.29.240.3'\"'\"', 5432), ('\"'\"'100.100.100.200'\"'\"', 80), ('\"'\"'169.254.169.254'\"'\"', 80), ('\"'\"'1.1.1.1'\"'\"', 443)]:\n try: s=socket.create_connection((host,port),timeout=1)\n except OSError: continue\n else: s.close();raise AssertionError('\"'\"'forbidden connection succeeded'\"'\"')\ntry: s=socket.create_connection(('\"'\"'2001:4860:4860::8888'\"'\"',443),timeout=1)\nexcept OSError: pass\nelse: s.close();raise AssertionError('\"'\"'IPv6 bypass'\"'\"')\ndef tunnel(host):\n with socket.create_connection(('\"'\"'172.29.241.3'\"'\"',3128),timeout=5) as s:\n  s.sendall(('\"'\"'CONNECT '\"'\"'+host+'\"'\"':443 HTTP/1.1\\r\\nHost: '\"'\"'+host+'\"'\"':443\\r\\n\\r\\n'\"'\"').encode())\n  data=s.recv(4096)\n  if b'\"'\"' 200 '\"'\"' in data.split(b'\"'\"'\\r\\n'\"'\"')[0]:\n   if b'\"'\"'onefde-offline-probe'\"'\"' not in data:data+=s.recv(4096)\n   assert b'\"'\"'onefde-offline-probe'\"'\"' in data\n   return 200\n  assert b'\"'\"' 403 '\"'\"' in data.split(b'\"'\"'\\r\\n'\"'\"')[0],data[:100]\n  return 403\nassert tunnel('\"'\"'onefde-probe.test'\"'\"')==200\nassert tunnel('\"'\"'example.com'\"'\"')==403\nassert tunnel('\"'\"'100.100.100.200'\"'\"')==403\nprint(json.dumps({'\"'\"'uid'\"'\"':os.getuid(),'\"'\"'no_new_privileges'\"'\"':True,'\"'\"'sudo_denied'\"'\"':True,'\"'\"'tcp_denials'\"'\"':len([('\"'\"'172.29.241.2'\"'\"', 46057), ('\"'\"'172.29.241.1'\"'\"', 34621), ('\"'\"'172.29.240.3'\"'\"', 5432), ('\"'\"'100.100.100.200'\"'\"', 80), ('\"'\"'169.254.169.254'\"'\"', 80), ('\"'\"'1.1.1.1'\"'\"', 443)]),'\"'\"'proxy_fixture'\"'\"':200,'\"'\"'proxy_denied'\"'\"':403}))\n'",
+    "exit_code": 0,
+    "stdout": "{\"uid\": 10001, \"no_new_privileges\": true, \"sudo_denied\": true, \"tcp_denials\": 6, \"proxy_fixture\": 200, \"proxy_denied\": 403}\n",
+    "stderr": "",
+    "timeout_occurred": false
+  },
+  "sandbox_restart_result": {
+    "command": "cat /workspace/environment.txt /session/environment.txt",
+    "exit_code": 0,
+    "stdout": "shared SDK command persisted\nprivate session persisted\n",
+    "stderr": "",
+    "timeout_occurred": false
+  },
+  "disk_limit_result": {
+    "command": "python -c 'import os,errno,json\np='\"'\"'/workspace/quota-fill'\"'\"'\ntotal=0\ntry:\n with open(p,'\"'\"'wb'\"'\"',buffering=0) as f:\n  while True: total+=f.write(b'\"'\"'x'\"'\"'*(1024*1024))\nexcept OSError as e:\n assert e.errno==errno.ENOSPC\n print(json.dumps({'\"'\"'errno'\"'\"':e.errno,'\"'\"'bytes_written'\"'\"':total,'\"'\"'hard_bound'\"'\"':True}))\nfinally:\n os.unlink(p)\n'",
+    "exit_code": 0,
+    "stdout": "{\"errno\": 28, \"bytes_written\": 1915748352, \"hard_bound\": true}\n",
+    "stderr": "",
+    "timeout_occurred": false
+  },
+  "stopped": true,
+  "artifact": {
+    "sha256": "a8180247faeb56bf5270f02dbd8f11a7b8d7eccbb26d257198d96c2136774630",
+    "size_bytes": 2184,
+    "file_count": 7,
+    "key": "shared-environment/5567380e-9ebe-430d-b647-4917d2e1ec21/workspace.tar.gz"
+  }
+}

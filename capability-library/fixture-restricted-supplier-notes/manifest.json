@@ -1,0 +1,22 @@
+{
+  "id": "fixture-restricted-supplier-notes",
+  "name": "受限供应商沟通摘录（夹具）",
+  "type": "business_record_extract",
+  "version": "0.0.1",
+  "updated_at": "2026-11-04",
+  "visibility": "restricted",
+  "reuse_scope": "engagement_only",
+  "verification_status": "draft",
+  "problem": "测试权限反例：无授权不得看到标题或链接",
+  "applicable_when": ["仅 HM07 权限夹具"],
+  "not_applicable_when": ["任何真实交付"],
+  "inputs": [],
+  "outputs": [],
+  "implementation_ref": null,
+  "source_engagement": "demo-supplier-quotes",
+  "evidence": [],
+  "verified_samples": [],
+  "keywords": ["受限", "供应商", "秘密夹具"],
+  "public_summary": null,
+  "body": "RESTRICTED_BODY_MUST_NOT_LEAK"
+}

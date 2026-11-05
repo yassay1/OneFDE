@@ -1,0 +1,63 @@
+{
+  "model_called": false,
+  "sdk_disk_core_health_samples": 55,
+  "resource_probes": [
+    {
+      "kind": "cpu",
+      "container_id": "ab0746073eebf69a83048d150ed6e0849ba6c01ac2392e9243922c33359c8915",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-04T13:27:21.075731654Z",
+        "FinishedAt": "2026-11-04T13:27:25.936518486Z"
+      },
+      "output": "usage_usec 492669\nuser_usec 481212\nsystem_usec 11457\nnice_usec 0\nnr_periods 49\nnr_throttled 48\nthrottled_usec 4361089\nnr_bursts 0\nburst_usec 0\n\n",
+      "core_healthy_during_probe": true
+    },
+    {
+      "kind": "memory",
+      "container_id": "365e34d7563930793927145eb239bc61a9de7e28d43476aa152499aacdb4193b",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": true,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-11-04T13:27:26.235931082Z",
+        "FinishedAt": "2026-11-04T13:27:26.801821793Z"
+      },
+      "output": "",
+      "core_healthy_during_probe": true
+    },
+    {
+      "kind": "pids",
+      "container_id": "92870fe8c185e05bd7d5d260d3a509d411b9413292e2da62373ce99898279f84",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-04T13:27:27.007219064Z",
+        "FinishedAt": "2026-11-04T13:27:28.269719094Z"
+      },
+      "output": "{\"errno\": 11, \"started\": 30}\n",
+      "core_healthy_during_probe": true
+    }
+  ]
+}
