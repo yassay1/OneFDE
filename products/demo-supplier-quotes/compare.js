@@ -28,7 +28,17 @@
     if (lines.length < 2) {
       throw new Error("CSV 至少需要表头与一行数据");
     }
-    const header = splitCsvLine(lines[0]);
+    let priceHeaders = 0;
+    const header = splitCsvLine(lines[0]).map((name) => {
+      if (name.replace(/^ +| +$/g, "") !== "unit_price") {
+        return name;
+      }
+      priceHeaders++;
+      return "unit_price";
+    });
+    if (priceHeaders > 1) {
+      throw new Error("表头冲突: unit_price");
+    }
     for (const name of REQUIRED) {
       if (!header.includes(name)) {
         throw new Error("缺少列: " + name);

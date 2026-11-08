@@ -8,6 +8,7 @@ import tempfile
 from pathlib import Path
 
 from onefde.modules.tasks.configuration import ModelConfiguration
+from sync_deepseek import PROVIDERS
 
 
 def main():
@@ -26,30 +27,34 @@ def main():
         packet = json.loads(sys.stdin.buffer.read(32769))
         key = packet["key"]
         profile = ModelConfiguration.model_validate(packet["profile"])
+        _, _, secret, allowed_urls = PROVIDERS[profile.provider]
         if (
             not isinstance(key, str)
-            or not key
+            or (not key and profile.provider != "mimo")
             or len(key) > 8192
             or any(c.isspace() for c in key)
         ):
             raise ValueError()
         if (
-            profile.provider != "deepseek"
-            or profile.secret_ref != "env:ONEFDE_MODEL_ENGINEERING"
-            or profile.base_url.rstrip("/")
-            not in {"https://api.deepseek.com", "https://api.deepseek.com/v1"}
+            profile.secret_ref != "env:" + secret
+            or profile.base_url.rstrip("/") not in allowed_urls
         ):
             raise ValueError()
     except Exception:
-        raise SystemExit("Invalid local DeepSeek packet; values withheld") from None
+        raise SystemExit("Invalid local provider packet; values withheld") from None
+    provider = profile.provider
     for name, data in {
-        "deepseek_api_key": key + "\n",
-        "deepseek-profile.json": json.dumps(profile.model_dump(), indent=2) + "\n",
+        f"{provider}_api_key": key + "\n",
+        f"{provider}-profile.json": json.dumps(profile.model_dump(), indent=2) + "\n",
     }.items():
         destination = directory / name
         if destination.is_symlink():
             raise SystemExit("Refuse symlink destination")
-        fd, temporary = tempfile.mkstemp(prefix=".deepseek-", dir=directory)
+        if name.endswith("_api_key") and not key:
+            # Preparation is repeatable and never overwrites an existing key.
+            destination.touch(mode=0o600, exist_ok=True)
+            continue
+        fd, temporary = tempfile.mkstemp(prefix=f".{provider}-", dir=directory)
         try:
             with os.fdopen(fd, "wb") as output:
                 output.write(data.encode())

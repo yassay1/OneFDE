@@ -77,6 +77,40 @@ function run() {
     assert(pendingText.includes("pending"), "modification: pending export works");
   }
 
+  if (process.argv.includes("--support-regression")) {
+    const sample = fs.readFileSync(path.join(samplesDir, "s01-same-basis.csv"), "utf8");
+    const input = sample.replace(",unit_price,", ",unit_price ,");
+    assert(input !== sample, "support fixture: expected original price header");
+    const result = QuoteCompare.classify(QuoteCompare.parseCsv(input));
+    assert(result.comparable.length === 2 && result.pending.length === 0, "support fixture: both rows comparable");
+    const [a, b] = result.comparable;
+    assert(a.unit_price === 8 && b.unit_price === 7.5, "support fixture: preserve both prices");
+    assert(!a.is_lowest_in_group && b.is_lowest_in_group, "support fixture: only B is lowest");
+    const boundaryFailures = [];
+    for (const [label, header, error] of [
+      ["missing price header", "price", /缺少列: unit_price/],
+      ["non-ASCII space", "unit_price\u00a0", /缺少列: unit_price/],
+      ["normalized price collision", "unit_price ,unit_price", /冲突|重复/],
+    ]) {
+      let message = "";
+      try {
+        QuoteCompare.parseCsv(sample.replace(",unit_price,", "," + header + ","));
+      } catch (err) {
+        message = err.message;
+      }
+      if (!error.test(message)) boundaryFailures.push(label);
+    }
+    const duplicateNote = sample.replace(",currency,note", ",currency,note,note");
+    assert(duplicateNote !== sample, "support fixture: expected original note header");
+    try {
+      const duplicateResult = QuoteCompare.classify(QuoteCompare.parseCsv(duplicateNote));
+      if (duplicateResult.comparable.length !== 2) boundaryFailures.push("unrelated duplicate header");
+    } catch {
+      boundaryFailures.push("unrelated duplicate header");
+    }
+    assert(!boundaryFailures.length, "support fixture: " + boundaryFailures.join(", "));
+  }
+
   console.log(
     JSON.stringify(
       {

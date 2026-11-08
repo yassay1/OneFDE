@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "chrome": "156.0.8078.80",
+  "origins": [
+    "http://127.0.0.1:8767",
+    "http://127.0.0.1:8017"
+  ],
+  "database": "isolated *_test",
+  "checks": [
+    "FAQ and follow-up link",
+    "founder takeover, note isolation and reply",
+    "fault clarification, FDE handoff and retest closure with fixture",
+    "sample candidate, invitation and consent"
+  ],
+  "real_amap": false,
+  "model_calls": false
+}

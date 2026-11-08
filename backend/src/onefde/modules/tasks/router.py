@@ -204,6 +204,15 @@ def get_run(run_id: UUID, current: Current, db: DB):
 
 
 @router.get(
+    "/runs/{run_id}/review-evidence",
+    response_model=s.RunReviewEvidence | None,
+    operation_id="getRunReviewEvidence",
+)
+def get_run_review_evidence(run_id: UUID, current: Current, db: DB):
+    return queries.run_review_evidence(db, run_id)
+
+
+@router.get(
     "/runs/{run_id}/events",
     response_model=s.SequencePage[s.RunEvent],
     operation_id="listRunEvents",

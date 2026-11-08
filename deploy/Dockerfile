@@ -13,5 +13,7 @@ RUN --mount=type=bind,from=uvcache,target=/root/.cache/uv,rw \
 COPY backend/alembic.ini ./
 COPY backend/migrations ./migrations
 COPY deploy/ops /app/ops
+# Workbench SPA for trusted Origin (Compose serves UI + API together).
+COPY frontend/dist /app/frontend/dist
 USER 10001:10001
 ENTRYPOINT ["python", "/app/ops/launch.py"]

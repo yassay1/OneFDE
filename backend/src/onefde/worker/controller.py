@@ -4,8 +4,13 @@ import threading
 
 from sqlalchemy.orm import Session
 
+from onefde.core.clock import now
 from onefde.core.execution import ExecutionReport, ExecutionRequest, RuntimeUnavailable
+from onefde.core.fde import QUOTE_SUPPORT_ACTOR
 from onefde.infrastructure.artifacts import PrivateArtifactStore
+from onefde.modules.engagements.queries import require_engagement
+from onefde.modules.fde import agent_work
+from onefde.modules.fde.quote_support import claim_allowed
 from onefde.modules.tasks import service as tasks
 
 
@@ -21,7 +26,7 @@ class Worker:
             with db.begin():
                 return function(db, *args)
 
-    def run_once(self):
+    def run_once(self, *, expected_run_id=None, reuse_only=False):
         if self.shutdown.is_set():
             return False
         issues = self.settings.capacity_blockers()
@@ -33,8 +38,48 @@ class Worker:
             self.last_admission = issues
             return False
         self.last_admission = []
+
+        def guard(db, run):
+            engineering = run.snapshot.get("engineering", {})
+            reuse = bool(engineering.get("reuse_asset"))
+            return (
+                reuse == reuse_only
+                and (expected_run_id is None or run.id == expected_run_id)
+                and claim_allowed(db, run)
+                and agent_work.claim_allowed(db, run, self.settings.max_cost_usd)
+                and (
+                    not engineering.get("recovery_parent_run_id")
+                    or (
+                        self.settings.recovery_claim_allowed(
+                            run.task_id, now(), engineering.get("recovery_policy")
+                        )
+                        and agent_work.isolated_demo_database(db)
+                    )
+                )
+            )
+
+        def authorize_recovery(db, run):
+            if (
+                not self.settings.recovery_allowed(run.task_id, now())
+                or not agent_work.isolated_demo_database(db)
+                or not require_engagement(db, claim["engagement_id"]).is_demo
+                or run.snapshot.get("actor") == QUOTE_SUPPORT_ACTOR
+            ):
+                return None
+            reserve = agent_work.reserve_recovery(db, run, self.settings.max_cost_usd)
+            if reserve is None:
+                return None
+            return reserve, {
+                "expires_at": self.settings.recovery_expires_at.isoformat(),
+                "max_cost_usd": self.settings.max_cost_usd,
+                "max_requests": self.settings.max_requests,
+            }
+
         claim = self.transaction(
-            tasks.claim_next, self.settings.worker_id, self.settings.lease_seconds
+            tasks.claim_next,
+            self.settings.worker_id,
+            self.settings.lease_seconds,
+            guard,
         )
         if claim is None:
             return False
@@ -145,6 +190,7 @@ class Worker:
                 report.result,
                 report.artifact_keys,
                 report.proof,
+                authorize_recovery,
             )
             return True
         finally:

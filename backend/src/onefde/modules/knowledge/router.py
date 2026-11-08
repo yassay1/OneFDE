@@ -29,6 +29,6 @@ def invoke_tool(
         request.url.path,
         key,
         data,
-        lambda: service.invoke(current.username, data),
+        lambda: service.invoke(current.username, data, db),
         status_code=200,
     )

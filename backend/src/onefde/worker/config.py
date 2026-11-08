@@ -1,12 +1,18 @@
 import os
 import platform
+from datetime import datetime
 from pathlib import Path
 from typing import Literal
+from uuid import UUID
 
-from pydantic import Field, SecretStr, model_validator
+from pydantic import AwareDatetime, Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 AGENT_SERVER_IMAGE = "ghcr.io/openhands/agent-server:1.59.0-python@sha256:96038f92dc66228e389a95c2e5081dfc2cd4f5d307f051a7df9b1d50ccb86be7"
+# Local offline build: deploy/agent-browser/Dockerfile + requirements.lock.
+BROWSER_AGENT_SERVER_IMAGE = (
+    "sha256:25b883234468e324cac9cf358b80a0e56333af223901aec7d2f83dbfb2bc3f08"
+)
 SDK_VERSION = "1.59.0"
 
 
@@ -29,6 +35,7 @@ class WorkerSettings(BaseSettings):
     min_free_memory_mb: int = Field(default=4096, ge=128)
     model_execution_enabled: bool = False
     network: str | None = None
+    validation_network: str | None = None
     # Current shared-host Compose reserves this internal proxy address.
     egress_proxy_url: str | None = Field(
         default=None, pattern=r"^http://172\.29\.241\.3:3128$"
@@ -40,6 +47,9 @@ class WorkerSettings(BaseSettings):
     max_seconds: int = Field(default=900, ge=1, le=900)
     max_requests: int = Field(default=20, ge=1, le=20)
     max_cost_usd: float | None = Field(default=None, gt=0)
+    recovery_task_id: UUID | None = None
+    recovery_expires_at: AwareDatetime | None = None
+    recovery_total_cost_usd: float | None = Field(default=None, gt=0)
     cpus: float = Field(default=1, gt=0, le=8)
     memory: str = Field(default="2g", pattern=r"^[1-9][0-9]*[mg]$")
     pids_limit: int = Field(default=256, ge=32, le=1024)
@@ -55,11 +65,53 @@ class WorkerSettings(BaseSettings):
             raise ValueError("Worker database must use psycopg PostgreSQL")
         if self.lease_seconds < self.heartbeat_seconds * 3:
             raise ValueError("lease must exceed three heartbeat intervals")
-        if self.server_image != AGENT_SERVER_IMAGE:
+        if self.server_image not in (AGENT_SERVER_IMAGE, BROWSER_AGENT_SERVER_IMAGE):
             raise ValueError(
                 "C2 requires the reviewed SDK-compatible pinned Agent Server image"
             )
+        recovery = (
+            self.recovery_task_id,
+            self.recovery_expires_at,
+            self.recovery_total_cost_usd,
+        )
+        if any(value is not None for value in recovery) and (
+            not all(value is not None for value in recovery)
+            or self.max_cost_usd is None
+            or self.max_cost_usd * 2 > self.recovery_total_cost_usd
+        ):
+            raise ValueError(
+                "Recovery requires a Task, expiry and allowance for two bounded Runs"
+            )
         return self
+
+    @property
+    def browser_support(self):
+        if self.server_image == BROWSER_AGENT_SERVER_IMAGE:
+            return {
+                "python_package": "playwright==1.64.1",
+                "executable_path": "/usr/bin/chromium",
+                "launch": "chromium.launch(headless=True, executable_path='/usr/bin/chromium')",
+                "dependencies": "preinstalled; no runtime download required",
+            }
+        return None
+
+    def recovery_allowed(self, task_id: UUID, clock: datetime) -> bool:
+        return (
+            task_id == self.recovery_task_id
+            and self.recovery_expires_at is not None
+            and clock < self.recovery_expires_at
+        )
+
+    def recovery_claim_allowed(
+        self, task_id: UUID, clock: datetime, policy: dict | None
+    ) -> bool:
+        return (
+            self.recovery_allowed(task_id, clock)
+            and bool(policy)
+            and clock < datetime.fromisoformat(policy["expires_at"])
+            and self.max_cost_usd <= policy["max_cost_usd"]
+            and self.max_requests <= policy["max_requests"]
+        )
 
     def blockers(self, *, environment_only=False):
         issues = []

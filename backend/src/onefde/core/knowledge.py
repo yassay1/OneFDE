@@ -7,6 +7,7 @@ TOOL_NAMES = frozenset(
         "search_assets",
         "get_asset",
         "record_business_handoff",
+        "record_delivery_feedback",
     }
 )
 

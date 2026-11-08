@@ -57,12 +57,12 @@ def delivery_detail(db, engagement_id) -> DeliveryDetail:
             if row.state == "succeeded":
                 fixed_hint = f"task={row.id} spec_version={row.spec_version}"
             elif row.state == "review" and run is not None:
-                fixed_hint = f"pending_review run={run.id} spec_version={row.spec_version}"
+                fixed_hint = (
+                    f"pending_review run={run.id} spec_version={row.spec_version}"
+                )
 
     sources = (
-        "模拟演示项目"
-        if engagement.is_demo
-        else "真实资料须按 Engagement 授权范围读取"
+        "模拟演示项目" if engagement.is_demo else "真实资料须按 Engagement 授权范围读取"
     )
     return DeliveryDetail(
         engagement=engagement,

@@ -4,12 +4,17 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-from uuid import uuid4
+from uuid import UUID, uuid4
+
+from pydantic import Field
+from sqlalchemy import select
 
 from onefde.core.errors import ApiException
 from onefde.core.knowledge import DENIED_TOOL_NAMES, ROLE_REVISION, TOOL_NAMES
+from onefde.core.schemas import Input, Nonblank
 from onefde.modules.knowledge import access, catalog
 from onefde.modules.knowledge import schemas as kn
+from onefde.modules.tasks.models import Task, TaskReview
 
 
 def _forbidden(tool: str):
@@ -104,11 +109,7 @@ def _handoff(call: kn.KnowledgeToolCall, actor: str) -> dict:
         *[f"- {s}" for s in data.sources],
         "",
         "## 未知项",
-        *(
-            [f"- {u}" for u in data.unknowns]
-            if data.unknowns
-            else ["- （无）"]
-        ),
+        *([f"- {u}" for u in data.unknowns] if data.unknowns else ["- （无）"]),
         "",
         "## 说明",
         data.notes or "（无）",
@@ -138,17 +139,82 @@ def _handoff(call: kn.KnowledgeToolCall, actor: str) -> dict:
     return meta
 
 
+class DeliveryFeedback(Input):
+    task_id: UUID
+    engagement_id: UUID
+    summary: Nonblank = Field(max_length=2000)
+    sources: list[Nonblank] = Field(min_length=1, max_length=12)
+
+
+def _feedback(call, actor, db):
+    if call.caller_role != "fde" or call.purpose == "public_marketing":
+        raise ApiException(
+            403,
+            "KNOWLEDGE_ROLE_DENIED",
+            "只有 FDE 或代行的创始人可在交付用途下记录已接受经验",
+        )
+    if db is None:
+        raise ApiException(409, "KNOWLEDGE_FEEDBACK_UNVERIFIED", "缺少可核对的任务记录")
+    data = DeliveryFeedback.model_validate(call.arguments)
+    task = db.get(Task, data.task_id)
+    accepted = db.scalar(
+        select(TaskReview.id).where(
+            TaskReview.task_id == data.task_id,
+            TaskReview.verdict == "accept",
+        )
+    )
+    if (
+        task is None
+        or task.state != "succeeded"
+        or task.engagement_id != data.engagement_id
+        or accepted is None
+    ):
+        raise ApiException(
+            409,
+            "KNOWLEDGE_FEEDBACK_UNVERIFIED",
+            "只有已接受的任务可以把经验写入 Knowledge",
+        )
+    asset_id = f"candidate-{task.id.hex[:12]}"
+    folder = catalog.library_root() / "candidates" / asset_id
+    path = folder / "manifest.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8")) | {"already_recorded": True}
+    folder.mkdir(parents=True, exist_ok=True)
+    manifest = {
+        "id": asset_id,
+        "name": data.summary[:80],
+        "type": "candidate",
+        "version": "0.1.0",
+        "visibility": "internal",
+        "reuse_scope": "same_engagement",
+        "verification_status": "candidate",
+        "problem": data.summary,
+        "source_engagement": str(data.engagement_id),
+        "source_task": str(data.task_id),
+        "sources": list(data.sources),
+        "recorded_by": actor,
+        "keywords": ["候选", "已接受"],
+    }
+    path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    catalog.clear_cache()
+    relative = str(path.relative_to(catalog.repo_root())).replace("\\", "/")
+    return manifest | {"path": relative, "already_recorded": False}
+
+
 _HANDLERS = {
-    "search_assets": lambda call, actor: _search(call),
-    "get_asset": lambda call, actor: _get(call),
-    "record_business_handoff": _handoff,
+    "search_assets": lambda call, actor, db: _search(call),
+    "get_asset": lambda call, actor, db: _get(call),
+    "record_business_handoff": lambda call, actor, db: _handoff(call, actor),
+    "record_delivery_feedback": _feedback,
 }
 
 
-def invoke(actor: str, call: kn.KnowledgeToolCall) -> kn.KnowledgeToolResult:
+def invoke(actor: str, call: kn.KnowledgeToolCall, db=None) -> kn.KnowledgeToolResult:
     if call.tool not in TOOL_NAMES or call.tool not in _HANDLERS:
         _forbidden(call.tool)
-    payload = _HANDLERS[call.tool](call, actor)
+    payload = _HANDLERS[call.tool](call, actor, db)
     return kn.KnowledgeToolResult(
         tool=call.tool,
         role_revision=ROLE_REVISION,

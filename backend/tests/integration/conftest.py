@@ -59,7 +59,7 @@ def clean(settings, migrate):
     with engine.begin() as conn:
         conn.execute(
             text(
-                "TRUNCATE tasks, engagements, auth_sessions, login_attempts, idempotency_records, model_profile_revisions CASCADE"
+                "TRUNCATE staff_turns, runtime_beats, business_agent_grants, business_messages, business_cases, business_candidates, tasks, engagements, auth_sessions, login_attempts, idempotency_records, model_profile_revisions CASCADE"
             )
         )
     engine.dispose()

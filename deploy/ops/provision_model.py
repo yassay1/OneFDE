@@ -10,9 +10,14 @@ from sqlalchemy.orm import Session
 from onefde.modules.tasks.configuration import ModelConfiguration, provision_model
 from onefde.modules.tasks.models import ModelProfileRevision
 
+provider = os.environ.get("ONEFDE_LOCAL_MODEL_PROFILE", "deepseek")
+if provider not in {"deepseek", "mimo"}:
+    raise SystemExit("Unknown local model profile")
 config = ModelConfiguration.model_validate_json(
-    Path("/run/config/deepseek-profile.json").read_text()
+    Path(f"/run/config/{provider}-profile.json").read_text()
 )
+if config.provider != provider:
+    raise SystemExit("Local profile does not match the selected provider")
 url = os.environ["ONEFDE_WORKER_DATABASE_URL"]
 if not url.endswith("/onefde_compose_dev"):
     raise SystemExit("Local Compose configuration only")

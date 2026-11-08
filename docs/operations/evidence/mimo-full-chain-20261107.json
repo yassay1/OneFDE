@@ -1,0 +1,168 @@
+{
+  "date": "2026-11-07",
+  "scope": "MiMo real Backend -> host Worker -> OpenHands -> sandbox -> fixed-source validation -> owner review",
+  "model": "openai/mimo-v2.6-pro",
+  "task_id": "2fe28677-11fc-4269-b879-f5a4a48c5700",
+  "engagement_id": "a30ed42f-6ab0-44a1-bd55-7ae5a6b17895",
+  "runs": [
+    {
+      "run_id": "19be32d9-bbe7-4720-b1a2-18c405ef84d7",
+      "result": {
+        "state": "failed",
+        "outcome": null,
+        "summary": "本轮已停止，未形成可核验提交",
+        "error_code": "ITERATION_LIMIT_REACHED",
+        "spec_version": 1
+      },
+      "tools": [
+        {
+          "tool": "terminal",
+          "command": "ls -la /workspace"
+        },
+        {
+          "tool": "file_editor",
+          "command": "view"
+        },
+        {
+          "tool": "file_editor",
+          "command": "create"
+        },
+        {
+          "tool": "file_editor",
+          "command": "create"
+        },
+        {
+          "tool": "terminal",
+          "command": "chmod +x /workspace/check.sh"
+        },
+        {
+          "tool": "terminal",
+          "command": "sh /workspace/check.sh"
+        }
+      ],
+      "sdk_prompt_tokens": 29047,
+      "sdk_cache_read_tokens": 22144,
+      "completion_tokens": 583,
+      "requests": 5,
+      "sdk_cost_usd": 0.0,
+      "conservative_cny": 0.157071
+    },
+    {
+      "run_id": "510e0f5c-aeae-489e-9732-1836a29a11bd",
+      "result": {
+        "state": "completed",
+        "outcome": "submitted",
+        "summary": "Verified /workspace/index.html contains the exact heading <h1>OneFDE C2 Smoke</h1> and a short paragraph stating it is a local demo page, and /workspace/check.sh exits 0 only when that heading is present (positive case exit 0 on registered check 'sh /workspace/check.sh'; negative case with heading removed exit 1). Files already satisfied the frozen spec from a prior run; no content changes were required. Scope limited to index.html and check.sh under /workspace; no network installs, git remotes, deployment, or secrets.",
+        "error_code": null,
+        "spec_version": 1
+      },
+      "tools": [
+        {
+          "tool": "terminal",
+          "command": "ls -la /workspace"
+        },
+        {
+          "tool": "file_editor",
+          "command": "view"
+        },
+        {
+          "tool": "file_editor",
+          "command": "view"
+        },
+        {
+          "tool": "terminal",
+          "command": "sh /workspace/check.sh"
+        },
+        {
+          "tool": "terminal",
+          "command": "mkdir -p /tmp/negtest && sed 's|/workspace/index.html|/tmp/negtest/index.html|' /workspace/check.sh > /tmp/negtest/check.sh && printf '<html><body><p>no heading</p></body></html>\\n' > /tmp/negtest/index.html && sh /tmp/negtest/check.sh; echo \"negative-case exit=$?\"; grep -cF '<h1>OneFDE C2 Smoke</h1>' /workspace/index.html; rm -rf /tmp/negtest"
+        }
+      ],
+      "sdk_prompt_tokens": 37885,
+      "sdk_cache_read_tokens": 21760,
+      "completion_tokens": 1583,
+      "requests": 6,
+      "sdk_cost_usd": 0.017857185,
+      "conservative_cny": 0.188433
+    }
+  ],
+  "final_task_state": "succeeded",
+  "source_artifact_id": "858083e5-08b5-4a7b-ad2d-88d4ebc2bfa7",
+  "source_sha256": "40e2f54b5f10489b0fd65cef03f727d7773bc777ed1cf3ba7b1e7ffbb34d6e2b",
+  "dispatch_proof": {
+    "attempts": 1,
+    "claim_owner": "onefde-c2-smoke-once",
+    "runtime_roles": [
+      "engineering",
+      "validation"
+    ],
+    "stopped": true,
+    "source_digest": "0d4b02035bc8e8f47d7abfb4cd4fea887dfd5726a882424bf31a08267e2d36f4",
+    "check_coverage": [
+      {
+        "id": "auto-1",
+        "cwd": "/workspace",
+        "kind": "automatic",
+        "source": "completion_criteria",
+        "status": "passed",
+        "command": "sh /workspace/check.sh",
+        "matched": true,
+        "evidence": {
+          "cwd": "/workspace",
+          "command": "sh /workspace/check.sh",
+          "timeout": false,
+          "exit_code": 0
+        },
+        "criterion": "[auto] sh /workspace/check.sh",
+        "diagnostic": "passed",
+        "cwd_verified": true,
+        "observed_exit_code": 0
+      },
+      {
+        "id": "review-2",
+        "kind": "business_review",
+        "source": "completion_criteria",
+        "status": "pending_review",
+        "matched": false,
+        "criterion": "Page content matches the frozen demo heading"
+      }
+    ],
+    "validation": {
+      "passed": true,
+      "stopped": true,
+      "source_unchanged": true,
+      "error_code": null,
+      "results": [
+        {
+          "id": "auto-1",
+          "cwd": "/workspace",
+          "command": "sh /workspace/check.sh",
+          "timeout": false,
+          "exit_code": 0
+        }
+      ]
+    },
+    "context_revisions": {
+      "role": "engineering-role-v1",
+      "context": "engineering-context-v1"
+    }
+  },
+  "review_http_status": 201,
+  "cost_upper_estimate_cny": 0.345504,
+  "cost_including_previous_api_smoke_cny": 0.348639,
+  "billing": "Conservative estimate counts SDK prompt plus cache-read tokens at uncached CNY3/M, output CNY6/M; provider invoice not queried",
+  "pricing_source": "https://mimo.mi.com/docs/pricing",
+  "post_test_worker": {
+    "image_rebuilt": true,
+    "health": "healthy",
+    "model_execution_enabled": false,
+    "environment_blockers": [],
+    "running_sandbox_containers": 0
+  },
+  "regression_checks": {
+    "sdk_binding_tests_passed": 9,
+    "ruff_check": true,
+    "format_check": true,
+    "document_links": true
+  }
+}

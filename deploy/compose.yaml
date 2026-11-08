@@ -77,8 +77,10 @@ services:
       HOME: /tmp
       ONEFDE_WORKER_DATABASE_URL_FILE: /run/secrets/worker_url
       ONEFDE_MODEL_ENGINEERING_FILE: /run/secrets/deepseek_api_key
+      ONEFDE_MODEL_ENGINEERING_MIMO_FILE: /run/secrets/mimo_api_key
       ONEFDE_WORKER_EXECUTION_MODE: ecs_shared
       ONEFDE_WORKER_SHARED_HOST_CONFIRMED: "true"
+      ONEFDE_WORKER_SERVER_IMAGE: ${ONEFDE_BROWSER_AGENT_IMAGE:-ghcr.io/openhands/agent-server:1.59.0-python@sha256:96038f92dc66228e389a95c2e5081dfc2cd4f5d307f051a7df9b1d50ccb86be7}
       ONEFDE_WORKER_ISOLATED_HOST_CONFIRMED: "false"
       ONEFDE_WORKER_MODEL_EXECUTION_ENABLED: "false"
       ONEFDE_WORKER_WORKER_ID: onefde-local-worker
@@ -87,7 +89,7 @@ services:
       ONEFDE_WORKER_EGRESS_PROXY_URL: http://172.29.241.3:3128
       ONEFDE_WORKER_STORAGE_LIMIT_BYTES: "2147483648"
       ONEFDE_WORKER_MIN_FREE_MEMORY_MB: "4096"
-    secrets: [worker_url, deepseek_api_key]
+    secrets: [worker_url, deepseek_api_key, mimo_api_key]
     group_add: ["${DOCKER_GID:?Read local socket group}"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -149,7 +151,7 @@ services:
     networks: [control]
     depends_on:
       postgres: {condition: service_healthy}
-  configure-model:
+  configure-model: &configure-model
     <<: *app
     command: [configure-model]
     profiles: [ops]
@@ -160,6 +162,12 @@ services:
     networks: [control]
     depends_on:
       postgres: {condition: service_healthy}
+  configure-mimo:
+    <<: *configure-model
+    environment:
+      ONEFDE_WORKER_DATABASE_URL_FILE: /run/secrets/admin_url
+      ONEFDE_LOCAL_MODEL_PROFILE: mimo
+    volumes: ["/srv/onefde-local/private/mimo-profile.json:/run/config/mimo-profile.json:ro"]
   probe:
     <<: *app
     entrypoint: [python, /app/ops/probe.py]
@@ -197,6 +205,7 @@ volumes:
   pgdata:
 secrets:
   deepseek_api_key: {file: /srv/onefde-local/private/deepseek_api_key}
+  mimo_api_key: {file: /srv/onefde-local/private/mimo_api_key}
   admin_password: {file: /srv/onefde-local/private/admin_password}
   admin_url: {file: /srv/onefde-local/private/admin_url}
   api_url: {file: /srv/onefde-local/private/api_url}

@@ -21,15 +21,36 @@ API/Worker先共用一个锁定应用镜像，API虽装有SDK和Docker CLI，但
 
 ## 启动与检查
 
-### DeepSeek配置入口（backend/.env，不启用执行）
+### 本地 Engineering 模型配置
 
-用户只编辑Windows的`backend/.env`：填写`DEEPSEEK_API_KEY=`，保留已准备的`DEEPSEEK_BASE_URL=https://api.deepseek.com`和`DEEPSEEK_MODEL=deepseek-flash`即可。`.env`已被Git及源码同步器排除，不需要进入WSL操作私有文件，也不要发送Key或含Key的截图。
+用户在 Windows 的 `backend/.env` 填写相应 key。保留预配的地址和模型。该文件由 Git 和源码同步器排除。
 
-其余由维护Agent操作：先同步源码，再从Windows仓库根运行`uv run --locked --project backend --extra worker python deploy/sync_deepseek.py`。它只选取三个DeepSeek字段，通过本地WSL标准输入传递；不会执行`.env`、展开变量、输出Key或复制数据库/登录凭据。受信任接收端原子写入WSL私有600文件`deepseek_api_key`及非秘密`deepseek-profile.json`。空Key拒绝同步；`--check`仅报告是否填写，不输出值。
+| 提供方 | Key 字段 | 预配地址 | 预配模型 |
+| --- | --- | --- | --- |
+| DeepSeek | `DEEPSEEK_API_KEY` | `https://api.deepseek.com` | `deepseek-flash` |
+| 小米 MiMo 按量实时推理 | `MIMO_API_KEY` | `https://api.xiaomimimo.com/v1` | `mimo-v2.6-pro` |
 
-Compose仅把Key作为只读secret提供给可信Worker，`launch.py`转成`ONEFDE_MODEL_ENGINEERING`；完整`.env`不进容器。保存`.env`不会自动同步或启用作业消费；同步后须重新创建Worker以加载新的secret文件，不仅restart旧bind。私有文件是由Agent维护的运行副本，后续修改仍以Windows `.env` 为入口。原`set_model_key.py`保留为可选终端输入方式，用户无需使用。
+1. **准备**。同步源码后，从 Windows 仓库根运行下列命令。首次启动或升级本地 Worker 前准备 MiMo 空凭据文件和模型配置。重复准备保留已写入的 key。
 
-DeepSeek Key/profile/受限出口已在本地落地；真实网页冒烟见[CA验证](../docs/operations/coding-agent-verification.md)与`deploy/run_c2_webpage.py`（需显式 `ONEFDE_WORKER_MAX_COST_USD`）。Compose内 Worker 默认可保持 standby；冒烟使用宿主 venv Worker once，不因仅保存 `.env` 自动消费作业。
+   ```powershell
+   uv run --locked --project backend --extra worker python deploy/sync_deepseek.py --provider mimo --prepare
+   ```
+
+2. **同步**。用户填好 key 后，运行同一命令并去掉 `--prepare`。同步 DeepSeek 时改用 `--provider deepseek`。`--check` 只报告所选 key 是否已填。脚本经本地 WSL 标准输入写入对应的私有文件，可信 Worker 通过独立的只读 secret 加载。
+3. **注册**。在 WSL 仓库根，用下列 Compose 命令注册 MiMo 配置并重建待机 Worker 和出口代理。DeepSeek 首次注册用 `configure-model`。只轮换 key 时，重建 Worker 即可。
+
+   ```bash
+   docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml --profile ops run --rm configure-mimo
+   docker compose --env-file /srv/onefde-local/private/compose.env -f deploy/compose.yaml up -d --wait --no-deps --force-recreate worker egress
+   ```
+
+4. **选择**。登录后用 `GET /api/v1/model-profiles` 取得目标模型的 `revision_id`，在 `POST /api/v1/tasks/{task_id}/actions` 的 `start`、`retry` 或 `continue` 请求中传为 `model_profile_revision_id`。每轮固定选中的配置。保持 Worker 待机可检查持久控制路径。运行 `backend/.venv/bin/python deploy/check_deepseek_environment.py` 可核对两家配置、凭据和出口，输出在 WSL 的 `/srv/onefde-local/worker/evidence/dual-model-environment.json`。
+
+真实推理需另行授权并配置费用限额。DeepSeek 的历史真实网页冒烟见 [CA 验证](../docs/operations/coding-agent-verification.md)。
+
+已授权真实全链路测试时，从 WSL 仓库根显式设置 `ONEFDE_SMOKE_PROVIDER=mimo`、`ONEFDE_WORKER_MAX_COST_USD`、`ONEFDE_WORKER_MAX_REQUESTS`，运行 `backend/.venv/bin/python deploy/run_c2_webpage.py`。脚本使用 Compose API 和一次性宿主 Worker，仅认领本次 Run，结果写到 `work/c2-mimo-webpage-smoke.json`。已有演示任务因已确认停止的失败而 blocked 时，可设置 `ONEFDE_SMOKE_RETRY_TASK_ID` 在原 Task 下重试。提交后按固定产物证据单独执行评审命令。2026-11-07 实际结果见 [测试与验收](../docs/operations/testing.md#coding-agent细化验收)。
+
+每次冒烟在 WSL 的 `/srv/onefde-local/worker/evidence/` 保存 `<run_id>-start.json`，以及权限 600 的 `<run_id>-worker.stdout.log` 和 `<run_id>-worker.stderr.log`；运行报告引用日志路径。实时进展与用量从 `sessions/<run_id>/**/events/` 和 `base_state.json` 读取。需要中止时，通过 Task 的 `stop_for_update` 命令记录意图，随后核实 Worker 停止与归档事实。
 
 以下是**已有环境**操作，不是新机器自动安装器。先在 Windows 同步已审阅源码：
 

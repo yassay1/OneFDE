@@ -1,0 +1,254 @@
+{
+  "case_id": "ac8ef624-0ef4-474a-8bed-9a3459e166e0",
+  "task_id": "5b2066c3-1f3c-4f0d-9018-a1f14914d9b9",
+  "handoff_id": "e5828118-36bf-46d8-b039-733e47cc9f23",
+  "prior_run_id": "e5dbb172-e726-47fe-a680-336eb437484d",
+  "run_id": "8952ab51-9c83-4317-af6f-e6f7e4b15787",
+  "operation_id": "2e035769-a9dc-499d-8e7a-99e4155fa9a1",
+  "source_base_artifact_sha256": "148354fc51d73ab9cd075086c27497b7518533d20558f09440c6a93ffbf87378",
+  "review_verdict": "request_changes",
+  "review_id": "004d4002-a37d-4322-a46a-68f46c660c01",
+  "change_input_id": "4ac642ad-d517-4df6-af05-65fb28d37cfe",
+  "seed_sha256": "490805c18a35a660997089cbef16f1130a7ec5eeab7e2d9f62d6c8f9ba494285",
+  "check_sha256": "20c8ab641616a72254d33e51beab979dc4251b299d35f4fc7ab5fd3815e9390c",
+  "red_check": {
+    "exit_code": 1,
+    "failure": "Error: support fixture: non-ASCII space, unrelated duplicate header"
+  },
+  "preflight": {
+    "scope": "execution_preflight",
+    "execution_mode": "ecs_shared",
+    "model_execution_enabled": true,
+    "sdk_versions": {
+      "openhands-sdk": "1.59.0",
+      "openhands-workspace": "1.59.0",
+      "openhands-tools": "1.59.0"
+    },
+    "blockers": [],
+    "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+  },
+  "started_at": "2026-11-05T12:36:47.416453+00:00",
+  "model": "deepseek-flash",
+  "model_profile_revision_id": "488fa83c-a2d7-410b-8981-b55cbb053c9d",
+  "sdk_iteration_limit": 10,
+  "relay_max_calls": 12,
+  "relay_budget_usd": 1,
+  "worker_processed": true,
+  "relay_requests": [
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 2573700,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 8111,
+      "completion_tokens": 117
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 206100,
+      "request_kind": "auxiliary",
+      "upstream_status": 200,
+      "prompt_tokens": 647,
+      "completion_tokens": 10
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 2794500,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 8731,
+      "completion_tokens": 146
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 3756300,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 12033,
+      "completion_tokens": 122
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 4152000,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 12440,
+      "completion_tokens": 350
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 4056900,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 13119,
+      "completion_tokens": 101
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 4149000,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 13342,
+      "completion_tokens": 122
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 4193700,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 13563,
+      "completion_tokens": 104
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 4394100,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 13723,
+      "completion_tokens": 231
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 4495200,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 14036,
+      "completion_tokens": 237
+    }
+  ],
+  "relay_charged_or_reserved_usd": 0.0347715,
+  "task_state": "review",
+  "run_state": "completed",
+  "outcome": "submitted",
+  "spec_version": 2,
+  "error_code": null,
+  "summary": "Edited only products/demo-supplier-quotes/compare.js parseCsv: unit_price header normalization now strips only leading/trailing ASCII U+0020 spaces (non-ASCII spaces still yield 缺少列: unit_price), and the duplicate-header check now rejects only a repeated normalized unit_price while duplicate note columns keep prior behavior. check.mjs SHA256 remains 20c8ab64...; registered command `node products/demo-supplier-quotes/check.mjs --support-regression` exits 0. Manual verification: A=8, B=7.5, only B is lowest in group; duplicate note header still yields 2 comparable rows.",
+  "attempts": 1,
+  "proof": {
+    "stopped": true,
+    "changed_paths": [
+      "products/demo-supplier-quotes/compare.js"
+    ],
+    "check_coverage": [
+      {
+        "id": "auto-1",
+        "cwd": "/workspace",
+        "kind": "automatic",
+        "source": "completion_criteria",
+        "status": "passed",
+        "command": "node products/demo-supplier-quotes/check.mjs --support-regression",
+        "matched": true,
+        "evidence": {
+          "cwd": null,
+          "command": "cd /workspace && cat engagements/demo-supplier-quotes/samples/s01-same-basis.csv && node products/demo-supplier-quotes/check.mjs --support-regression; echo \"EXIT=$?\"",
+          "timeout": false,
+          "exit_code": 0
+        },
+        "criterion": "[check] node products/demo-supplier-quotes/check.mjs --support-regression"
+      },
+      {
+        "id": "review-2",
+        "kind": "business_review",
+        "source": "completion_criteria",
+        "status": "pending_review",
+        "matched": false,
+        "criterion": "A=8、B=7.5，仅 B 为组内最低。"
+      }
+    ],
+    "validation": {
+      "passed": true,
+      "results": [
+        {
+          "id": "auto-1",
+          "cwd": "/workspace",
+          "command": "node products/demo-supplier-quotes/check.mjs --support-regression",
+          "timeout": false,
+          "exit_code": 0
+        }
+      ],
+      "stopped": true,
+      "comparison": {
+        "added": [],
+        "match": true,
+        "changed": [],
+        "removed": [],
+        "archive_digest": "d5a3b064260b7aff3d6d97ca354c0586635972ec865694dbe794a9266e8fbd3a",
+        "current_digest": "d5a3b064260b7aff3d6d97ca354c0586635972ec865694dbe794a9266e8fbd3a"
+      },
+      "error_code": null,
+      "source_unchanged": true,
+      "source_digest_after": "d5a3b064260b7aff3d6d97ca354c0586635972ec865694dbe794a9266e8fbd3a",
+      "source_digest_before": "d5a3b064260b7aff3d6d97ca354c0586635972ec865694dbe794a9266e8fbd3a"
+    },
+    "workspace": {
+      "policy": "compare_or_block",
+      "status": "restored_from_prior",
+      "blocked": false,
+      "comparison": {
+        "added": [],
+        "match": false,
+        "changed": [],
+        "removed": [
+          "engagements/demo-supplier-quotes/samples/s01-same-basis.csv",
+          "engagements/demo-supplier-quotes/samples/s02-missing-net-weight.csv",
+          "engagements/demo-supplier-quotes/samples/s03-different-grade.csv",
+          "engagements/demo-supplier-quotes/samples/s05-mixed.csv",
+          "products/demo-supplier-quotes/app.js",
+          "products/demo-supplier-quotes/business.js",
+          "products/demo-supplier-quotes/check.mjs",
+          "products/demo-supplier-quotes/compare.js",
+          "products/demo-supplier-quotes/index.html"
+        ],
+        "archive_digest": "d816ac6f815eab0e94cafd71502891b729e32e60c1bf1119147daeffc5f5f12b",
+        "current_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "restored_digest": "d816ac6f815eab0e94cafd71502891b729e32e60c1bf1119147daeffc5f5f12b"
+    }
+  },
+  "artifacts": [
+    {
+      "id": "43e6107f-a65d-42ab-9df2-b4d63b7dc829",
+      "name": "workspace.tar.gz",
+      "sha256": "21bb74d3699ab68784b53389cc8ff4b08b4dfd4c3b595e287cb3cc225b216e36",
+      "kind": "source-snapshot",
+      "size_bytes": 9241
+    }
+  ],
+  "exported_archive_check": {
+    "exit_code": 0,
+    "output": {
+      "ok": true,
+      "product": "demo-supplier-quotes",
+      "version": "v1.1",
+      "checked": [
+        "S01",
+        "S02",
+        "S03",
+        "S05"
+      ],
+      "modification": "pending-only CSV export"
+    }
+  },
+  "relay_firewall_rule_removed": true,
+  "review_diff_sha256": "c4b2dfb02490eaa17cdc9cbd72007eacbba9dd48b67e6256cbb5b0206404b13e",
+  "founder_acceptance": "accepted",
+  "pricing_reference": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "request_totals": {
+    "forwarded": 10,
+    "prompt_tokens": 109745,
+    "completion_tokens": 1540
+  },
+  "accept_review_id": "8da0eae2-41c3-45e0-b144-aeceafcdc00d",
+  "internal_retest": "passed",
+  "internal_retest_evidence": "quote-support-engineering-accepted-20261105.json"
+}

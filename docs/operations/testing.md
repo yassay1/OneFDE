@@ -1,5 +1,82 @@
 # OneFDE 核心验证与验收场景
 
+## 产品工作台收尾（2026-11-08）
+
+独立演示已经在本机运行时不要再执行 setup 或重复启动。工作台是 `http://localhost:8003`，客户演示是 `http://127.0.0.1:8765`，数据库端口是 `127.0.0.1:55434`。演示库名是 `onefde_product_demo`。pytest 只能使用 `onefde_product_acceptance_test`。私有配置在 `backend/work/product-demo.env`，登录说明在 `backend/work/product-demo-login.txt`。两份文件都不进入文档、日志或截图。
+
+### 本地启动
+
+在 `backend` 目录执行。依赖是仓库已有的 uv 锁、Node/npm、以及专用 PostgreSQL 容器。`setup` 发现同名演示容器时只启动它，不重建卷、不改密码。
+
+```powershell
+uv run --locked python -m scripts.local_demo setup
+uv run --locked python -m scripts.local_demo seed
+uv run --locked python -m scripts.local_demo serve
+uv run --locked python -m scripts.local_demo product
+```
+
+`serve` 与 `product` 各占一个进程。前端检查在 `frontend` 目录执行：`npm test`、`npm run typecheck`、`npm run build`。后端完整检查：
+
+```powershell
+uv run --locked ruff check src tests scripts migrations
+uv run --locked ruff format --check src tests scripts migrations
+uv run --locked python -m scripts.export_openapi --check
+uv build --out-dir work/dist
+uv run --locked python -m scripts.local_demo test
+```
+
+`local_demo test` 拒绝演示库，只把 pytest 指到专用验收库。
+
+停止时结束 `serve` 和 `product` 进程。不要删除 `onefde-product-demo-db` 卷。恢复时再执行 `setup`，然后分别启动 `serve` 和 `product`。`setup` 对已有容器只做启动。
+
+### 模型消费者、费用和请求限额
+
+FDE 普通 Work 登记后保持 pending。页面轮询不调用模型。要真正执行，需要运行中的 FDE 消费者、可用模型配置和单独的费用授权。Engineering 的模型修订只表示配置存在，不表示 Worker 正在认领作业。
+
+2026-11-08 的 Engineering Run `b4174deb-3f23-435e-acfc-5deb259314b5` 使用 MiMo，`max_requests=10`。实现阶段把额度当成 6 次 SDK 迭代，实际留下 7 条响应；收尾阶段额度 4，记录 4。合计 11 条独立响应，超过授权 1 次。费用估算不是提供方账单。证据：[model-usage.json](evidence/product-workspaces-20261108/model-usage.json)。这次不能写成合规验收，本轮也没有重跑付费工程。
+
+原因是固定 OpenHands 1.59.0 的 `max_iteration_per_run` 在步骤结束后计数，自动标题、重试和其他辅助完成请求另算 HTTP。收尾后的硬限额是：同一 Run 在把请求转到已审核 HTTPS 来源之前占用名额；超额调用不转发；失败响应仍占用名额；两个阶段共用名额。创建会话时关闭自动标题。这项由无付费 HTTP 替身和边界测试覆盖。它依赖 SDK 把完成请求发到配置的 `base_url`。真实容器加提供方的再证明尚未做，不能把替身通过写成付费限额已在生产路径复验。
+
+### 演示顺序
+
+用登录文件进入工作台。Office 处理待办并进入原对象。Projects 打开项目。Business 区分收件箱、候选和 Case。FDE 看到待处理 Work，不把 pending 说成已执行。Engineering 对已接受任务和历史 Run 只读，固定 Diff 来自 review-evidence。Knowledge 切换公开用途后不保留内部字段，返回链接带回原来的 project、case、task、run 或 work。客户页面只开 `127.0.0.1:8765`，不使用工作台 Cookie。
+
+## Playwright 与 MiMo 技能实测（2026-11-07）
+
+在固定 Agent Server 1.59.0 上离线安装 Playwright 1.64.1 及三项锁定依赖，四个 wheel 与官方 PyPI SHA256 核对。沿用 Chromium 155.0.8059.79；受限、断网、只读工程容器实测输入、点击、断言及 390px 视口通过。固定镜像 ID 已加入 Worker 审核清单；本地 Compose 待机 Worker 已选择该镜像并健康，模型开关仍关闭。构建方法见[浏览器镜像](../../deploy/agent-browser/README.md)。88 项 unit/architecture、修改文件 Ruff、OpenAPI 导出、Compose 配置与离线构建通过。
+
+从 OneFDE 工作台登记目标，MiMo FDE 创建 Task。前置 Knowledge 检索多次且出现资产过期/未找到，达到 12 次模型调用的单轮上限；操作者通过原 Task 输入与采用命令补入“可信源码和固定浏览器检查已就绪，无需新增资产查询”的执行说明。FDE 随后在原 Task 派发 Engineering，保留原业务范围。此处有人工采用输入，不宣称全链无人干预首跑成功。
+
+Engineering 仅用一轮、约 88 秒完成果采报价台筛选修复：载入示例清除搜索/状态条件，新增键盘可操作的「清空筛选」，保留 CSV、来源、精度与导出。五项技能均有成功的原生 InvokeSkillObservation：closeout、systematic-debugging、frontend-design、webapp-testing、verification-before-completion。固定检查修复前退出 1（旧搜索残留），修复后退出 0；独立容器对同一固定源码执行相同浏览器检查退出 0，源码摘要不变。差异仅 app.js、index.html，compare.js、README 与检查脚本未动。覆盖示例六行、键盘重置与自定义两行、来源/10.1234 精度保留、真实 CSV 下载、390px 布局及控制台错误检查。
+
+MiMo FDE 保存评审建议，负责人在 OneFDE Engineering 提交面板核对摘要和独立证据后正式接受。现有本地入口已更新为同一归档的四个页面资产，并再次通过实际页面操作复测。工程与复验容器均停止，日志未触发工程循环中止。总费用按未缓存价保守估算 **1.370715 元**（包括 FDE，共 16 次 FDE 请求），上限 10 元，未查提供方账单。监控设置为工程 20 次迭代、720 秒、180 秒无进展/重复动作停止及 7.5 元预留阈值；只认领指定 Run，未启动常驻模型消费。
+
+[固定产物、技能、费用与恢复事实](evidence/mimo-skills-live-20261107.json) · [完整脱敏监控时间线](evidence/mimo-skills-live-20261107.jsonl) · [交付页面截图](evidence/mimo-skills-live-20261107.jpg) · [本地工具](http://127.0.0.1:8774/)。原始 Worker 日志仍在私有证据目录。本次证明技能实际接线与本任务行为，不能凭一次演练证明长期成功率或成本改善；仍未做公网交付或正式生产隔离验收。
+
+## Web 工作台美术与回归（2026-11-07）
+
+四张用户场景已安装；五页 1600/1280 布局、图片/头像、项目上下文、Hash 刷新与前进后退、非法 UUID 和错误 Task/Run 关联已做真实浏览器检查。构建退出 0，无模型或业务运行。来源、修复、截图、DOM 证据与开发库数据限制见[本轮验收记录](frontend-art-verification-20261107.md)，不作为 V06/V08 或含会话写路径验收。
+
+## Coding Agent 首批技能无模型检查（2026-11-07）
+
+用户授权首批五项接入：systematic-debugging、verification-before-completion、webapp-testing、frontend-design、onefde-engineering-closeout。四项按固定上游提交缩写适配，保留许可证，另一本项目编写。后端打包清单核对摘要，AgentContext 仅提供审核过的目录，SDK 原生 invoke_skill 按需加载。每轮保存清单和正文，成功工具观察单独记入 proof.skills.invoked；技能不会绕过独立复验、预算或业务接受。
+
+五个 SKILL.md 格式检查通过。固定 SDK 1.59.0 实际解析、JSON 往返及 InvokeSkillExecutor 对五项逐个成功；篡改、缺文件、未知目录和越界路径被阻止，客户文件不会成为技能目录。43 项针对性检查、87 项 unit/architecture 通过，修改文件 Ruff 通过，OpenAPI 三份导出检查通过。后端 sdist/wheel 构建成功，wheel 内全部九个技能/许可证文件摘要匹配。
+
+独立断网容器中的真实 Agent Server 成功接收并返回五个技能及关闭自动发现的配置；只创建临时 SDK 会话，未调用 run 或模型生成，未创建业务 Task/Run，容器已停止并清理。原生工具执行在宿主同版 SDK 验证，尚未实测远程模型选用技能。镜像依赖探针确认 Chromium 存在、Python Playwright 不存在：需要浏览器任务时先准备项目工具，不能据技能加载宣称浏览器通过。本轮无提供方请求，模型费用为零。
+
+本地 Compose Worker 已离线重建并重建为健康待机实例，模型执行关闭、不认领作业；已在实际容器核对技能清单并完成环境检查，无阻塞。没有进行新的真实模型效果或费用对比。[复核命令与验证方法](engineering-skills.md) · [脱敏证据](evidence/engineering-skills-20261107.json)。
+
+## MiMo 果采报价台产品全链路（2026-11-07）
+
+本次从 OneFDE 工作台提交目标，MiMo FDE 查询 Knowledge、创建 Task 并派发真实 MiMo Engineering；最终固定归档经独立容器检查退出 0，浏览器实测通过后在工作台正式接受，FDE 工作已报告。仅在隔离测试库和本地地址交付。页面集成由 Engineering 实现，比较核心复用 fresh-quote-compare-csv v1.1.0。
+
+共七轮 Run，保留超时、提交格式、现场漂移和迭代耗尽记录；包含人工采用停止检查点、执行器修复与受控重试，不作为无人干预首跑成功的证据。完成收尾限用剩余额度且关闭编辑/终端工具，源码摘要不变；固定归档仍单独复验。FDE 在工程运行中等待，在保存建议后结束当轮，业务接受后直接报告，不继续调用模型。
+
+浏览器验证 CSV 文件与粘贴、示例恢复、搜索/状态筛选、苹果最低价 7.5、箱价待核对、跨等级不合并、价格精度、HTML 按文本显示、错误输入清空旧结果、模板下载、全量导出 6 行及需核对导出 4 行、手机表格滚动和来源标签。针对性回归 28 项通过，前端构建通过。费用按未缓存输入保守估算 7.80549 元，含超时预留 0.24 元，未查提供方账单；上限 10 元。
+
+[本地工具](http://127.0.0.1:8774/) · [产品使用说明](../../products/mimo-fruit-quotes/README.md) · [固定产物与七轮结果](evidence/mimo-fruit-quotes-20261107.json) · [脱敏监控日志](evidence/mimo-fruit-quotes-20261107.jsonl) · [浏览器截图](evidence/mimo-fruit-quotes-20261107.jpg)。原始 Worker 日志保留于私有运行目录，未把凭据归档到仓库。
+
 本文列出首版需要验证的行为与证据，供产品设计、工程任务和后续测试使用。C0+C1a 已执行23项后端测试和19项真实 HTTP 检查，见 [验证记录](c0-c1a-verification.md)；本地真实网页冒烟见 [CA验证](coding-agent-verification.md)。黑客松切片的通过范围以文末 HM 表为准，未标注通过的项保持未执行。可复现命令见 [后端 README](../../backend/README.md)。
 
 产品完成条件以 [PRD](../product/PRD.md) 为依据；参赛切片见[黑客松实施方案](../product/hackathon-proposal.md)；报价案例的规则和样例维护在[演示项目记录](../../engagements/demo-supplier-quotes/brief.md)，不在此重复定义另一套价格规则。
@@ -49,11 +126,11 @@
 - 取消后区分已经发生的外部操作与尚未执行的部分；重试或恢复前先核查，不重复发布。
 - 任务记录与必要上下文持久保存，Session 丢失不等于客户项目丢失。不同项目通过实际执行边界验证隔离，不只检查目录名称。
 
-状态与恢复约定现已记录在[数据模型](../architecture/data-model.md)，执行和权限路线见[架构](../architecture/architecture.md)；均未实现。推荐 pytest 检查后端领域与数据库，Vitest 检查客户端规则/状态，Playwright 检查少量真实关键流程，不建立独立 QA Agent。
+状态与恢复约定在[数据模型](../architecture/data-model.md)，执行和权限路线在[架构](../architecture/architecture.md)。控制路径的已通过检查见下文 C1b、C2 和后续验收节。界面用现有工作台页面核对；客户端规则测试和浏览器自动化仍未建立。
 
 ## 首个控制切片的检查
 
-C0+C1a 已实际执行 PostgreSQL 测试与真实 HTTP 重启检查，详见 [验证记录](c0-c1a-verification.md) 和 [可复现命令](../../backend/README.md)。下表中的输入、Run、评审和执行器检查尚未执行，不将当前子集通过视为完整需求验收。
+C0+C1a 的 PostgreSQL 测试与真实 HTTP 重启检查见 [验证记录](c0-c1a-verification.md) 和 [可复现命令](../../backend/README.md)。下表是控制切片的检查清单。输入、Run、评审和执行器的已通过子集见后文 C1b、C2 和黑客松节，不把子集通过写成 V01–V10 整项验收。
 
 | 层次 | 需要检查的自有行为 | 安排 |
 | --- | --- | --- |
@@ -85,6 +162,14 @@ MVP物理拓扑采用用户指定的单ECS+Compose，可信Worker与无Socket工
 首个持续流程使用同一个 Task：Run 1 提问题并结束 → 保存/采用回答 → Run 2 提交工程成果 → 要求修改 → 应用输入 → Run 3 再提交 → 接受固定版本。另检查 pending 输入在提交前到达的竞争：原成果留历史，Task 不自动进入已接受或允许旧版本评审。无需把整个流程每次都用真实模型执行；控制分支用确定性适配，至少一次真实工具闭环提供工程证据。
 
 ## Coding Agent细化验收
+
+2026-11-07 按用户 ¥10 费用上限重跑 MiMo 新任务通过。新建演示 Task `5594b5db-7c90-4888-af1f-89be2dc53119` 从空工作区开始，第一个 Run `271a6c1f-fd9c-45ff-ab2c-d82bd5da5308` 即完成生成、检查、固定源码验证及评审接受。Worker 用时 50.71 秒，8 次模型请求、9 次工具动作（含 finish），Task 为 succeeded。迭代额度 20，SDK 内部预算 $0.8；本轮外部监控每 2 秒采样，费用保守估算到 ¥8 时请求停止，为 ¥10 上限预留余量。连续 3 次相同动作与源码摘要，或两动作周期重复 3 次，或 120 秒无工具/源码进展时请求受控停止。本轮全部保护均未触发。
+
+本轮输入 53212、缓存读取 37248、输出 1414 token，输入加缓存读取全部按未缓存价计费保守估算 ¥0.279864。源码摘要、独立验证、预算、SDK 用量和私有 Worker stdout/stderr 路径见 [新任务证据](evidence/mimo-monitored-fresh-20261107.json)；按时间记录的源码摘要、工具与观测事件、费用心跳见 [监控日志](evidence/mimo-monitored-fresh-20261107.jsonl)。原始 Worker 日志权限 600，保留在 WSL 受控 evidence 目录。
+
+2026-11-07 MiMo 本地全链路通过。通过 Compose API 创建演示 Task、固定 MiMo 配置并启动 Run，宿主一次性 Worker 只认领指定 Run。OpenHands 真实调用终端和文件编辑工具生成 HTML 与 shell 检查。首次 Run 触及迭代上限，保存归档并确认停止；修复 MiMo 计价映射后在原 Task 下 retry，独立容器验证固定源码通过，所有者通过评审命令接受，Task 为 succeeded。两次 Run 均有停止证据。SDK 绑定回归 9 项通过。
+
+两轮费用按 SDK 输入与缓存读取 token 合计、全部按未缓存价计费保守估算 ¥0.345504；连同此前 API 冒烟估算 ¥0.348639，低于授权 ¥1。账单结算值仍以提供方为准。结果、两轮 ID、工具调用、源码摘要和验证证据见 [MiMo 全链路记录](evidence/mimo-full-chain-20261107.json)。这是本地 Engineering 链路，公开部署与其他角色的 MiMo 接入仍按各自验收条件验证。
 
 以下为[Coding Agent设计](../architecture/coding-agent.md)工程验收；详细命令与限制见[本轮验证记录](coding-agent-verification.md)。不用控制替身或上游 benchmark 冒充真实模型工程。
 
@@ -150,7 +235,7 @@ MVP物理拓扑采用用户指定的单ECS+Compose，可信Worker与无Socket工
 | --- | --- | --- | --- | --- |
 | HM01 | P01/P02，P0/P3 | Business 整理有来源的模拟需求并交接 FDE；不自行承诺价格/合同，不直接派客户工程 | 来源引用、模拟标记、交接记录；无越权派工 | **工具子集通过**：`record_business_handoff` 写入来源/未知项且 `dispatched_engineering=false`；Engineering 调用 403（`test_knowledge_tools.py`） |
 | HM02 | P03/P05/P07，P1 | FDE 澄清至少一项未知条件，形成有范围与检查条件的 Task；保存/采用输入与版本一致；越权动作被拒绝 | 问题/答复/采用记录、Task 规格版本、拒绝证据 | **后端子集通过**：`tests/integration/test_fde_tools.py` 覆盖 create_task/save/adopt、跨项目 `FDE_SCOPE_DENIED`、未知工具校验；尚无模型驱动 FDE 会话 |
-| HM03 | P02/P05/P07，P1 | 最薄三入口可用：项目列表含业务交接、项目交付详情、少量能力条目；详情展示来源/未知项、方案、Task/Run 摘要、检查与固定版本 | 实际页面或等价受控 API 操作记录；非完整 CRM/IDE | **交付详情 API 已有**（`GET /engagements/{id}/delivery`）；三入口页面未执行 |
+| HM03 | P02/P05/P07，P1 | 最薄三入口可用：项目列表含业务交接、项目交付详情、少量能力条目；详情展示来源/未知项、方案、Task/Run 摘要、检查与固定版本 | 实际页面或等价受控 API 操作记录；非完整 CRM/IDE | **交付详情 API 已有**。2026-11-05 浏览器点通了项目、当前 Run、检查、固定产物、评审和独立报价链接，见[P4演示](p4-demo.md)；业务交接和能力条目页面未做 |
 | HM04 | P06/R01—R05，P2 | 按确认 CSV 样例真实开发报价工具；同口径得出约定结果；缺净重/不同等级不伪造最低价；价格计算由普通程序完成 | 真实 Run、固定源码、检查退出码、客户工具可操作结果 | **产品+控制链通过**：产品检查见[p2-quote-product-check.json](evidence/p2-quote-product-check.json)；平台 FDE→Run→评审见[p2-quote-control.json](evidence/p2-quote-control.json)。Run 结果为确定性回填，**非** OpenHands/模型工程 |
 | HM05 | P07，P2 | 同一 Task 一次范围内修改：采用修改输入→新 Run→新固定版本；旧产物保留；不另开无关聊天重生成 | 输入/版本关联、两次产物、评审记录 | **控制链通过**：同 Task `request_changes`→采用→新 Run→接受（`test_p2_quote_fde_delivery.py`）；产品 CHANGELOG v1.0→v1.1 对齐。真实模型续作未跑 |
 | HM06 | P04/P09/P10，P3 | Knowledge 按权限检索来源/版本，整理获准候选资产；三角色可直接咨询；第二模拟项目实际采用并重新检查 | 资产条目、权限过滤、第二项目引用与再检查 | **通过子集**：资产`fresh-quote-compare-csv`；Knowledge 工具检索；第二项目[adopt.json](../../engagements/demo-supplier-quotes-reuse/adopt.json)+[再检查](evidence/p3-reuse-recheck.json)。无 Knowledge 模型循环 |
@@ -159,3 +244,200 @@ MVP物理拓扑采用用户指定的单ECS+Compose，可信Worker与无Socket工
 | HM09 | 演示材料，P4 | 从干净状态可复现主链；真实演示录像或运行说明可审阅；失败时切换历史真实记录，不伪造实时工具结果 | 复现步骤、录像/Run ID、备用固定版本说明 | **运行说明通过**：[p4-demo.md](p4-demo.md) 含复现命令、备用证据与网页冒烟 Run 的使用边界。演示录像未做；平台 pytest 本轮未重跑 |
 
 字段映射、换算、精度、重复/无效报价与导出未确认前，HM04 不得用自行发明的业务规则“通过”。三分钟演示节奏是准备建议，不是已知赛事硬性时限。
+
+## Business 首版验收
+
+| 范围 | 结果与证据 |
+| --- | --- |
+| 规则、权限与并发 | 独立 PostgreSQL 测试覆盖 FAQ 版本适用、故障优先、人工接管暂停自动答、客户凭证隔离、内部备注、重复消息/转交、FDE 接单与 TaskInput。 |
+| 售后 | 测试以固定模拟产物验证修复通知，覆盖确认通过、仍失败、关联续办与错误通知 ID。Chrome 点通确认关闭。 |
+| 找店 | 高德适配器替身验证区县、分页、去重和错误映射。Chrome 点通样例搜索、邀请归因和客户同意后交接。真实查询待验收。 |
+| 两端与接口 | [Chrome 双 Origin 证据](evidence/business-v1-browser.json)。迁移升级、空库往返和漂移检查通过。两个 OpenAPI 文件与差异报告导出检查通过。TypeScript/Vite 构建通过，有既有大包体积提示。 |
+
+全量后端在隔离 `_test` 库执行，148 项通过，含 10 项 Business 检查。复现步骤见 [Business 本地操作](business-v1.md)。
+
+## 报价自动售后验收
+
+关联 P02/P03/P05/P07/P08。控制检查在独立 PostgreSQL 上执行。工程结果、接受产物和客户反馈均标记模拟。回环探测另用实际本地 HTTP 验证。
+
+| 检查 | 通过条件 | 证据 |
+| --- | --- | --- |
+| 固定样例 | 修复前 v1.1 的 S01/S02/S03/S05 正常，S01 尾随空格变体稳定报缺列 | 基线普通检查退出 0，专项检查退出 1 并报 `缺少列: unit_price`。 [修复前后证据](evidence/quote-support-real-20261105.json) |
+| 接单、续作和重放 | 仅登记的匹配会话接单。并发只得到一个 Task 和一次初始派发。原会话补答先 pending，采用后同 Task 新规格续作，旧快照保持 | [PostgreSQL 集成测试](../../backend/tests/integration/test_quote_support.py) |
+| 人工边界 | 未登记、报告版本不符、未确认固定样例不能启动。客户转人工后待派发 Run 无法认领，消费者经停止命令结束待派发 | 同上 |
+| 复测 | 固定提交接受与访问回执齐备才通知。重复轮询无重复通知。通过关闭原售后，失败保留原 Task 并生成关联 Task | 同上。 [回环 HTTP 检查](../../backend/tests/unit/test_quote_support_preview.py) 实测固定字节匹配、旧文件拒绝和不可达拒绝 |
+| 真实 Engineering 首轮 | DeepSeek Flash 单次 Run 通过预检、认领、恢复固定基线及停止核查 | 三次迭代用于目录、Git 和源码读取，未修改或提交。 [首轮证据](evidence/quote-support-real-20261105.json) |
+| 真实 Engineering 重试 | 同一 Task、同一修复前固定基线。登记回归在工程与独立验证容器均退出 0，验证前后源码摘要一致，两处现场已停止 | 提交固定产物，Task 待评审。尾随 ASCII 空格样例得到 A=8、B=7.5，仅 B 为组内最低。附加检查发现非 ASCII 空格也被接受，无关重复列也被拒绝。 [Run、归档与边界检查](evidence/quote-support-retry-20261105.json) |
+| 人工修复归档 | 归档与 Run 基线逐文件比对，仅 `compare.js` 变化。原样例及尾随空格、真实缺列、归一重名检查，在固定镜像的离线只读容器全部通过 | 2026 年 11 月 5 日创始人通过会话验收。 [固定包摘要与检查](evidence/quote-support-real-20261105.json) |
+| 内部回环复测 | 用已验收归档启动 `http://127.0.0.1:8766/`。核对四个公开文件，再在 Chrome 实际选文件、点击比较并下载 CSV | 通过。原样与尾随空格各显示 2 行可比较、0 行待核对，导出 A=8.0、B=7.5，只有 B 为组内最低。缺列与重名时结果清空、导出禁用。测试数据为模拟样例。 [HTTP 字节摘要、浏览器结果及导出摘要](evidence/quote-support-loopback-20261105.json) |
+
+重试基线的后端控制验证通过 48 项，覆盖显式固定原始归档、默认重试选用前轮可信归档，以及拒绝从现场不明的 Run 重试。
+
+规格回归补齐两条边界。带不换行空格的 `unit_price` 应报缺列，重复的 `note` 不应阻断比较。将新版 `check.mjs` 分别复制到两个固定归档的临时解包目录并执行 `--support-regression`。人工归档退出 0，真实 Engineering 归档退出 1 并报告两条越界。两个归档保持原摘要。
+
+创始人要求修改后，原 Task 的规格 v2 固定上一份真实源码和新版 `check.mjs`。工程仅修改两处表头判断，独立验证中源码摘要保持一致，导出归档重新解包检查也退出 0。S01、S02、S03、S05 及所有专项用例通过，包含非 ASCII 空格报缺列和重复 `note` 继续比较。 [回归和产物证据](evidence/quote-support-revision-20261105.json)
+
+真实归档内部复测通过。接受前，原会话无复测通知。创始人接受后，核验器逐字节确认 `http://127.0.0.1:8767/` 的四个公开文件，重复推进未重复发通知。Chrome 在原会话读取通知 9，进入该地址实际导入模拟 CSV 并下载结果，确认 A=8.0、B=7.5，只有 B 为组内最低。真缺列、非 ASCII 空格及 `unit_price` 重名均报错，重复 `note` 仍正常比较。浏览器返回原会话提交反馈 10，后端确认反馈关联通知 9，Task 为 `succeeded`，会话与自动化阶段均为 `closed`。 [完整复测证据](evidence/quote-support-engineering-accepted-20261105.json)
+
+## 从获客到售后和复用的整体验收
+
+使用模拟门店及内部测试者。工作台、API、PostgreSQL、Chrome、Worker 和 DeepSeek Flash 均实际运行。 [完整证据索引](evidence/onefde-full-chain-20261105.json)
+
+| 阶段 | 实际结果 |
+| --- | --- |
+| Business 获客与 FDE 方案 | Chrome 找店返回两个模拟候选，邀请会话记录了澄清与继续意愿，再进入 FDE 队列。FDE 关联新 Engagement，经受控工具查到并采用固定能力 `1.1.0`，首交规格保留缺净重待核对。 |
+| 首次交付与报障 | 通过邀请会话给出已物化的本地版本。S01 实际导出，S02 两行待核对。尾随空格变体报缺列，测试者另开售后会话并关联同一项目。 |
+| 真实 Engineering | 只运行一次 DeepSeek Flash。冻结基线普通样例通过，专项按预期失败。修复归档仅改变 `compare.js` 的约定逻辑。独立容器和导出归档复验均退出 0。 |
+| 代评审与通知 | 工作台项目页无法选择第二个售后 Task，工作台评审未通过。经认证评审 API 接受同一 Run 的固定归档。核验独立入口后只发一条通知。 |
+| 客户复测与关单 | Chrome 从通知地址实测 ASCII 空格、缺列、非 ASCII 空格及重名边界，导出 A=8.0、B=7.5，只有 B 为组内最低。反馈 27 关联通知 26，售后关闭。 |
+| Knowledge 复用与恢复 | 第二项目保存固定能力版本，独立解包并重跑 S01、S02、S03、S05 均通过。受限资料查询返回 404。API 重启后原 Task、Run、归档摘要及反馈编号一致。 |
+
+记录三项发现，均保留原行为。项目页只显示首个 Task。复用交付经会话和浏览器验证后首交 Task 仍是草稿。工程检查接受带 `cd /workspace &&` 前缀的命令，独立验证仍执行精确登记命令。 [问题与现场](evidence/onefde-full-chain-20261105.json)
+
+## 双 Task 工作台评审和首交收尾
+
+| 检查 | 2026 年 11 月 5 日隔离环境实测 |
+| --- | --- |
+| 工作台 | 同一 Engagement 的首交与售后均列出。切换到第二个 Task 后刷新仍保留选择，Business 待办可直达其评审。跨 Task 产物及旧 revision 被拒。浏览器对售后先要求修改，再接受同 Task 新规格。 |
+| 首交 | 受控 Worker 用离线容器执行固定归档的登记命令，源码摘要一致，Run 无模型修订且实际调用模型为零。未接受产物和不可达地址被拒。接受并核验后，重复登记只在原邀请会话产生一条交付回复。Chrome 实际导入和导出，缺净重标待核对。 |
+| 命令 | 整条命令通过；附加 `cd … &&`、分号、换行、错误目录、非零退出及超时均拒绝。SDK 没有提供目录时标为未核实，独立验证记录登记目录 `/workspace`。 |
+| 售后 | 确定性回填创建可评审提交。工作台接受后，浏览器从通知入口导入修复样例，原会话反馈通过并关闭。旧演练通知与反馈保持可查。 |
+
+[双 Task 浏览器、数据库和离线容器证据](evidence/onefde-dual-task-20261105.json)
+
+## 临期商品清单整链验收
+
+2026 年 11 月 5 日。隔离 PostgreSQL、Chrome、模拟门店和内部测试者。需求来源与确认记录见[模拟门店 Engagement](../../engagements/demo-expiry-inventory/brief.md)。
+
+| 阶段 | 完成证据 |
+| --- | --- |
+| 获客与 FDE | 工作台模拟候选生成邀请。商家先澄清、同意继续，再在原会话确认五条规则。FDE 登记并采用消息 7 形成规格 v2，启动一次真实 Run。 |
+| Engineering | 开发前的固定基线缺少实现，检查按预期失败。DeepSeek Flash 只生成 `expiry.js` 和 `index.html`。登记命令 `node check.mjs` 在工程和离线验证环境通过。供应商返回 7 次用量，其中 1 次辅助请求。峰时未缓存价保守估算 0.0239574 美元。 |
+| 工作台与首交 | Chrome 核对 8 个批次、行号和 5 条下载记录。未接受时交付入口拒绝。代创始人在工作台接受固定归档后，独立回环入口逐字节匹配。原邀请会话首交回复 9，内部反馈 10。 |
+| 售后 | 共用 Business 测试入口开独立售后会话，关联同一项目和原已接受 Task。斜线日期标待核对，按 FDE 指导改用连字符后显示今日到期。原售后会话的通知 17 引用已接受归档，反馈 18 通过并关单。API 重启后仍可读取关闭状态。 |
+| Knowledge | FDE 查到新条目，Engineering 读取固定版本，Business 公开用途读取返回 404。第二项目实际采用同一归档，无模型验证后，用另一份 CSV 检查跨年第三天、第四天和无效日期，浏览器下载 2 条并在工作台接受。 |
+
+| 补充观察 | 实际结果 |
+| --- | --- |
+| Business 产品文案 | 新产品借用现有报价页承载 Business 邀请和售后。交接标题仍显示「报价工具需求」和「报价工具故障」。首交反馈留在邀请会话，售后复测留在独立售后会话。 |
+| 严格日期 | ` 2026-01-30 ` 被归为今日到期。固定规格要求严格日期，预期待核对。 |
+| 早期年份 | 基准日 `0099-12-31` 与到期日 `0100-01-01` 预期临期，实际被归为已过期。 |
+| CSV 导出 | 模拟商品名 `=1+1` 原样出现在下载文本。证据仅覆盖导出内容。 |
+
+补充观察保留在原固定归档和验收证据中。工作台接受对应已通过的演示样例范围。 [完整运行、浏览器、回环和边界证据](evidence/onefde-expiry-chain-20261105.json)
+
+## 共享设备预约台交付试点
+
+2026 年 11 月 6 日，隔离 PostgreSQL、模拟烘焙工坊和内部测试者。
+
+| 检查 | 结果 |
+| --- | --- |
+| FDE 澄清 | Business 原邀请收集初始需求和继续意愿。FDE 复述撞单问题，依次确认相邻时段和取消权限，对上线日期请求说明需由负责人确认。关键回答未齐时 Task 保持草稿，最终消息登记并采用为规格 v2。 |
+| 设计与实现 | 先记设计，再做预约写入和持久化、页面及权限检查。固定基线包含设计和回归夹具。故意停用重叠检测的候选能完成单人预约，并发两笔均返回 201，专项回归失败。正确归档的自测和只读、无网络容器复验均通过。 |
+| 浏览器预验 | 两位模拟店员独立登录。刷新后保留预约，重叠显示换时段提示，相邻时段可订，本人取消后同事可重新预约。 |
+| 工作台 | 选中 Task 后展示设计、代码差异、自测、独立复验和归档摘要。刷新仍可读。匿名读取证据返回 401，接受需填写实际依据。 |
+| 平台回归 | 独立 PostgreSQL 165 项通过。预约产品 3 组检查通过。前端构建、Ruff 和 OpenAPI 检查通过。 |
+| 工作台接受与入口 | 首次服务端查询仍待评审。按创始人确认代为在工作台登记接受后，Task 为 `succeeded`。独立回环入口从登记的已接受归档启动。HTTP 200，页面字节与归档一致，所有解包文件逐一匹配。 |
+| 通知后内部试用 | 原邀请会话通知 14。甲预约 09:15–10:00 并刷新确认。乙的重叠预约被拒，直接调用取消接口返回 403，甲的预约仍有效。甲取消后，乙可预约原时段。核对各步 SQLite 记录，并清理试用时段。 |
+| 反馈 | 内部测试者回原邀请会话提交反馈 15。原会话保留，Task 仍为 `succeeded`。本轮零模型、零付费，正式发布单独跟踪。 |
+| 退回与续作 | 独立模拟项目的第一版通过离线检查，Chrome 复现冲突仅提示「操作失败」。从工作台要求修改，采用待处理输入后在同一 Task 提交规格 v2。Chrome 复现新版提示和下一步建议，刷新后工作台仍显示当前归档。旧 Run 及跨项目产物接受请求均返回 409。原试点接受、通知与反馈保持可查。 |
+
+续作夹具的 v2 基线由 v1 的同一组文件重新打包。两个压缩包摘要不同，四个归档成员的路径、大小和文件摘要完全一致。两个 Run 和两份提交均保留。
+
+[会话、运行、浏览器和固定产物证据](evidence/onefde-booking-pilot-20261106.json)
+
+## 预约台店长代取消验收
+
+2026 年 11 月 6 日，原模拟商家会话和同一 Engagement。客户确认后创建关联 Task。一次真实 DeepSeek Flash Run 后，Task 停在待评审。
+
+| 检查 | 实际结果 |
+| --- | --- |
+| FDE 与固定基线 | 原会话确认店长可代取消当天预约，需填写原因，记录仅店长可读。原已接受归档增加固定回归。旧流程通过，新增权限回归按预期失败。 |
+| Engineering | 设计文件写入早于两处实现文件。只改设计、服务端和页面，原回归及新增回归字节不变。登记命令通过，验证现场已停止，源码固定。 |
+| 独立复验 | 对同一归档在只读挂载、无网络容器重跑。10 项执行通过，包含重复收集的旧检查。旧 SQLite 数据仍可读，注入审计写入失败会回滚取消，重开数据库能读取成功记录。 |
+| 浏览器 | 普通店员代取消、查看记录均返回 403。店长空原因被拒，填写后能取消并看到完整记录。重试不新增记录或覆盖原因。相邻预约、冲突提示、本人取消与时段重新预约正常。 |
+| 工作台和费用 | 显示本次设计、差异和固定归档。评审记录为空，原 Task 仍为 `succeeded`。单 Run，12 个提供方请求含 1 个辅助请求，峰时未缓存价保守计 0.0597783 美元。 |
+
+候选设计说明一处写已取消预约返回 404。重复代取消实测返回 200，原记录不变，符合已确认的防重要求。归档保留原样。 [原会话、Run、归档、费用与独立验证证据](evidence/onefde-booking-manager-real-20261106.json)
+
+### 接受后内部试用
+
+| 检查 | 实际结果 |
+| --- | --- |
+| 接受与入口 | 初查服务端没有接受记录，经创始人确认后从工作台代为登记。核对同一 Run、规格及归档摘要后启动独立回环入口。HTTP 200，页面与归档逐字节一致，五个解包文件均匹配。 |
+| 原邀请会话 | 入口核验后发送通知 20。内部测试者从同一会话看到试用说明并提交反馈 21。 |
+| 三身份复测 | 甲预约 11:10–12:00，乙的重叠预约被拒，相邻预约可订。普通店员代取消和查看记录均返回 403。店长空原因被拒，填原因后代取消成功。重复请求返回 200，刷新和 SQLite 检查均确认只有一笔记录，保留原原因。释放时段可重订，店员本人取消正常。 |
+
+本轮零模型调用、零付费。原归档和 404/200 记录保留。正式发布单独跟踪。 [试用证据](evidence/onefde-booking-manager-real-20261106.json)
+
+## 通用能力迁移验收
+
+| 检查 | 实际结果 |
+| --- | --- |
+| 原会话草稿 | 预约台与维修店均经工作台预览和显式发送，客户在原会话看到回复。预览和内部摘要不进入客户视图。收到新消息后旧草稿返回 409，跨会话来源拒绝。承诺模板要求由负责人确认。 |
+| 标准装配 | 两个 Task 用相同受信入口，分别固定已接受的预约台归档和维修店起始归档。已采用输入进入 Run。拒绝错误摘要、跨项目装配、旧 revision 和待采用输入。两次确定性 Worker 执行与独立离线复验通过。 |
+| 工作台 | 显示装配与工程指南版本、基线来源、固定归档和差异。预约台 404/200 差异保持可查。维修店刷新后仍显示对应 Run 的证据，评审为空。 |
+| 权限反例 | 故意移除所有者检查的候选能正常查看自己的报价，但泄露他人金额。固定权限检查失败，正确候选通过。 |
+| 实际浏览器 | 两位客户各自查看报价。客户 B 打开 A 的链接或直接请求接口返回 404，无项目或金额。客户直接调用撤回返回 403。店员撤回后，客户 A 刷新并重新打开旧链接，均无法读取明细。 |
+| 平台回归 | 独立 PostgreSQL 167 项通过，维修页自身 2 项通过。Ruff、OpenAPI 和前端构建通过。原预约台接受和试用消息继续可查。 |
+
+模拟商家、合成数据、独立控制库与回环产品。首次用「不能再显示」描述新功能时，既有规则将其分到售后。改用明确的新功能描述后完成试点。模型调用为零。 [验收证据](evidence/onefde-capability-transfer-20261106.json)
+
+### 维修店接受后内部试用
+
+| 检查 | 实际结果 |
+| --- | --- |
+| 工作台与归档 | 按创始人授权代为登记接受，Task 进入 `succeeded`。独立回环从登记的已接受源码归档启动。HTTP 200，页面字节与归档匹配，四个解包文件逐一匹配。 |
+| 通知与反馈 | 原邀请会话看到通知 44，并回传反馈 45。首次演练未保存模拟浏览器凭证，本轮仅在隔离库为同一模拟 Case 重新签发凭证，原消息和项目关联保留。 |
+| 实际三身份复测 | 两位客户各自查看报价。B 打开 A 的链接或直接访问接口返回 404，只含通用提示。B 撤回请求返回 403。店员撤回 R101 后，A 刷新和重开旧链接均无法读取金额或明细，接口返回 404。R202 仍可访问，SQLite 确认 R101 已撤回。 |
+
+本轮零模型调用、零付费。正式发布单独跟踪。 [试用证据](evidence/onefde-capability-transfer-20261106.json)
+
+试用收尾后，记录中的回环地址作为历史证据保留。隔离试用进程已停止，模拟会话试用凭证已撤销。
+
+## FDE Agent 首版验收
+
+| 检查 | 实际结果 |
+| --- | --- |
+| 控制链与恢复 | 隔离 PostgreSQL 模拟维修报价项目。覆盖跨项目和跨会话来源、伪造 Run/产物/输入、旧消息与旧规格、重复消息与回填、租约过期重启、授权到期、普通项目拒绝自动发送与派发，以及新消息阻止认领旧排队 Run。 |
+| 原会话及工程结果 | 确定性演练发送一条澄清，在原会话补答并采用。一个 Task 下有两次 Run，先工程提问，再提交模拟固定产物。评审建议引用当前规格、Run 和产物摘要，正式评审记录为空。 [脱敏关联与工具轨迹](evidence/fde-agent-control-20261106.json) |
+| HTTP 与浏览器 | 实际 Uvicorn 和 Chrome。登录后在项目页提交目标，轮询显示 FDE 摘要和关联 Task。该浏览器场景使用确定性模型回复。 [浏览器结果](evidence/fde-agent-browser-20261106.json) |
+| 工程环境与基线 | WSL 环境预检退出 0。维修报价基线文件 SHA-256 与 Windows 工作树匹配。固定 Agent Server 镜像使用断网、只读源码和临时目录执行 `python -B -m unittest -v check_quote`，2 项通过。 |
+| 真实双 Agent | 待验收。WSL 执行预检退出 2，模型开关关闭且缺少本轮费用上限和提供方配额。真实模型请求和费用均为零。工程提交只登记了确定性夹具，业务接受和正式发布均未登记。 [执行预检](evidence/fde-agent-execution-20261106.json) |
+
+从 `backend` 用独立 `_test` 库执行 `uv run --locked --extra worker pytest -q`，175 项通过。迁移升降级和漂移检查 `uv run --locked python -m scripts.check_migrations`、Ruff、OpenAPI 导出检查及 `uv build --out-dir work/fde-dist` 通过。从 `frontend` 执行 `npm run build` 通过，Vite 提示大包。 [运行手册](fde-agent-v1.md)
+
+## Business Agent 首版验收
+
+| 检查 | 观察结果 |
+| --- | --- |
+| 模拟邀请与 FDE | 隔离 PostgreSQL 保存报价页原会话。版本资料不足时先追问，客户提交意愿后才交接。FDE Work 消费真实持久交接，确定性模型回报下一步。获准文本在原会话转达，内部备注未进客户视图。 [脱敏轨迹和 ID](evidence/business-agent-control-20261106.json) |
+| FAQ、权限和恢复 | 覆盖不匹配版本、客户更正、固定 FAQ 修订、受限资料、跨会话证据、伪造事实、无意愿、商业承诺、售后复现、人工接管、生成期间的新消息、模型超时、请求重放和租约过期恢复。 |
+| 回环与浏览器 | Uvicorn 启动后用原邀请会话入口收集答复和交接，Chrome 在原 Case 确认可接管并批准方案反馈，客户从原会话读到核准原文。 [浏览器证据](evidence/business-agent-browser-20261106.json) |
+| 真实模型 | 现有 DeepSeek 密钥已配置。既有费用授权对应指定 Engineering Run，未查到覆盖本轮 Business 与 FDE 的授权额度。真实模型请求、计费 token 和费用均为零。 |
+
+独立 `_test` 库执行 `uv run --locked --extra worker pytest -q`，182 项通过，含 7 项 Business Agent 测试。迁移往返和漂移检查、Ruff、OpenAPI 契约检查、后端构建和 `npm run build` 通过。报价产品 `node check.mjs` 的 S01、S02、S03、S05 通过。 [运行手册](business-v1.md#business-agent-模拟验收)
+
+## 三角色真实长链演练
+
+2026 年 11 月 6 日，在隔离 PostgreSQL 模拟报价项目运行 DeepSeek Flash。Business 原会话追问、查 FAQ 后交接。FDE 首轮达到工具轮次上限，收到原会话补答后在原 Task 采用输入形成规格 v2，并派发真实 OpenHands。Knowledge 沿用受控工具层。
+
+第 1 个 Run 实现功能并通过独立检查，工程自测命令带 `cd /workspace &&`，未匹配固定证据。第 2 个 Run 补齐自测证据，SDK 达到 9 轮上限，在提交前停止。操作者在原 Task 保留两次失败记录，用停止后的固定候选复跑，保持原业务规格和检查命令。第 3 个 Run `2136db00-0f80-41a8-b57d-ee4c631827c4` 完成提交，独立容器的两条登记检查均退出 0，产物复验期间字节未变。
+
+Chrome 用固定归档验证了原因汇总、按原因导出、全量导出、空态与切换文件。原始基线对比验证四个既有样例的比较和导出完全一致、同数量按原因首次出现顺序排序。FDE 对固定产物 `1fcee510-03db-41e1-8c83-c3610864e0fc` 保存 `needs_human_check` 建议，指出最后一次 Run 的起点是上轮候选，要求按原始基线核查业务范围。正式评审记录为 0，未发布。
+
+三角色共 76 次请求，实际输入 652,633 token，输出 11,421 token。共享账本按峰时未缓存价保守计 0.2094951 美元。按当时非高峰价和响应返回的缓存命中量估算 0.020282526 美元，提供方账单待核对。两次验证容器与工程现场均停止，临时转发规则已移除。 [脱敏轨迹、固定产物与账本](evidence/onefde-three-agent-long-20261106.json) · [DeepSeek 费率](https://api-docs.deepseek.com/quick_start/pricing/)
+
+## Engineering 提交前修复与续办
+
+2026 年 11 月 6 日，复用供应商报价演练的固定原始基线、候选及两条 Node 检查。使用隔离 PostgreSQL、真实 Dispatcher、Worker、OpenHands 1.59.0 和独立断网复验容器。工程现场与复验现场的停止证据分别登记。
+
+| 故障 | 确定性模型夹具与真实容器结果 | DeepSeek Flash 结果 |
+| --- | --- | --- |
+| 缺检查证据 | `node --version` 退出 0。提交门槛标记两项 `evidence_missing`，同 Run 补齐两项检查并提交。 | 首跑反复读取项目后耗尽。调整修复上下文后，模型在同 Run 分别执行两项登记检查并提交，独立复验两项均通过。 |
+| 断言失败 | 自测通过后故意反转原因筛选条件，独立复验捕获 `auto-2` 退出 1。模型夹具修复实现，重新自测与独立复验后在同 Run 提交。 | 模型读检查和源码并修改候选，修复阶段达到迭代上限。后续 Run 复用该候选，补齐检查并提交，独立复验两项均通过。 |
+| 迭代耗尽 | SDK 发出 `MaxIterationsReached`。Worker 固定失败候选并持久登记一个后续 Run。移开原工作目录后，重新创建的 Worker 从该候选恢复并提交。评审差异仍对原始基线。 | 断言场景同时走到这一分支。新 Worker 认领已登记的后续 Run，未再次下发重试命令。提交的评审差异仍对原始基线，原失败候选未生成评审材料。 |
+
+DeepSeek 只处理注入故障后的修复和续办。含首跑共 27 次真实请求，输入 256,138 token，输出 3,625 token。上限 0.50 美元，按峰时未缓存价保守计 0.0811914 美元。按实际缓存命中量和非高峰费率估算 0.009116532 美元，提供方账单待核对。独立复验未调用模型。未登记正式业务接受或发布。 [脱敏轨迹、Task、Run 与固定产物](evidence/engineering-self-repair-20261106.json) · [DeepSeek 费率](https://api-docs.deepseek.com/quick_start/pricing/)
+
+从 `backend` 指向独立 `_test` 库执行 `uv run --locked --extra worker pytest -q`，188 项通过。覆盖缺证与最近断言失败、拒绝续办、待采用输入、错误项目基线、重复回填、重启后单次认领和原额度约束。修改文件的 Ruff、OpenAPI 契约检查和后端构建通过。原 Run 的检查失败摘要可用 `GET /api/v1/runs/{run_id}/events` 查回。私有输出定位见 [Worker 手册](../../backend/WORKER.md#持久化与停止语义)。

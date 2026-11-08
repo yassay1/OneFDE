@@ -43,7 +43,7 @@ def project_for_get(asset: dict, *, purpose: str) -> dict | None:
     if visibility == "restricted":
         return None
     if purpose == "public_marketing":
-        if not asset.get("public_summary"):
+        if not can_list(asset, purpose=purpose):
             return None
         return project_for_list(asset, purpose=purpose)
     # Full internal body for delivery/research (still not restricted).

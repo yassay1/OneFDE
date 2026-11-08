@@ -114,9 +114,7 @@ def test_layer_dependencies_point_inward():
                 ), module
             if module.startswith("onefde.modules.tasks."):
                 assert not any(
-                    d.startswith(
-                        ("onefde.modules.fde", "onefde.modules.knowledge")
-                    )
+                    d.startswith(("onefde.modules.fde", "onefde.modules.knowledge"))
                     for d in dependencies
                 ), module
             if module.startswith("onefde.modules.fde."):

@@ -21,6 +21,7 @@
   "inputs": ["CSV: supplier,product,grade,spec,unit,unit_price,currency,note"],
   "outputs": ["比较结果表", "待核对原因", "可选待核对单独导出"],
   "implementation_ref": "products/demo-supplier-quotes@v1.1",
+  "implementation_archive_sha256": "60b8df28817863f89e3f8f0d5fcedb6eeb77ee188f8a630b6270caf940c117de",
   "source_engagement": "demo-supplier-quotes",
   "evidence": [
     "docs/operations/evidence/p2-quote-product-check.json",

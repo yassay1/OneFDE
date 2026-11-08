@@ -1,0 +1,383 @@
+{
+  "recorded_at": "2026-11-06T02:06:23.826095+00:00",
+  "scope": "isolated loopback simulation; no provider calls or paid resources",
+  "status": "founder-authorized workbench acceptance and internal trial feedback complete",
+  "fde": {
+    "execution": "founder session acting as FDE with existing Business tools",
+    "case_id": "3bc28c6b-ee65-4839-b1c5-3d87510c7f0e",
+    "invitation_id": "83d38f51-649e-4bbf-b644-1d9049977e63",
+    "handoff_id": "506d57ef-6850-4b31-a905-3bf288d68743",
+    "task_id": "094f4837-276d-4ffd-9bfb-ea1295f2c3c1",
+    "engagement_id": "05e3311c-ff3e-4c05-a4ab-64e9e572a8ad",
+    "input_id": "2ef73176-86f9-420f-9fbf-b365f7cb4e40",
+    "confirmation_message_id": 11,
+    "spec": {
+      "title": "共享设备预约台｜首交",
+      "objective": "店员能预约和取消当天同一台设备，不发生重复占位。",
+      "scope": "一台设备、当天预约、冲突提示、本人取消。跨天预约和店长代取消另议。",
+      "inputs": [
+        "交接 506d57ef-6850-4b31-a905-3bf288d68743",
+        "business:3bc28c6b-ee65-4839-b1c5-3d87510c7f0e/messages/11"
+      ],
+      "confirmed_rules": [
+        "一台设备，只预约当天。",
+        "相邻时段允许，重叠请求提示更换。",
+        "只有预约人能取消。"
+      ],
+      "completion_criteria": [
+        "[check] python -B -m unittest -v check_booking",
+        "[review] 两位店员在浏览器预约、理解冲突提示、取消及重新预约。"
+      ],
+      "dependencies": [],
+      "capability_versions": []
+    },
+    "transcript": [
+      {
+        "id": 1,
+        "kind": "customer",
+        "text": "希望做个预约工具"
+      },
+      {
+        "id": 2,
+        "kind": "reply",
+        "text": "请描述希望改进的具体操作，并在下方确认是否愿意由交付同事继续联系。"
+      },
+      {
+        "id": 3,
+        "kind": "customer",
+        "text": "希望录入当天的设备预约，让两组人不要订到同一台搅拌机。"
+      },
+      {
+        "id": 4,
+        "kind": "reply",
+        "text": "已将你的说明转给交付同事，会在这个会话继续跟进。"
+      },
+      {
+        "id": 6,
+        "kind": "reply",
+        "text": "我理解你们想避免两组同事到了才发现搅拌机已经有人用。先确认一个细节：上一组订到 11 点，下一组可以从 11 点直接开始吗？"
+      },
+      {
+        "id": 7,
+        "kind": "customer",
+        "text": "明天能保证上线吗？"
+      },
+      {
+        "id": 8,
+        "kind": "reply",
+        "text": "目前正在确认预约规则。具体上线安排需要负责人确认，内部试用入口准备好后，我会在这里告诉你怎么试。"
+      },
+      {
+        "id": 9,
+        "kind": "customer",
+        "text": "11 点可以接着订。取消规则等我问问同事。"
+      },
+      {
+        "id": 10,
+        "kind": "reply",
+        "text": "收到，11 点可以接着订。剩下只需确认取消：先让预约人自己取消，可以吗？"
+      },
+      {
+        "id": 11,
+        "kind": "customer",
+        "text": "确认一台搅拌机，只订当天，相邻时段可以，只有预约人能取消。撞时间请提示换一个时段。"
+      },
+      {
+        "id": 13,
+        "kind": "reply",
+        "text": "规则已经确认：相邻时段可以接着订，只有预约人能取消。我们会先做一台设备的当天预约，准备好试用后再在这里告诉你。"
+      }
+    ],
+    "draft_before_rule_confirmation": true,
+    "candidate_name": "社区烘焙工坊（模拟）",
+    "model_calls": 0,
+    "notification_sent": false
+  },
+  "engineering": {
+    "execution": "assistant implementation in phases and isolated deterministic Worker adapter; no OpenHands LLM development",
+    "design": "engagements/demo-bakery-booking/brief.md",
+    "product_source": "products/demo-bakery-booking",
+    "phases": [
+      "Recorded technical design",
+      "Implemented service and persistent booking",
+      "Connected browser workflow",
+      "Ran focused and full verification"
+    ],
+    "fixed_baseline_scope": "Frozen design and checks; no runnable product scaffold in the archived baseline.",
+    "full_validation": "read-only mount in fixed local Docker image, no network, same archive SHA-256",
+    "known_bad": {
+      "single_user": 201,
+      "concurrent": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... FAIL\n\n======================================================================\nFAIL: test_competing_requests (check_booking.BookingChecks.test_competing_requests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/onefde/OneFDE/backend/work/booking-20261106/tmp4xwpux35/check_booking.py\", line 90, in test_competing_requests\n    self.assertEqual(sorted(results), [201, 409])\nAssertionError: Lists differ: [201, 201] != [201, 409]\n\nFirst differing element 1:\n201\n409\n\n- [201, 201]\n?       ^ ^\n\n+ [201, 409]\n?       ^ ^\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.524s\n\nFAILED (failures=1)\n",
+      "sha256": "35f9560cb69c44f40a7abfae6c8167072d61f04f86070445453c12ecad94fde6"
+    },
+    "self_check": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 1.601s\n\nOK\n",
+    "model_calls": 0,
+    "fixed_check": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 1.552s\n\nOK\n",
+    "run_id": "f526af31-9d9e-4c19-a84c-d4204851c987",
+    "task_id": "094f4837-276d-4ffd-9bfb-ea1295f2c3c1",
+    "artifact_id": "2effd000-dda4-4b75-a15a-886f0e068382",
+    "artifact_sha256": "444b5ccd49bab32686e19c88d9753a5ce3d916e29654f1e344a29de4a78d1662",
+    "seed_sha256": "9719ed6cb0dbae66d132e823ba79d1fdf72bb5d2db31d8197dbda249c74b6659",
+    "operation_id": "0871235b-2dea-48fd-9bd6-b66d626411ec",
+    "spec_version": 2,
+    "task_state": "review"
+  },
+  "review": {
+    "workbench": {
+      "review_url": "http://127.0.0.1:8036/#/projects/05e3311c-ff3e-4c05-a4ab-64e9e572a8ad?task=094f4837-276d-4ffd-9bfb-ea1295f2c3c1",
+      "anonymous_evidence_status": 401,
+      "design_visible": true,
+      "diff_expanded": true,
+      "fixed_evidence_visible": true,
+      "no_prefilled_evidence": true,
+      "review_state": "review",
+      "review_count": 0,
+      "notification_sent": false,
+      "artifact_id": "2effd000-dda4-4b75-a15a-886f0e068382",
+      "archive_sha256": "444b5ccd49bab32686e19c88d9753a5ce3d916e29654f1e344a29de4a78d1662",
+      "self_checks": [
+        {
+          "command": "python -B -m unittest -v check_booking",
+          "exit_code": 0,
+          "timeout": false
+        }
+      ],
+      "independent_checks": [
+        {
+          "command": "python -B -m unittest -v check_booking",
+          "exit_code": 0,
+          "timeout": false
+        }
+      ]
+    },
+    "product_browser": {
+      "browser": "Chrome/156.0.8078.80",
+      "conflict_text": "这个时段已经被同事预约，请换一个时间。",
+      "refresh_preserved": true,
+      "adjacent_accepted": true,
+      "cancel_released": true,
+      "clean_schedule_after": true
+    },
+    "preview": "http://127.0.0.1:8796/"
+  },
+  "regression": {
+    "postgres_database": "onefde_booking_regression_test",
+    "tests": 165,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "ruff": "passed",
+    "frontend_build": "passed",
+    "openapi": "checked"
+  },
+  "review_boundary": {
+    "accepted": true,
+    "internal_trial_notice_sent": true,
+    "formal_release": false,
+    "external_customer_acceptance": false
+  },
+  "post_acceptance_trial": {
+    "acceptance": {
+      "state": "succeeded",
+      "review": {
+        "id": "22fc3463-9fb1-4b82-9a08-60806a075aba",
+        "task_id": "094f4837-276d-4ffd-9bfb-ea1295f2c3c1",
+        "run_id": "f526af31-9d9e-4c19-a84c-d4204851c987",
+        "task_spec_version": 2,
+        "artifact_ids": [
+          "2effd000-dda4-4b75-a15a-886f0e068382"
+        ],
+        "verdict": "accept",
+        "reason": "按创始人在会话中确认的安排代为登记接受。仅用于预约台内部试用。",
+        "check_evidence": [
+          "对照设计和服务端写事务；固定归档独立复验通过；双浏览器预验确认冲突、相邻预约和取消释放。SHA-256 444b5ccd49bab32686e19c88d9753a5ce3d916e29654f1e344a29de4a78d1662"
+        ],
+        "reviewer": "founder",
+        "created_at": "2026-11-06T02:09:18.877560Z"
+      },
+      "recorded_via_workbench_this_turn": true
+    },
+    "entry": {
+      "url": "http://127.0.0.1:8797/",
+      "release": {
+        "run_id": "f526af31-9d9e-4c19-a84c-d4204851c987",
+        "spec_version": 2,
+        "review_id": "22fc3463-9fb1-4b82-9a08-60806a075aba",
+        "sha256": "444b5ccd49bab32686e19c88d9753a5ce3d916e29654f1e344a29de4a78d1662"
+      },
+      "artifact_id": "2effd000-dda4-4b75-a15a-886f0e068382",
+      "http_status": 200,
+      "http_index_sha256": "0276d12d87d58d66fbb6a8e5d5a5735d53e54ff00a1325aac36cd58fa232ce6a",
+      "source_file_sha256": {
+        "DESIGN.md": "fa24800ca63858cf11ef1d0389294bd504d69247e31c954498d3829766e8cd62",
+        "booking.py": "2a7d309ef2f6f3a22254a9edb5b8d4efb34f5ab5b052f069d874d61fb59c4a2a",
+        "check_booking.py": "eef6bacce83e50f989e6ca2d786cf88d7485d678808ef7e2590143f4a959ea61",
+        "index.html": "0276d12d87d58d66fbb6a8e5d5a5735d53e54ff00a1325aac36cd58fa232ce6a"
+      },
+      "source_read_status": 404,
+      "unauthenticated_bookings_status": 401
+    },
+    "model_calls": 0,
+    "cost_usd": 0,
+    "case_id": "3bc28c6b-ee65-4839-b1c5-3d87510c7f0e",
+    "notice": {
+      "id": 14,
+      "text": "搅拌机预约台可以内部试用了：http://127.0.0.1:8797/ 。请用两位模拟店员账号登录。先让一位店员预约，再请另一位预约重叠时段。接着请原预约人取消，看看另一位能否订到同一个时段。试完直接在这个会话告诉我们结果。"
+    },
+    "retest": {
+      "browser": "Chrome/156.0.8078.80",
+      "actors": [
+        "baker-a",
+        "baker-b"
+      ],
+      "refresh_preserved": true,
+      "conflict_notice": "这个时段已经被同事预约，请换一个时间。",
+      "unauthorized_cancel": {
+        "status": 403,
+        "message": "只有预约人可以取消这笔预约。"
+      },
+      "before_cancel_rows": [
+        [
+          "baker-a",
+          555,
+          600,
+          0
+        ]
+      ],
+      "after_owner_cancel_rows": [
+        [
+          "baker-a",
+          555,
+          600,
+          1
+        ]
+      ],
+      "rebooked_rows": [
+        [
+          "baker-a",
+          555,
+          600,
+          1
+        ],
+        [
+          "baker-b",
+          555,
+          600,
+          0
+        ]
+      ],
+      "cleanup_rows": [
+        [
+          "baker-a",
+          555,
+          600,
+          1
+        ],
+        [
+          "baker-b",
+          555,
+          600,
+          1
+        ]
+      ]
+    },
+    "feedback": {
+      "id": 15,
+      "text": "两位模拟店员复测通过。甲预约 09:15 到 10:00，乙预约重叠时段时看到换时间的提示。乙不能取消甲的预约。甲取消后，乙成功订到原时段。"
+    },
+    "case_state": "handling",
+    "same_invitation_verified": true,
+    "recorded_at": "2026-11-06T02:10:50.692092+00:00",
+    "preflight_observation": "First check found Task in review and no review record. After the founder instructed continuation, acceptance was recorded through the authenticated workbench."
+  },
+  "request_changes_regression": {
+    "engagement_id": "b51b0f99-1d7e-44c8-b137-ce9071690c64",
+    "task_id": "530629ef-6074-4ae3-9ab4-ab73e431d6b2",
+    "model_calls": 0,
+    "before": {
+      "submission": {
+        "known_bad": {
+          "single_user": 201,
+          "concurrent": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... FAIL\n\n======================================================================\nFAIL: test_competing_requests (check_booking.BookingChecks.test_competing_requests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/onefde/OneFDE/backend/work/booking-20261106/tmpd63rqx44/check_booking.py\", line 90, in test_competing_requests\n    self.assertEqual(sorted(results), [201, 409])\nAssertionError: Lists differ: [201, 201] != [201, 409]\n\nFirst differing element 1:\n201\n409\n\n- [201, 201]\n?       ^ ^\n\n+ [201, 409]\n?       ^ ^\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.524s\n\nFAILED (failures=1)\n",
+          "sha256": "2c2c73484ef511b73323f639f7c6acc8e6e2813da0beb2a23f75bdd533650afd"
+        },
+        "self_check": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 1.601s\n\nOK\n",
+        "model_calls": 0,
+        "fixed_check": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 1.537s\n\nOK\n",
+        "run_id": "a8ab6150-1f4f-41c5-800d-38eec1e3110f",
+        "task_id": "530629ef-6074-4ae3-9ab4-ab73e431d6b2",
+        "artifact_id": "399b0d64-8107-4448-8674-bab4ce3f0883",
+        "artifact_sha256": "8170645d08f37ef7d984d74bf6d9aeb5d1e97ceba4ed02365527c0f49b1e476b",
+        "seed_sha256": "2355b06259b8c49d98a2a4fbbe8612883111b9a356c1acf37f13201ac8c18866",
+        "operation_id": "3506c953-5576-4b28-8343-32fed2f1e79f",
+        "spec_version": 1,
+        "task_state": "review"
+      },
+      "browser_conflict": "操作失败。"
+    },
+    "baseline_lineage": {
+      "archive_bytes_equal": false,
+      "member_manifest_equal": true,
+      "prior_submission_sha256": "8170645d08f37ef7d984d74bf6d9aeb5d1e97ceba4ed02365527c0f49b1e476b",
+      "v2_baseline_sha256": "a22dd87c9aae89171287a263597e65310f9edade230c6c6f29ed21db3c65c7f5",
+      "member_count": 4
+    },
+    "after": {
+      "submission": {
+        "known_bad": {
+          "single_user": 201,
+          "concurrent": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... FAIL\n\n======================================================================\nFAIL: test_competing_requests (check_booking.BookingChecks.test_competing_requests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/onefde/OneFDE/backend/work/booking-20261106/tmptkveti3d/check_booking.py\", line 90, in test_competing_requests\n    self.assertEqual(sorted(results), [201, 409])\nAssertionError: Lists differ: [201, 201] != [201, 409]\n\nFirst differing element 1:\n201\n409\n\n- [201, 201]\n?       ^ ^\n\n+ [201, 409]\n?       ^ ^\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.526s\n\nFAILED (failures=1)\n",
+          "sha256": "0d06f27806f9a53d3ef6ee20511220502e4fed3d7324d168d1d0077b5fcb182a"
+        },
+        "self_check": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 1.604s\n\nOK\n",
+        "model_calls": 0,
+        "fixed_check": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 1.535s\n\nOK\n",
+        "run_id": "a228bc21-bb7c-46c2-abb9-72a7d946834c",
+        "task_id": "530629ef-6074-4ae3-9ab4-ab73e431d6b2",
+        "artifact_id": "35720acd-e731-41ad-9fb1-d60dbb0febcb",
+        "artifact_sha256": "6f5b09e513ebbc6c7ac024a07a86c31576dd14b42e51047974f4b685c85a2503",
+        "seed_sha256": "a22dd87c9aae89171287a263597e65310f9edade230c6c6f29ed21db3c65c7f5",
+        "operation_id": "abe52e2b-6aa2-4102-b882-8b51cb5e6980",
+        "spec_version": 2,
+        "task_state": "review"
+      },
+      "browser_conflict": "这个时段已经被同事预约，请换一个时间。"
+    },
+    "review": {
+      "id": "0d7bfc9f-4bbd-4163-86d5-1e755a9acc5c",
+      "task_id": "530629ef-6074-4ae3-9ab4-ab73e431d6b2",
+      "run_id": "a8ab6150-1f4f-41c5-800d-38eec1e3110f",
+      "task_spec_version": 1,
+      "artifact_ids": [
+        "399b0d64-8107-4448-8674-bab4ce3f0883"
+      ],
+      "verdict": "request_changes",
+      "reason": "冲突时只显示「操作失败」，店员无法知道原因或下一步。请说明时段已被同事预约，并提示换一个时间。",
+      "check_evidence": [],
+      "reviewer": "founder",
+      "created_at": "2026-11-06T02:13:57.726510Z"
+    },
+    "applied_input_id": "682f99ae-059e-48c9-8855-dfd8fb516e02",
+    "stale_review_response": {
+      "code": "REVIEW_VERSION_MISMATCH",
+      "message": "评审必须固定当前版本的当前工程提交",
+      "request_id": "9d0f39d9-c00d-4b91-9341-e531390074b4"
+    },
+    "cross_project_artifact_response": {
+      "code": "ARTIFACT_SCOPE_CONFLICT",
+      "message": "产物必须存在并属于本项目及指定提交",
+      "request_id": "00f96e5e-7486-4f20-b56c-09d5b953e9ba"
+    },
+    "fixture_state": "review",
+    "browser": "Chrome/156.0.8078.80",
+    "current_evidence_reloaded": true,
+    "original_records_verified": true,
+    "recorded_at": "2026-11-06T02:15:10.624885+00:00",
+    "scope": "Separate simulated Engagement, deterministic Worker and two actual browser conflict reproductions",
+    "cost_usd": 0,
+    "http_status": {
+      "stale_review": 409,
+      "cross_project_artifact": 409
+    }
+  }
+}

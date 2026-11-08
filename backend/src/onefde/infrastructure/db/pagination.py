@@ -9,7 +9,7 @@ from sqlalchemy import select, tuple_
 from onefde.core.errors import ApiException
 
 
-def page(db, model, schema, limit, cursor, *, scope, filters=()):
+def page(db, model, schema, limit, cursor, *, scope, filters=(), project=None):
     query = select(model).where(*filters)
     if cursor is not None:
         try:
@@ -34,6 +34,9 @@ def page(db, model, schema, limit, cursor, *, scope, filters=()):
             json.dumps([scope, last.created_at.isoformat(), str(last.id)]).encode()
         ).decode()
     return {
-        "items": [schema.model_validate(row) for row in rows[:limit]],
+        "items": [
+            (project(row) if project else schema.model_validate(row))
+            for row in rows[:limit]
+        ],
         "next_cursor": next_cursor,
     }

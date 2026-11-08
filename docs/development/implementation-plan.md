@@ -1,12 +1,52 @@
+# 四员工对话闭环（2026-11-08）
+
+四个现有对话区可以多轮提问，刷新后按 Case、项目、Task 或 Knowledge 用途读回。问答写入 `staff_turns`，不写客户消息、AgentWork、TaskInput 或 Run。默认 `ONEFDE_STAFF_CHAT_MODE=scripted`，替身不访问模型。`runtime_beats` 只在既有消费者和 Worker 循环里写心跳；本轮没有启动这两个进程。没有心跳时页面写明待处理且无人认领。演示库已前向迁移到 `a7c4e1b90d22`。`pytest` 226 项通过，`ruff` 与 `export_openapi --check` 通过，`frontend` 的 `npm run build` 退出 0，产物 `index-DYJ1_ZzS.js`。浏览器在 `localhost:8003` 走了四条替身流程。未点击发送回复、登记目标、采用、拒绝或准备任务。
+
+# 四工作区回退基线闭环（2026-11-08）
+
+页面先与 `OneFDE-20261107.zip` 对照，换行归一后四页及壳层样式一致。随后在原对话区/工作区上接已实现 API：Business 选中 Case 的真实消息与内部备注、FDE 单条 Work 的待处理/报告、Engineering 输入状态与采用/拒绝入口、Knowledge 关键词检索和返回原任务。没有新表、新聊天接口或新的付费模型请求。`frontend` 下 `npm run build` 退出 0。浏览器在已运行的 `localhost:8003` 上核对了上述读路径，并写入一条内部备注后刷新仍在。未点击「准备任务」或「登记目标」，避免消费者发起模型调用。后端测试本轮未重跑。细节在 [前端实施](../frontend/implementation.md#回退基线上的真实闭环2026-11-08)。
+
+# 产品工作台收尾（2026-11-08）
+
+六页已接独立演示库和 `localhost:8003`。运行契约 46 项已实现，另有 1 项 planned 下载。Case 服务端筛选、FDE 分页与单条读取、Office 项目上下文、Engineering 历史只读和固定 Diff、Knowledge 用途隔离已在代码中。普通 FDE Work 仍 pending，本轮没有新的模型消费者或费用授权。
+
+同日付费 Run `b4174deb-3f23-435e-acfc-5deb259314b5` 授权 10 次请求，SDK 记录 11 条独立响应，**超过授权，不是合规验收**。迭代额度已不能再被写成逐请求硬上限。收尾改为同一 Run 在转发前计数，并用无付费 HTTP 替身验证；没有重跑付费工程。启动、停止和这项限额见[测试与验收](../operations/testing.md#产品工作台收尾2026-11-08)。
+
+# 四员工工作区审计与设计（2026-11-08 上午）
+
+本段是当日上午的审计记录。当时未改业务代码。完成四员工职责、页面线框、字段与接口映射、A/B/C/D 分级和 W0—W5 分期。[交付入口](../frontend/README.md)，证据在 `.planning/workspaces-audit-20261108/`。同日晚间实现见上节，不要把本段的“未开发”当成当前代码状态。
+
+关键事实：运行JSON现有44项HTTP操作，YAML仅产物下载为planned；当前Engineering主路由未挂输入采用面板，Diff被包装成代码，RunEvent被称执行日志；FDE是持久异步Work而非持续聊天；Knowledge是当前Manifest关键词检索/用途投影，临时气泡不是持久咨询。当前事实以[审计映射](../frontend/api-mapping.md)为准，历史F1—F6通过记录保留其当时范围。
+
+状态：文档审计已完成，**新页面方案待用户确认，W1未开始**。完成证据为代码/Schema/Router/服务/Agent/Runtime/迁移/测试断言核对、官方资料及文档静态检查；本轮未重跑真实HTTP/数据库/浏览器/模型/部署，不将静态审计标为工程交付。阶段退出仍缺用户审阅及后续真实联调验收。建议先做A/B语义和闭环整改，C类按需求另确认；W0完成后停止。
+
 # OneFDE 分阶段实施计划
 
-本计划按可交付结果推进，不按比赛期限倒排。2026 年 11 月 4 日已将协作调研同步到阶段 B 推荐文档；已完成 C0+C1b 持久控制、本地沙盒与一次真实网页工程冒烟。黑客松 P0—P3 与 P4 本地 Origin 已落地；真实模型报价 Run、薄工作台页面与公网部署仍未完成。先实现当前纵向切片，不另建调度框架预研项目。
+2026-11-07：前端质量治理只改工作台展示。六页在已运行的 `localhost:8000` 打开；`frontend` 下 `npm run build` 退出 0。员工页统一 168px 横幅（1366 宽为 140px），场景图 `object-fit: cover` 铺满横幅。标题改到横幅右侧约 280px 浅底上，状态单独一行。左 38% 沟通、右 62% 工作。项目中心的 4 条同名记录来自 `GET /api/v1/engagements` 的不同 id，未删除。Knowledge「报价」返回 `fresh-quote-compare-csv@1.1.0`。截图见 `docs/operations/evidence/frontend-quality-20261107/`。未改 API、迁移或业务数据。
+
+2026-11-07：Playwright 依赖已补到受检工程镜像，本地待机 Worker 已更新。通过 OneFDE 工作台、MiMo FDE 和 Engineering 完成筛选修复，五项技能均实际调用，一轮工程及独立浏览器复验通过，负责人已接受并更新本地工具。FDE 前置检索触发上限后有一次操作者采用执行说明；未扩展为无人值守能力结论。费用与全部证据统一见[测试事实](../operations/testing.md#playwright-与-mimo-技能实测2026-11-07)。
+
+2026-11-07：Web 工作台四张用户提供的英雄场景已安装，五页在 `localhost:8000` 完成 1600/1280 视觉与只读回归。修复失效会话加载、非法 UUID 深链、角色项目上下文和工程轮次归属读取；提交状态不再代替固定检查结果。`frontend` 下 `npm run build` 退出 0。实际证据与数据限制见[美术与回归验收](../operations/frontend-art-verification-20261107.md)；等待用户验收，未新增模型/业务运行或公网交付。
+
+2026-11-07：Coding Agent 首批五个受信技能已接入并同步 WSL、重建本地 Compose 待机 Worker。按需调用、逐 Run 清单/调用证据和原边界已做无模型检查；真实模型效果、远程选用和 Playwright 依赖仍待验证。实际检查和缺口见[测试事实](../operations/testing.md#coding-agent-首批技能无模型检查2026-11-07)，复核命令见[技能运行约定](../operations/engineering-skills.md)。
+
+2026-11-07：MiMo 果采报价台已通过产品入口完成 FDE→Knowledge→Engineering→固定归档独立复验→负责人正式接受，并开放本地工具。含人工恢复及受控重试，尚不证明无人值守交付或公网部署。费用、七轮失败与成功记录、浏览器及回归证据统一见[测试事实](../operations/testing.md#mimo-果采报价台产品全链路2026-11-07)。
+
+本计划按可交付结果推进。当前结论以本文件的阶段表和文末验收索引为准；逐步证据、命令和费用只在[测试与验收](../operations/testing.md)维护。
 
 范围依据见 [PRD](../product/PRD.md)，首个具体案例见[模拟报价项目](../../engagements/demo-supplier-quotes/brief.md)；参赛切片见[黑客松实施方案](../product/hackathon-proposal.md)。技术推荐以[架构](../architecture/architecture.md)和 ADR 为准：React/Vite、FastAPI、PostgreSQL、OpenHands/DockerWorkspace、Compose/Caddy；实际模型、账号与域名为接入配置项。
 
-最新研发优先级：用户明确先后端，前端之后单独设计。P0—P4 的本地切片已完成；下一动作是薄三入口页面，或获授权后用真实 Engineering Run 替换报价案例的确定性回填。当前不初始化完整工作台 UI 依赖。既有前端设计作为行为参考，视觉和页面实现后置。
+当前：C0+C1b 持久控制、C2 本地真实网页冒烟、P0–P4 本地切片、`frontend/` 薄工作台，以及 2026-11-05 至 2026-11-06 的 Business、FDE、预约和工程续办记录都已落在验收索引。公网部署和演示录像仍未完成。迁移 head 为 `f2ee3d9000b1`。
 
 最新MVP部署基线：用户指定单台阿里云ECS+Docker Compose，一体化承载公司站、工作台、API/PG/Worker、四角色Runtime、OpenHands工程容器及客户产品；同机按服务/权限/网络/资源分开，见[ADR0009](../architecture/ADR/0009-single-ecs-mvp.md)。后续用户已授权S1/S2：本地Compose与ecs_shared适配、真实无模型隔离/资源及重启验证已完成；未购买云资源或公网部署，操作见[Compose手册](../../deploy/README.md)。下方早期“工程物理另机”的进度条目保留为历史，不再是当前门槛。
+
+2026-11-06 本地 Engineering 双模型配置完成。DeepSeek 与 MiMo 按量实时推理各自注册配置修订和 Worker 凭据引用，登录 Compose API 可查到两家修订，重复注册 MiMo 复用已有修订。Compose 重建后 Worker 待机检查无阻塞，两家域名通过代理 TLS 握手，未授权目标和直连探针被拦截。Task 生命周期和 OpenHands 绑定测试共 31 项通过，含 Run 重试换模型及原配置保留。用户填写 MiMo key 后已同步并重建本地 Worker，无模型复检确认待机进程已加载凭据。命令和本机证据位置见 [Compose 手册](../../deploy/README.md#本地-engineering-模型配置)。
+
+2026-11-06 MiMo 真实 API 冒烟通过。使用本地 Worker 挂载的凭据经受限代理访问 `mimo-v2.6-pro`，鉴权短请求及报价小任务共 4 次 HTTP 200。两轮分别查价、计算总价，均回传 `reasoning_content` 和工具结果，最终值与本地工具结果 2034 分一致。服务端用量为输入 855、输出 95 token，按[官方国内实时计价](https://mimo.mi.com/docs/pricing)忽略缓存折扣估算 ¥0.003135，低于授权上限 ¥1。
+
+2026-11-07 MiMo 本地 Engineering 全链路通过，包括 Backend 接单、一次性宿主 Worker、OpenHands 多轮工具、失败归档续跑、固定源码验证及所有者接受。已修复 OpenAI 兼容模型别名的 SDK 能力与计价映射，绑定回归 9 项通过。Task `2fe28677-11fc-4269-b879-f5a4a48c5700` 已接受，分轮结果与费用见 [测试与验收](../operations/testing.md#coding-agent细化验收)。
+
+同日按用户提高后的费用上限重跑，MiMo 新建 Task `5594b5db-7c90-4888-af1f-89be2dc53119` 在第一个 Run 完成工程与独立验证，并经评审接受。已留存逐事件监控日志及完整私有 Worker 日志，重复动作/无进展保护均未触发。额度、用量和完成证据见 [测试与验收](../operations/testing.md#coding-agent细化验收)。
 
 ## 阶段与退出条件
 
@@ -14,7 +54,7 @@
 | --- | --- | --- | --- |
 | A 需求与文档基线 | 文档初稿完成，已检查 | 原样归档产品定义；写 PRD、入口与 Agent 约定；明确项目/能力记录；列测试场景与首个模拟案例 | 平台与客户软件边界清楚；当前目标有编号与可观察条件；规则、提案和未知项分开；文档内部链接有效 |
 | B 关键流程与工程方案 | 推荐文档基线完成；C0+C1a 已实施，其余待实施 | 产品交互、物理映射、架构、最小 OpenAPI、部署设计与四条 ADR | 推荐组合、状态、字段与环境边界相互一致；接入前补齐账号、固定版本和限额 |
-| C 最小持续工程工作切片 | C0+C1b完成；C2本地真实网页冒烟已通过；C3工程契约/固定验证已落地；P1薄FDE受控工具与交付详情API已落地，薄页面后置 | 短接入冒烟后实现 Task/输入/Run/评审；先以创始人代行所有者，再连接最薄 FDE 受控工具 | 同 Task 能提问、答复、新 Run 续作、提交、要求修改与接受；自有状态路径有证据，不重复证明 SDK 基础能力 |
+| C 最小持续工程工作切片 | C0+C1b完成；C2本地真实网页冒烟已通过；C3工程契约/固定验证已落地；P1薄FDE受控工具与交付详情API已落地；薄工作台已接登录、项目、Business 和 FDE | 短接入冒烟后实现 Task/输入/Run/评审；先以创始人代行所有者，再连接最薄 FDE 受控工具 | 同 Task 能提问、答复、新 Run 续作、提交、要求修改与接受；自有状态路径有证据，不重复证明 SDK 基础能力 |
 | D 首个软件交付闭环 | 报价产品v1.1、样例检查与FDE平台控制链（确定性Run回填）已通过；本地 Origin `127.0.0.1:8765` 已检查。真实模型Engineering与公网发布未做 | 按已确认模拟规则实现报价工具，连接多个任务的前置产物、集成与部署，完善实际操作说明 | 指定版本可从交付入口访问，约定样例得到预期结果，信息不足项明确标记；代码、运行、检查与入口可追溯 |
 | E 知识支持与再次复用 | P3最小切片已落地：资产检索/权限与第二项目再检查。无模型循环、无向量库 | Knowledge向Business/FDE/Engineering提供支持，接收三者反馈，整理少量候选资产；用第二组需求复用 | 三类请求/来源/用途边界可追溯；实际使用版本、适配和重新检查有证据，不以总结代替复用 |
 | F 真实试点校准 | 尚无试点 | 找到门店，取得经授权脱敏资料，核对流程、规则、输出与实际反馈 | 真实资料与演示假设分开；能据实际使用修订需求与能力边界，不将模拟验算当作经营价值证明 |
@@ -48,18 +88,18 @@
 
 ## 阶段 C 接入与首个开发切片
 
-Engineering执行的直接复用、自有适配、上下文、检查证据与续作按[Coding Agent设计](../architecture/coding-agent.md)细化；[上游参考](../architecture/coding-agent-research.md)区分固定SDK与最新指南。新增CA01—CA10见[测试场景](../operations/testing.md#coding-agent细化验收)，均为待执行。先用现有适配完成C2真实小任务，再按C3/D补上下文/结果契约和固定源码验证，D/E接知识查询；repo map、压缩、多Agent按实际瓶颈后置。本轮只更新设计，不实施这些切片，不新增C2冒烟前置项目。
+Engineering执行的直接复用、自有适配、上下文、检查证据与续作按[Coding Agent设计](../architecture/coding-agent.md)细化；[上游参考](../architecture/coding-agent-research.md)区分固定SDK与最新指南。CA01—CA10的通过范围见[测试场景](../operations/testing.md#coding-agent细化验收)。repo map、压缩、多Agent按实际瓶颈后置。
 
 ### 实施顺序
 
-C0、C1a与C1b持久控制已完成；C2 Worker/SDK及本地WSL环境已实现，真实模型工程和薄FDE仍未完成。C1b命令与证据见 [验证记录](../operations/c1b-verification.md)。实际命令见 [后端 README](../../backend/README.md)，检查证据见 [验证记录](../operations/c0-c1a-verification.md)。
+C0、C1a与C1b持久控制已完成；C2 本地真实网页冒烟和薄 FDE 工具已有证据。命令见 [后端 README](../../backend/README.md)，早期检查见 [C0+C1a记录](../operations/c0-c1a-verification.md) 与 [C1b记录](../operations/c1b-verification.md)。
 
 | 顺序 | 具体工作 | 完成标准 |
 | --- | --- | --- |
 | C0 后端工程起点（已完成，本地验证） | backend、uv 锁、配置样例、PostgreSQL 开发/测试环境、Alembic、pytest 与最小 CI 配置；远程 CI 未运行，SDK后在C2固定安装 | 后端启动/迁移/检查命令真实可用，配置与密钥分开；不初始化 frontend/pnpm 或 UI |
 | C1 控制持久化（C1a+C1b 已完成，本地验证） | 已有迁移、认证、Engagement、Task/TaskInput/版本、Run/待派发状态、轻量评审/事件与幂等；执行消费者在C2扩展 | 导出 OpenAPI；输入保存/应用分开，版本、回复归属、评审证据和认证边界可检查 |
 | C2 一次工程执行（本地真实模型冒烟已通过） | dispatch_jobs认领/租约/停止确认/回填、独立Worker、固定SDK及私有源码保存；本地WSL/Compose与DeepSeek出口已实测；2026-11-04 网页小任务真实改文件/检查/归档/验证/接受，见[CA验证](../operations/coding-agent-verification.md) | 本地退出条件已满足；云端隔离与提供方费用硬封顶仍待验收，不能用本地冒烟替代 |
-| C3 持续协作后端（契约/固定验证/薄FDE工具已落地） | 工程上下文/结果契约、工作区比对、固定源码验证已实现；CA02本地真实网页冒烟与接受已有证据，见[CA验证](../operations/coding-agent-verification.md)；P1新增`modules/fde`受控工具与`/delivery`详情API（无模型循环）；薄页面与报价业务后置 | 同Task控制多轮已有证据；CA02/CA04/CA05/CA07/CA10本地适用项通过；FDE工具白名单/跨项目拒绝有测试；未采用输入不混入快照；提交不自动完成Task |
+| C3 持续协作后端（契约/固定验证/薄FDE工具和薄工作台已落地） | 工程上下文/结果契约、工作区比对、固定源码验证已实现；P1 受控工具与 `/delivery` 已有；`frontend/` 已接登录、项目、当前 Run、评审、Business 和 FDE。交接列表与能力条目页面仍以 HM03 为准 | 同Task控制多轮已有证据；CA02/CA04/CA05/CA07/CA10本地适用项通过；FDE工具白名单/跨项目拒绝有测试；未采用输入不混入快照；提交不自动完成Task |
 | C4 单ECS部署适配（本地S1/S2完成，生产待实施） | 本地已实现Compose、ecs_shared、动态容器硬化、路径/离线网络/资源准入与恢复验证；生产镜像构建/在线模型出口及各角色按授权推进，不增四个常驻服务 | 按[单ECS计划](../operations/single-ecs-verification.md)完成S1—S3/E01—E07；实际云机购买/部署仍需后续明确授权 |
 | D1 交付上下文 | 完善FDE诊断/能力取舍与Business交接；准备受控资料/资产检索，已有资料时连接最薄Knowledge咨询 | Business可用获准案例/能力依据，FDE/Engineering可直接咨询；资料权限和六组关系不被入口遗漏，无结果如实返回 |
 | D2 报价交付 | 确认模拟字段、换算/精度与导出规则后，先本地开发独立浏览器端工具；连接实际前置产物依赖 | 本地构建/检查及固定产物可追溯，不以本地预览代替部署交付；不补猜业务规则 |
@@ -102,7 +142,7 @@ Skill 是辅助当前开发 Agent 的工作流程，不是 OneFDE 产品内四�
 
 ## 需求到证据的关联
 
-下表直接关联需求与检查，不另建独立追踪矩阵。C0+C1a 仅提供 P02 项目基础持久化、P05 草稿与 P07 HTTP 幂等子集证据，见验证记录；下表完整需求仍未验收，后续添加具体任务/Run 与产物链接。
+下表对应 V01–V10 全量场景，仍未整项验收。已通过子集和 2026-11-05 至 2026-11-06 的记录见[测试与验收](../operations/testing.md)。
 
 | 需求 | 首次验证阶段 | 检查场景 | 当前执行证据 |
 | --- | --- | --- | --- |
@@ -123,6 +163,10 @@ Skill 是辅助当前开发 Agent 的工作流程，不是 OneFDE 产品内四�
 
 | 日期 | 已完成事实 | 仍需处理 |
 | --- | --- | --- |
+| 2026年11月6日（Engineering 技能调研） | 核对 [Coding Agent 上下文与验收设计](../architecture/coding-agent.md)、锁定 OpenHands 的显式技能入口及外部调试、复核技能。 | 建议由可信装配层按 Run 选择已审查的短指引并固定版本。先用既有工程回归比较行为及成本。技能适配、安装及模型对照均待执行。 |
+| 2026年11月6日（Business 自主协作调研） | 核对 [Business 首版](../product/PRD.md#business-首版已确认) 的会话、客户意愿、售后和交接边界，比较 Chatwoot、Rasa CALM 和 Intercom Fin 的客服设计。 | 建议从现有客户会话接入模型工具循环，验证有依据的答复、原单澄清和真实 Business → FDE 交接。隔离模拟验收及外部渠道授权待落实。 |
+| 2026年11月6日（FDE 自主协作调研） | 按 [FDE 产品职责](../product/product-definition.md#52-fde-agent客户项目与解决方案负责人) 和 [协调 ADR](../architecture/ADR/0001-coordination.md) 核对源码及多 Agent 委派、等待和续办实践。 | 建议将首轮验收扩到真实 FDE 发起工程委派、真实 Engineering 执行及结果回 FDE。采用隔离模拟项目和预授权范围。授权策略、实现及运行验收待确认。 |
+| 2026年11月6日（角色运行核对） | 对照 [PRD](../product/PRD.md#六组角色关系检查) 和工作树源码，确认 FDE 草稿与受控命令、Business 规则流、Knowledge 检索和 Engineering 模型循环的实现边界。`propose_review` 实际提交评审，Knowledge 的演示入口从请求体接收角色和用途。 | 建议先在 FDE 澄清预览试验有界只读工具循环，经创始人审阅后再决定写权限。待验证引用与归属、过期草稿、重放和真实模型工具选择。仅源码核对，无新增运行验收或技术选型。 |
 | 2026年11月4日（Coding Agent设计） | 按用户要求参考OpenHands固定源码、Aider和mini-swe-agent，形成[执行细化设计](../architecture/coding-agent.md)及[上游依据](../architecture/coding-agent-research.md)，明确复用/自有适配/后置、上下文/工具/检查/结果与续作；补CA01—CA10 | 本轮仅编辑7份设计/关联文档，内部链接与锚点检查通过；新增运行条件全部未执行，C2真实模型工程仍未验收。检查期间后端另有并发修改，未纳入本轮实现或运行证据 |
 | 2026年11月4日（最新） | 按用户最新指令重审单ECS+Compose：形成完整架构、服务/角色/Sandbox链路、发布/HTTPS/备份/资源估算与拆分条件；新ADR0009取代物理另机要求，PRD0.9及操作入口已同步 | 仅设计待审阅；无代码/云资源/部署变更，E01—E11均未执行；确认后先做本地Compose与安全适配，再按授权购买/上线 |
 | 2026年11月4日 | 用户确认本地开发、后续单台阿里云托管公司网站和客户产品、工程执行分开的方向；已同步PRD/部署/架构及P08验证要求 | 仅文档同步；无服务器购买或部署。先完成C2真实模型工程，再推进客户产品与获授权的D3发布；公司网站页面范围、预算和域名等仍待确认 |
@@ -207,7 +251,7 @@ S1/S2完成仅限本地授权范围：当前没有真实模型Engineering提交/
 
 用户确认[黑客松实施方案](../product/hackathon-proposal.md)后，先同步文档。P0—P4是**参赛实施切片编号**，不是PRD的P01—P10。确认方案≠角色/报价/页面已实现；本轮文档同步不授权新的模型调用、业务代码或云部署。验收见[黑客松切片验收](../operations/testing.md#黑客松切片验收)。
 
-当前基线（勿与更早阻塞表述混用）：C0+C1b控制底座已有；Engineering有SDK/契约/固定验证，并有Compose API+宿主venv Worker的真实网页冒烟（Task `a2d797a5-…` succeeded）；P1薄FDE受控工具已有；P2报价静态产品v1.1与S01—S05检查已通过（本案例平台Run为确定性回填）；P3资产检索与第二项目再检查已有；P4本地产品 Origin `http://127.0.0.1:8765` 与复现说明已有，见[P4演示](../operations/p4-demo.md)。Business/Knowledge尚无独立模型循环；工程Task仍固定`owner_role=fde`、`executor_role=engineering`；工作台薄页面未做；云端E类与提供方账单费用未核。
+2026-11-04 确认时的基线见下表。其后的薄工作台、角色演练和真实 Run 只登记在文末验收索引，逐步证据在[测试与验收](../operations/testing.md)。工程 Task 仍固定 `owner_role=fde`、`executor_role=engineering`。交接列表、能力条目页面、演示录像和云端验收仍未完成。
 
 | 切片 | 当前状态 | 下一动作与依赖 | 退出条件 |
 | --- | --- | --- | --- |
@@ -219,4 +263,103 @@ S1/S2完成仅限本地授权范围：当前没有真实模型Engineering提交/
 
 时间不足时优先P0—P2主链与实际产物，P3/P4按真实完成度标注。不增加第二台ECS、Kubernetes、Redis、LLM Router或复杂向量库；单ECS+Compose方向不变。
 
-2026年11月5日：P4本地切片落地。新增`deploy/verify_product_origin.py`，产品只在`127.0.0.1:8765`提供；同次运行`node check.mjs`退出0。证据[p4-product-origin.json](../operations/evidence/p4-product-origin.json)，复现说明[p4-demo.md](../operations/p4-demo.md)。浏览器在该 Origin 导入 S01 得到可比较 2 行；产品 Origin 的 `/api/v1/engagements` 为 404。工作台端口未监听，未重跑平台 pytest，未录像，未调用模型，未公网部署。
+2026年11月5日：P4本地切片落地。新增`deploy/verify_product_origin.py`，产品只在`127.0.0.1:8765`提供；同次运行`node check.mjs`退出0。证据[p4-product-origin.json](../operations/evidence/p4-product-origin.json)，复现说明[p4-demo.md](../operations/p4-demo.md)。浏览器在该 Origin 导入 S01 得到可比较 2 行；产品 Origin 的 `/api/v1/engagements` 为 404。当时工作台端口未监听，未重跑平台 pytest，未录像，未调用模型，未公网部署。
+
+2026年11月5日薄路径：`frontend` 用现有 React、Ant Design、React Router 和 TanStack Query 接上登录、项目、当前 Run、检查结果、固定产物、评审和独立报价链接。API 只在 `frontend/dist` 存在时挂载页面，OpenAPI 路由未增加。开发入口是可信 Origin `http://localhost:8000`。本地库原先只有四条草稿模拟项目；其中 `651dc06f-e29d-49c8-8be0-da242bb65799` 用现有任务命令排队、启动，并确定性登记为待评审，未调用模型。浏览器随后登录、打开该项目、看到 Run `f40cc92e-738d-48ab-afdf-eb3796277679` 与产物「报价对照表」，接受后状态变为已接受，再在新标签打开 `http://127.0.0.1:8765/`。交接、能力条目、真实模型报价、云端验收和完整三入口仍未做。
+
+## 2026-11-05 至 2026-11-06 验收索引
+
+触发：核对这几日的通过范围、Run、费用或证据文件时，读下表指向的验收节。本计划只保留结论。操作步骤和完成标准留在对应手册。
+
+| 范围 | 结论 | 验收 |
+| --- | --- | --- |
+| Business 首版 | 本地模拟闭环有记录；真实高德与公网另计 | [Business 首版验收](../operations/testing.md#business-首版验收) |
+| 报价自动售后 | 本地真实 Engineering 售后闭环有记录；外部客户验收和正式发布另计 | [报价自动售后验收](../operations/testing.md#报价自动售后验收) |
+| 获客到售后和复用 | 隔离库整链有记录；当时工作台只显示首个 Task | [整体验收](../operations/testing.md#从获客到售后和复用的整体验收) |
+| 双 Task 工作台 | 按 URL 选择 Task，首交与售后均可评审 | [双 Task 收尾](../operations/testing.md#双-task-工作台评审和首交收尾) |
+| 临期商品清单 | 新开发、复用和权限反例有记录 | [临期整链](../operations/testing.md#临期商品清单整链验收) |
+| 预约台首交 | 确定性交付、接受、通知和反馈有记录 | [预约台试点](../operations/testing.md#共享设备预约台交付试点) |
+| 店长代取消 | 真实修订已接受；重复取消返回 200，设计说明中的 404 留在原证据 | [店长代取消](../operations/testing.md#预约台店长代取消验收) |
+| 通用能力迁移 | 维修报价权限回归和试用反馈有记录 | [通用能力迁移](../operations/testing.md#通用能力迁移验收) |
+| FDE Agent | 确定性演练有记录；真实双 Agent 退出条件仍待验收 | [FDE Agent](../operations/testing.md#fde-agent-首版验收) |
+| Business Agent | 确定性演练和创始人批准转达有记录 | [Business Agent](../operations/testing.md#business-agent-首版验收) |
+| 三角色长链 | 一次真实长链已提交待评审；正式业务接受和发布未登记 | [三角色长链](../operations/testing.md#三角色真实长链演练) |
+| Engineering 提交前修复 | 同 Run 修复和一次自动续办有记录；普通项目自动续办未开放 | [提交前修复](../operations/testing.md#engineering-提交前修复与续办) |
+
+证据文件仍在 `docs/operations/evidence/`。客户规则仍在对应 Engagement。ADR 和迁移历史保留。
+
+## 仓库整理（2026年11月6日）
+
+触发：继续整理本地仓库的源码入口、重复状态说明或测试取舍时，先读本节，再按链接进入代码组织和验收场景。
+
+已做：
+
+- 删除 `backend/src/onefde/entrypoints/engineering_run.py`。它只再导出 `modules/tasks/assembly.py`，没有命令入口，也没有操作手册引用。`tests/integration/test_engineering_run.py` 改为直接导入 `assembly`。
+- 保留 `deploy/accept_c2_smoke.py`。验收结果在 `docs/operations/evidence/c2-webpage-review.json`，接受请求的 reason 和 check_evidence 只在该脚本中。它不是当前维护入口；运行会向本地 Compose API 再提交一次接受。
+- 状态句改指向本计划和 `docs/operations/testing.md`。11 月 5–6 日的长叙述从本文件移出，验收节保留原证据链接。
+- 迁移清单改为链尾 `f2ee3d9000b1`，写在 [代码组织](code-structure.md)。`backend/WORKER.md` 不再把 `d5454eda0523` 写成当前 head，只保留它对 `dispatch_jobs` 的字段说明。
+
+检查过、未删除的测试：
+
+- `tests/unit/test_fde_tools.py` 检查纯目录、拒绝码和角色字段校验。`tests/integration/test_fde_tools.py` 检查 PostgreSQL 上的创建、采用、422 和跨项目 403。两层失败点不同。
+- `tests/unit/test_knowledge_access.py` 检查投影函数。`tests/integration/test_knowledge_tools.py` 检查 HTTP 404、响应正文不泄漏，以及交接写入。
+- `tests/e2e/http_smoke.py`、`c1b_smoke.py`、`c2_smoke.py` 启动独立 API 进程，分别覆盖开发库重启、`_test` 库多轮控制和真实 Worker 控制器。进程内集成测试不替代这次重启。
+- 认证、权限、状态流转、历史保护和恢复测试都仍只在各自用例中出现，未发现可合并的等价断言。
+
+整理前基线：Postgres 容器 `backend-postgres-1` 当时处于退出状态，集成测试 111 项在连接超时处失败，77 项无库测试通过。启动该既有容器后，`ruff check` 通过，OpenAPI `--check` 通过，`pytest -q` 为 188 passed。`ruff format --check` 报 8 个文件会重排，差异是 CRLF/LF，未整仓格式化；其中 `engineering_run.py` 已删除。没有新的代码缺陷进入修复。整理后的对应检查：`tests/integration/test_engineering_run.py` 为 1 passed，该文件 `ruff check` 通过。未做全量复测或浏览器复演。
+
+完成标准：实施计划不再重复验收节中的 Run、费用和浏览器步骤；代码组织中的迁移链尾与 `backend/migrations/versions` 一致；仓库内不再有 `entrypoints.engineering_run` 导入。
+
+## Web 工作台 下一阶段规划（2026年11月6日）
+
+规划对照五张效果图、当前前端和 FastAPI 源码，完成[Web 工作台设计](../frontend/design.md)、[接口映射](../frontend/api-mapping.md)与[分阶段验收](../frontend/implementation.md)。规划时 `tsc --noEmit` 和 FastAPI 导出检查通过，核对了 17 项 Engineering API 操作及 34 处文档内部链接和锚点。
+
+FE1 已按授权完成可交互网页原型并开放本地预览，待用户看过。使用模拟 Task/Run 与固定证据，操作仅修改页面内存。浏览器验证了历史只读与刷新恢复、事件和检查、产物摘要、要求修改并采用、接受所需的检查依据，以及运行中补充与待答采用。1600×900、1280×800、1024×768 和 640×400 视口未见整页横向溢出。构建与预览方法见[实施与验收](../frontend/implementation.md)。真实 API 并发冲突、Worker、200% 浏览器缩放和正式发布尚未验证。
+
+用户确认[Engineering 对话式改版](../frontend/design.md#engineering-对话式改版提案)。新版原型已在本地预览，左侧选任务，中间显示 FDE 交接与工程对话，提交证据和评审按需打开。构建通过，预览返回 HTTP 200；浏览器复演运行中补充、待答采用、两条评审分支、历史只读及刷新恢复，核对 Escape 关闭证据后回焦点。1600、1280、1024、640、360 px 宽度未见整页横向溢出，360 px 提交面板全宽。新版使用模拟数据，等待用户查看后决定 FE2 真实联调范围。
+
+## 桌面 Web 前端设计准备（2026年11月7日）
+
+本轮仅文档，已逐张查看 `D:\proj\one-picture` 的7张PNG（6张UI含Knowledge、1张架构图），核对当前薄工作台/模拟原型、FastAPI/Pydantic、42项已实现HTTP操作、Worker/OpenHands、领域测试和单ECS部署边界，参考官方OpenHands/Linear/Plane/Storybook资料。
+
+设计交付入口：[前端设计目录](../frontend/README.md)；正文为[架构](../frontend/architecture.md)、[五页设计](../frontend/design.md)、[能力/API与缺口](../frontend/api-mapping.md)、[分阶段实施和验收](../frontend/implementation.md)。本轮方案均待用户确认；历史原型授权不扩展为新开发许可。建议顺序为F1公共框架/Engineering真实只读→F2工程真实闭环→F3 FDE/项目→F4 Knowledge→F5 Business→F6 Office全局聚合。F1/F2基本闭环不要求新增HTTP API；文件读取/下载、工具级实时事件、通用聊天/方案版本、历史知识与全局聚合另列增量候选。
+
+完成证据为逐图观察表、实现路径/接口字段映射、官方来源、文档链接及范围检查；具体本轮检查结果保留在 `.planning/frontend-preparation-20261107/`。独立复核确认：图片目录含 Knowledge 图、运行契约 42 项操作、文档本地链接可用。尚未满足前端开发/真实联调/云端部署退出条件。本轮未初始化工程、安装依赖、编写业务代码、修改后端逻辑或调用模型。完成后停止，等待用户确认首阶段范围。
+
+## F1 前端框架与 Engineering 只读（2026年11月7日）
+
+用户确认三项边界后实施 F1：统一 AppShell/六入口与紫系主题；`#/engineering` 接真实 Task/Run/事件/固定 review-evidence（只读 Drawer）；保留项目详情与 Business 深链接；Office/FDE/Knowledge 提供入口（Knowledge 为占位）。未新增后端 API、未调用模型、未装新前端依赖。`frontend` 下 `npm run build` 通过。规划与细节见 [前端实施](../frontend/implementation.md#f1-落地说明2026-11-07) 与 `.planning/f1-frontend/`。
+
+## F2 Engineering 写闭环（2026年11月7日）
+
+用户确认按计划继续后落地 F2：`#/engineering` 增加输入保存/采用、queue/start/continue/retry/stop/cancel、提交面板内 accept/request_changes；历史轮次只读；幂等键与 409 重读；零新增 API。`npm run build` 通过。细节见 [F2 落地说明](../frontend/implementation.md#f2-落地说明2026-11-07) 与 `.planning/f2-frontend/`。隔离库浏览器矩阵与真实 Worker 烟测仍待运行中的 API/模型授权；然后可授权 F3。
+
+## F3 FDE 与项目中心（2026年11月7日）
+
+用户确认继续后落地 F3：项目中心索引来源/未知项/Task 状态分组并链到 Engineering；FDE 页左右栏 delivery + 异步 Work（建议与正式评审分开）；Case/Task/Run 可往返。零新增 API，`npm run build` 通过。见 [F3 落地说明](../frontend/implementation.md#f3-落地说明2026-11-07) 与 `.planning/f3-frontend/`。下一阶段可授权 F4 Knowledge 只读。
+
+## F4 Knowledge 只读（2026年11月7日）
+
+用户确认继续后落地 F4：`#/knowledge` 接 `POST /knowledge/tools` 的 search/get；角色×用途隔离缓存；公开用途仅摘要；可复制固定版本引用并返回原工作。零新增 API，`npm run build` 通过。见 [F4 落地说明](../frontend/implementation.md#f4-落地说明2026-11-07) 与 `.planning/f4-frontend/`。
+
+## F5 Business 经营跟进（2026年11月7日）
+
+用户确认继续后落地 F5：Business 迁入统一壳；公开/内部消息分区；下一步横幅；交接/复试/FDE/Engineering/Knowledge 入口；候选样例与真实来源区分；售后标明工程接受不自动关闭。零新增 API，`npm run build` 通过。见 [F5 落地说明](../frontend/implementation.md#f5-落地说明2026-11-07)。
+
+## F6 Office 有限摘要（2026年11月7日）
+
+用户确认继续后落地 F6：办公室「需要你处理」+ 角色归属 cue + 项目/动态摘要；后补静态场景上的四员工状态气泡（`roleStatus` 映射 actionable/activity，Knowledge 明示待命）。深链回原对象；无 N+1 全项目轮询、无在线状态、不把条数当全公司指标。零新增 API。见 [F6 落地说明](../frontend/implementation.md#f6-落地说明2026-11-07) 与 [状态气泡](../frontend/implementation.md#office-状态气泡2026-11-07功能优先)。完整全局聚合仍待 G6。
+
+## A→C→B 收口执行（2026年11月7日）
+
+用户授权顺序 A→C→B（C：¥10 / ≤20 请求 / 优先 MiMo）。**A 通过**（`localhost:8000`，迁移至 `f2ee3d9000b1`）。**C 通过**：Compose `127.0.0.1:8002` 真实 MiMo Worker 烟测，run `a7fa3a12-…` completed/submitted，费用 ≈$0.013 / ≈¥0.17，未追加额度。**B/G6 通过**：`GET /api/v1/office/actionable|activity`（keyset、coverage、深链）；修复 Compose `onefde_app` 对 `fde_agent_work` 缺 SELECT 导致的 503；办公室前端已接派生流。手册：[acb-runbook](../operations/acb-runbook.md)；证据目录：`.planning/acb-a-c-b/`（含 `final-report.md`）。剩余：`review_material` 缺口、常驻 Worker 默认关模型、未公网/未录像。
+
+## Knowledge 页头单页预览（2026年11月7日）
+
+用户授权先试一页。Knowledge 页头已按参考图调整为横向场景横幅和图上标题，排除顶部搜索及右侧按钮；其余四页未推广。`npm run build` 通过，本地 1280/1600 浏览器检查与截图见[前端实施记录](../frontend/implementation.md#knowledge-页头单页预览2026-11-07)。下一步等用户验收视觉方向。
+
+## FDE 整页单页试稿（2026年11月7日）
+
+用户要求按 FDE 参考图先改一页。FDE 已试用固定侧栏分组、紧凑场景页头、首屏双栏、真实四步摘要和空 Work 表单前置；其他角色页未推广。`npm run build` 通过，1280/1600 浏览器截图及能力边界见[前端实施记录](../frontend/implementation.md#fde-整页单页试稿2026-11-07)。待用户验收后决定调整和推广。
+
+用户反馈后取消了 FDE 场景右侧的透明淡化，更新 1600 截图；原图右端自身为浅紫背景，未追加新图或虚构界面内容。

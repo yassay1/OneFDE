@@ -31,3 +31,5 @@ DENIED_TOOL_NAMES = frozenset(
         "write_database",
     }
 )
+QUOTE_SUPPORT_ACTOR = "service:fde:quote-support"
+AGENT_ACTOR = "service:fde:delivery"

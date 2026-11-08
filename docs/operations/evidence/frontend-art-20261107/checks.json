@@ -1,0 +1,787 @@
+{
+  "date": "2026-11-07",
+  "origin": "http://localhost:8000",
+  "dataKind": "Existing Windows development database; read-only page regression and manifest search; no model or Task/Run creation",
+  "checks": [
+    {
+      "label": "knowledge-search-detail-1600",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/knowledge?q=%E6%8A%A5%E4%BB%B7&asset=fresh-quote-compare-csv",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 待命\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\": 报价\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - generic: 关键词「报价」\n  - list:\n    - button \"业务模块 limited 生鲜报价 CSV 同口径比较 fresh-quote-compare-csv@1.1.0 cross_project_internal · demo-supplier-quotes\" [active]:\n      - generic: 业务模块\n      - generic: limited\n      - strong: 生鲜报价 CSV 同口径比较\n      - generic: fresh-quote-compare-csv@1.1.0\n      - generic: cross_project_internal · demo-supplier-quotes\n  - paragraph: 共 1 条可见结果 · 非全库统计。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - article:\n    - generic: 业务模块\n    - generic: limited\n    - heading \"生鲜报价 CSV 同口径比较\" [level=3]\n    - paragraph: fresh-quote-compare-csv@1.1.0\n    - term: 问题\n    - definition: 多家供应商报价字段混杂时，按约定口径比较单位价并标出待核对项\n    - term: 类型\n    - definition: 业务模块\n    - term: 验证状态\n    - definition: limited\n    - term: 可见性\n    - definition: internal\n    - term: 复用范围\n    - definition: cross_project_internal\n    - term: 来源项目\n    - definition: demo-supplier-quotes\n    - term: 实现引用\n    - definition: products/demo-supplier-quotes@v1.1\n    - heading \"适用条件\" [level=4]\n    - list:\n      - listitem: 输入为 P0 八列 CSV\n      - listitem: 仅比较 product+grade+spec+unit 且 unit=kg\n      - listitem: 不需要运费/起订量/送货总落地成本\n    - heading \"限制 / 不适用\" [level=4]\n    - list:\n      - listitem: 需要 box↔kg 等未确认换算\n      - listitem: Excel 专有格式为主输入\n      - listitem: 自动选定供应商或下单\n    - generic \"获准来源 / 证据引用\"\n    - list:\n      - code: docs/operations/evidence/p2-quote-product-check.json\n      - code: docs/operations/evidence/p2-quote-control.json\n      - code: products/demo-supplier-quotes/CHANGELOG.md\n    - generic \"验证样例\"\n    - code: fresh-quote-compare-csv@1.1.0\n    - button \"复制固定版本引用\":\n      - generic: 复制固定版本引用\n    - paragraph: 引用供回到原工作使用；查询结果不自动变成资产确认或执行授权。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - list:\n    - strong: \"1\"\n    - generic: 业务模块\n  - heading \"选中摘要\" [level=2]\n  - strong: 生鲜报价 CSV 同口径比较\n  - paragraph: fresh-quote-compare-csv@1.1.0\n  - button \"复制 fresh-quote-compare-csv@1.1.0\":\n    - generic: 复制 fresh-quote-compare-csv@1.1.0\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "knowledge-back-result",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/knowledge?q=%E6%8A%A5%E4%BB%B7",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 待命\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\": 报价\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - generic: 关键词「报价」\n  - list:\n    - button \"业务模块 limited 生鲜报价 CSV 同口径比较 fresh-quote-compare-csv@1.1.0 cross_project_internal · demo-supplier-quotes\" [active]:\n      - generic: 业务模块\n      - generic: limited\n      - strong: 生鲜报价 CSV 同口径比较\n      - generic: fresh-quote-compare-csv@1.1.0\n      - generic: cross_project_internal · demo-supplier-quotes\n  - paragraph: 共 1 条可见结果 · 非全库统计。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - paragraph: 从左侧选择一条结果。\n  - paragraph: 查看版本、适用条件、限制与获准来源；可复制固定版本引用。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - list:\n    - strong: \"1\"\n    - generic: 业务模块\n  - heading \"选中摘要\" [level=2]\n  - paragraph: 选择结果后显示固定版本引用入口。\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "knowledge-forward-detail",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/knowledge?q=%E6%8A%A5%E4%BB%B7&asset=fresh-quote-compare-csv",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 检索中\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\": 报价\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - generic: 关键词「报价」\n  - list:\n    - button \"业务模块 limited 生鲜报价 CSV 同口径比较 fresh-quote-compare-csv@1.1.0 cross_project_internal · demo-supplier-quotes\" [active]:\n      - generic: 业务模块\n      - generic: limited\n      - strong: 生鲜报价 CSV 同口径比较\n      - generic: fresh-quote-compare-csv@1.1.0\n      - generic: cross_project_internal · demo-supplier-quotes\n  - paragraph: 共 1 条可见结果 · 非全库统计。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - article:\n    - generic: 业务模块\n    - generic: limited\n    - heading \"生鲜报价 CSV 同口径比较\" [level=3]\n    - paragraph: fresh-quote-compare-csv@1.1.0\n    - term: 问题\n    - definition: 多家供应商报价字段混杂时，按约定口径比较单位价并标出待核对项\n    - term: 类型\n    - definition: 业务模块\n    - term: 验证状态\n    - definition: limited\n    - term: 可见性\n    - definition: internal\n    - term: 复用范围\n    - definition: cross_project_internal\n    - term: 来源项目\n    - definition: demo-supplier-quotes\n    - term: 实现引用\n    - definition: products/demo-supplier-quotes@v1.1\n    - heading \"适用条件\" [level=4]\n    - list:\n      - listitem: 输入为 P0 八列 CSV\n      - listitem: 仅比较 product+grade+spec+unit 且 unit=kg\n      - listitem: 不需要运费/起订量/送货总落地成本\n    - heading \"限制 / 不适用\" [level=4]\n    - list:\n      - listitem: 需要 box↔kg 等未确认换算\n      - listitem: Excel 专有格式为主输入\n      - listitem: 自动选定供应商或下单\n    - generic \"获准来源 / 证据引用\"\n    - list:\n      - code: docs/operations/evidence/p2-quote-product-check.json\n      - code: docs/operations/evidence/p2-quote-control.json\n      - code: products/demo-supplier-quotes/CHANGELOG.md\n    - generic \"验证样例\"\n    - code: fresh-quote-compare-csv@1.1.0\n    - button \"复制固定版本引用\":\n      - generic: 复制固定版本引用\n    - paragraph: 引用供回到原工作使用；查询结果不自动变成资产确认或执行授权。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - list:\n    - strong: \"1\"\n    - generic: 业务模块\n  - heading \"选中摘要\" [level=2]\n  - strong: 生鲜报价 CSV 同口径比较\n  - paragraph: fresh-quote-compare-csv@1.1.0\n  - button \"复制 fresh-quote-compare-csv@1.1.0\":\n    - generic: 复制 fresh-quote-compare-csv@1.1.0\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "knowledge-refresh-detail",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/knowledge?q=%E6%8A%A5%E4%BB%B7&asset=fresh-quote-compare-csv",
+      "validationError": false,
+      "width": 1600,
+      "state": "- status: 正在确认登录。"
+    },
+    {
+      "label": "knowledge-1280",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/knowledge?q=%E6%8A%A5%E4%BB%B7&asset=fresh-quote-compare-csv",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 待命\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\": 报价\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - generic: 关键词「报价」\n  - list:\n    - button \"业务模块 limited 生鲜报价 CSV 同口径比较 fresh-quote-compare-csv@1.1.0 cross_project_internal · demo-supplier-quotes\":\n      - generic: 业务模块\n      - generic: limited\n      - strong: 生鲜报价 CSV 同口径比较\n      - generic: fresh-quote-compare-csv@1.1.0\n      - generic: cross_project_internal · demo-supplier-quotes\n  - paragraph: 共 1 条可见结果 · 非全库统计。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - article:\n    - generic: 业务模块\n    - generic: limited\n    - heading \"生鲜报价 CSV 同口径比较\" [level=3]\n    - paragraph: fresh-quote-compare-csv@1.1.0\n    - term: 问题\n    - definition: 多家供应商报价字段混杂时，按约定口径比较单位价并标出待核对项\n    - term: 类型\n    - definition: 业务模块\n    - term: 验证状态\n    - definition: limited\n    - term: 可见性\n    - definition: internal\n    - term: 复用范围\n    - definition: cross_project_internal\n    - term: 来源项目\n    - definition: demo-supplier-quotes\n    - term: 实现引用\n    - definition: products/demo-supplier-quotes@v1.1\n    - heading \"适用条件\" [level=4]\n    - list:\n      - listitem: 输入为 P0 八列 CSV\n      - listitem: 仅比较 product+grade+spec+unit 且 unit=kg\n      - listitem: 不需要运费/起订量/送货总落地成本\n    - heading \"限制 / 不适用\" [level=4]\n    - list:\n      - listitem: 需要 box↔kg 等未确认换算\n      - listitem: Excel 专有格式为主输入\n      - listitem: 自动选定供应商或下单\n    - generic \"获准来源 / 证据引用\"\n    - list:\n      - code: docs/operations/evidence/p2-quote-product-check.json\n      - code: docs/operations/evidence/p2-quote-control.json\n      - code: products/demo-supplier-quotes/CHANGELOG.md\n    - generic \"验证样例\"\n    - code: fresh-quote-compare-csv@1.1.0\n    - button \"复制固定版本引用\":\n      - generic: 复制固定版本引用\n    - paragraph: 引用供回到原工作使用；查询结果不自动变成资产确认或执行授权。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - list:\n    - strong: \"1\"\n    - generic: 业务模块\n  - heading \"选中摘要\" [level=2]\n  - strong: 生鲜报价 CSV 同口径比较\n  - paragraph: fresh-quote-compare-csv@1.1.0\n  - button \"复制 fresh-quote-compare-csv@1.1.0\":\n    - generic: 复制 fresh-quote-compare-csv@1.1.0\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "business-1280",
+      "images": [
+        {
+          "naturalHeight": 467,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/business-hero-scene.png"
+        },
+        {
+          "naturalHeight": 512,
+          "naturalWidth": 512,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/business.png"
+        },
+        {
+          "naturalHeight": 512,
+          "naturalWidth": 512,
+          "renderedHeight": 28,
+          "renderedWidth": 28,
+          "src": "/avatars/business.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/business",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\" [active]:\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /客户与经营\n- banner:\n  - heading \"Business\" [level=1]\n  - generic: 读取中\n  - paragraph: 客户沟通、需求收集、商机跟进与售后服务。对外回复与内部备注分开；工程接受不会自动关闭售后。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=business&role=business&purpose=delivery\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- tablist \"Business 视图\":\n  - tab \"对话工作台\" [selected]\n  - tab \"Case 收件箱\"\n  - tab \"找店候选\"\n- region \"与 Business 协作\":\n  - heading \"与 Business 协作\" [level=2]\n  - generic: 对话能力待接入 · 下方为真实 Case\n  - article:\n    - generic: 创始人 · 示例提问\n    - paragraph: 今天有哪些客户需要重点跟进？\n  - article:\n    - generic: Business\n    - paragraph: 正在读取本页 Case…\n  - button \"打开收件箱\":\n    - generic: 打开收件箱\n  - button \"找店候选\":\n    - generic: 找店候选\n  - button \"loading 刷新 Case\":\n    - img \"loading\":\n    - generic: 刷新 Case\n  - form \"Business 对话输入（待接入）\":\n    - textbox \"Business 对话能力本轮未接入；请从上方真实 Case 进入详情处理。\" [disabled]\n    - button \"发 送\" [disabled]:\n      - generic: 发 送\n- complementary \"当前关注\":\n  - heading \"当前关注\" [level=2]\n  - paragraph: 读取中…\n  - heading \"本页 Case 状态\" [level=2]\n  - paragraph: 来自当前页列表的真实计数，不是全库商机漏斗。\n  - paragraph: 暂无数据。\n  - heading \"需跟进\" [level=2]\n  - paragraph: 取自未关闭 Case 的 next_step，无独立待办表。\n  - paragraph: 暂无待跟进项。"
+    },
+    {
+      "label": "fde-1280",
+      "images": [
+        {
+          "naturalHeight": 467,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/fde-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/fde.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1280,
+      "url": "http://localhost:8000/#/fde",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\" [active]:\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /FDE\n- banner:\n  - heading \"FDE\" [level=1]\n  - generic: 读取中\n  - paragraph: 需求澄清 · 方案设计 · 任务拆解 · 开发协同 · 交付验收。登记目标后异步出报告；正式工程评审在 Engineering。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&role=fde&purpose=delivery\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 选择项目\"\n- generic: 选择项目\n- paragraph: FDE 负责方案与交付组织；Business 管经营会话，Engineering 管实现与正式评审。\n- status:\n  - heading [level=3]\n  - list:"
+    },
+    {
+      "label": "engineering-1280",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1280,
+      "url": "http://localhost:8000/#/engineering",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\" [active]:\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 待命\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 选择项目\"\n- generic: 选择项目\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- list:\n  - button \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent\":\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 模拟 · 证明草稿持久化，不运行 Agent\n  - button \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent\":\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 模拟 · 证明草稿持久化，不运行 Agent\n  - button \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent\":\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 模拟 · 证明草稿持久化，不运行 Agent\n  - button \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent\":\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 模拟 · 证明草稿持久化，不运行 Agent"
+    },
+    {
+      "label": "office-1280",
+      "images": [
+        {
+          "naturalHeight": 900,
+          "naturalWidth": 1600,
+          "renderedHeight": 338,
+          "renderedWidth": 602,
+          "src": "/office-scene.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\" [active]:\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- banner:\n  - heading \"晚上好，创始人\" [level=1]\n  - paragraph: 你的 AI 团队正在协作。气泡与待办来自本页已读取的 Case / Task / FDE Work，请到原对象处理。\n- region \"AI 员工入口\":\n  - generic \"四位员工办公室\":\n    - img \"OneFDE 办公室：Business、FDE、Engineering、Knowledge\"\n    - link \"进入 Business：读取中…\":\n      - /url: \"#/business\"\n      - generic \"读取中…\":\n        - generic: 读取中…\n      - strong: Business\n      - generic: 客户与经营\n    - link \"进入 FDE：读取中…\":\n      - /url: \"#/fde\"\n      - generic \"读取中…\":\n        - generic: 读取中…\n      - strong: FDE\n      - generic: 方案与交付\n    - link \"进入 Engineering：读取中…\":\n      - /url: \"#/engineering\"\n      - generic \"读取中…\":\n        - generic: 读取中…\n      - strong: Engineering\n      - generic: 软件开发\n    - link \"进入 Knowledge：读取中…\":\n      - /url: \"#/knowledge?role=fde&purpose=delivery\"\n      - generic \"读取中…\":\n        - generic: 读取中…\n      - strong: Knowledge\n      - generic: 知识与能力\n  - paragraph: 状态气泡来自本页已读工作事实。无心跳，不显示在线/空闲。\n- complementary \"待办与动态\":\n  - region \"需要你处理\":\n    - heading \"需要你处理\" [level=2]\n    - status:\n      - heading [level=3]\n      - list:\n  - region \"团队动态\":\n    - heading \"团队动态\" [level=2]\n    - status:\n      - heading [level=3]\n      - list:\n- region \"在推进的项目\":\n  - heading \"在推进的项目\" [level=2]\n  - link \"全部项目\":\n    - /url: \"#/projects\"\n  - list:\n    - link \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent 进入项目\":\n      - /url: \"#/projects/ea2c8b88-be38-4ecb-97ca-dfe928a3fefe\"\n      - strong: C0+C1a HTTP 模拟验证\n      - generic: 模拟 · 证明草稿持久化，不运行 Agent\n      - generic: 进入项目\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=ea2c8b88-be38-4ecb-97ca-dfe928a3fefe\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=ea2c8b88-be38-4ecb-97ca-dfe928a3fefe\"\n    - link \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent 进入项目\":\n      - /url: \"#/projects/3be1db5e-d5a2-4ff8-8f99-3577f34738a2\"\n      - strong: C0+C1a HTTP 模拟验证\n      - generic: 模拟 · 证明草稿持久化，不运行 Agent\n      - generic: 进入项目\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=3be1db5e-d5a2-4ff8-8f99-3577f34738a2\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=3be1db5e-d5a2-4ff8-8f99-3577f34738a2\"\n    - link \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent 进入项目\":\n      - /url: \"#/projects/9556c0ea-2bc2-4f34-bb51-c8a6fad8efd0\"\n      - strong: C0+C1a HTTP 模拟验证\n      - generic: 模拟 · 证明草稿持久化，不运行 Agent\n      - generic: 进入项目\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=9556c0ea-2bc2-4f34-bb51-c8a6fad8efd0\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=9556c0ea-2bc2-4f34-bb51-c8a6fad8efd0\"\n    - link \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent 进入项目\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - strong: C0+C1a HTTP 模拟验证\n      - generic: 模拟 · 证明草稿持久化，不运行 Agent\n      - generic: 进入项目\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\""
+    },
+    {
+      "label": "office-1600",
+      "images": [
+        {
+          "naturalHeight": 900,
+          "naturalWidth": 1600,
+          "renderedHeight": 458,
+          "renderedWidth": 815,
+          "src": "/office-scene.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\" [active]:\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- banner:\n  - heading \"晚上好，创始人\" [level=1]\n  - paragraph: 你的 AI 团队正在协作。气泡与待办来自本页已读取的 Case / Task / FDE Work，请到原对象处理。\n- region \"AI 员工入口\":\n  - generic \"四位员工办公室\":\n    - img \"OneFDE 办公室：Business、FDE、Engineering、Knowledge\"\n    - link \"进入 Business：暂无可确认动态\":\n      - /url: \"#/business\"\n      - generic \"暂无可确认动态\":\n        - generic: 暂无可确认动态\n      - strong: Business\n      - generic: 客户与经营\n    - link \"进入 FDE：暂无可确认动态\":\n      - /url: \"#/fde\"\n      - generic \"暂无可确认动态\":\n        - generic: 暂无可确认动态\n      - strong: FDE\n      - generic: 方案与交付\n    - link \"进入 Engineering：最近有完成记录\":\n      - /url: \"#/engineering\"\n      - generic \"最近有完成记录\":\n        - generic: 最近有完成记录\n      - strong: Engineering\n      - generic: 软件开发\n    - link \"进入 Knowledge：暂无实时动态 · 待命\":\n      - /url: \"#/knowledge?role=fde&purpose=delivery\"\n      - generic \"暂无实时动态 · 待命\":\n        - generic: 暂无实时动态 · 待命\n      - strong: Knowledge\n      - generic: 知识与能力\n  - paragraph: 状态气泡来自本页已读工作事实。无心跳，不显示在线/空闲。\n- complementary \"待办与动态\":\n  - region \"需要你处理\":\n    - heading \"需要你处理\" [level=2]\n    - generic: 2026/11/7 18:55:26\n    - paragraph: 派生自当前库内 Case/Task/FDE Work/Run/Review；扫描上限 case=500 task=500 fde=200 run=200 review=200。无独立通知表；不含 totalCount。\n    - paragraph: 当前派生范围内没有待处理事项。\n  - region \"团队动态\":\n    - heading \"团队动态\" [level=2]\n    - generic: 2026/11/7 18:55:26\n    - list:\n      - link \"评审 · accept accept · 对照当前检查结果接受这一版。 Engineering · 2026/11/5 14:36:05\":\n        - /url: \"#/engineering?task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&run=f40cc92e-738d-48ab-afdf-eb3796277679&view=submission\"\n        - strong: 评审 · accept\n        - generic: accept · 对照当前检查结果接受这一版。\n        - generic: Engineering · 2026/11/5 14:36:05\n      - link \"模拟工程草稿 · Run completed/submitted · 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。 Engineering · 2026/11/5 14:26:43\":\n        - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&run=f40cc92e-738d-48ab-afdf-eb3796277679&view=submission\"\n        - strong: 模拟工程草稿 · Run\n        - generic: completed/submitted · 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。\n        - generic: Engineering · 2026/11/5 14:26:43\n- region \"在推进的项目\":\n  - heading \"在推进的项目\" [level=2]\n  - link \"全部项目\":\n    - /url: \"#/projects\"\n  - list:\n    - link \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent 进入项目\":\n      - /url: \"#/projects/ea2c8b88-be38-4ecb-97ca-dfe928a3fefe\"\n      - strong: C0+C1a HTTP 模拟验证\n      - generic: 模拟 · 证明草稿持久化，不运行 Agent\n      - generic: 进入项目\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=ea2c8b88-be38-4ecb-97ca-dfe928a3fefe\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=ea2c8b88-be38-4ecb-97ca-dfe928a3fefe\"\n    - link \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent 进入项目\":\n      - /url: \"#/projects/3be1db5e-d5a2-4ff8-8f99-3577f34738a2\"\n      - strong: C0+C1a HTTP 模拟验证\n      - generic: 模拟 · 证明草稿持久化，不运行 Agent\n      - generic: 进入项目\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=3be1db5e-d5a2-4ff8-8f99-3577f34738a2\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=3be1db5e-d5a2-4ff8-8f99-3577f34738a2\"\n    - link \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent 进入项目\":\n      - /url: \"#/projects/9556c0ea-2bc2-4f34-bb51-c8a6fad8efd0\"\n      - strong: C0+C1a HTTP 模拟验证\n      - generic: 模拟 · 证明草稿持久化，不运行 Agent\n      - generic: 进入项目\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=9556c0ea-2bc2-4f34-bb51-c8a6fad8efd0\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=9556c0ea-2bc2-4f34-bb51-c8a6fad8efd0\"\n    - link \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent 进入项目\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - strong: C0+C1a HTTP 模拟验证\n      - generic: 模拟 · 证明草稿持久化，不运行 Agent\n      - generic: 进入项目\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\""
+    },
+    {
+      "label": "project-detail-1600",
+      "images": [],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/projects/651dc06f-e29d-49c8-8be0-da242bb65799",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - text: /\n  - link \"项目中心\":\n    - /url: \"#/projects\"\n  - generic: /项目\n- status:\n  - heading [level=3]\n  - list:"
+    },
+    {
+      "label": "business-context-1600",
+      "images": [
+        {
+          "naturalHeight": 467,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/business-hero-scene.png"
+        },
+        {
+          "naturalHeight": 512,
+          "naturalWidth": 512,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/business.png"
+        },
+        {
+          "naturalHeight": 512,
+          "naturalWidth": 512,
+          "renderedHeight": 28,
+          "renderedWidth": 28,
+          "src": "/avatars/business.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1600,
+      "url": "http://localhost:8000/#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\" [active]:\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /客户与经营\n- banner:\n  - heading \"Business\" [level=1]\n  - generic: 待命\n  - paragraph: 客户沟通、需求收集、商机跟进与售后服务。对外回复与内部备注分开；工程接受不会自动关闭售后。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=business&role=business&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- tablist \"Business 视图\":\n  - tab \"对话工作台\" [selected]\n  - tab \"Case 收件箱\"\n  - tab \"找店候选\"\n- region \"与 Business 协作\":\n  - heading \"与 Business 协作\" [level=2]\n  - generic: 对话能力待接入 · 下方为真实 Case\n  - article:\n    - generic: 创始人 · 示例提问\n    - paragraph: 今天有哪些客户需要重点跟进？\n  - article:\n    - generic: Business\n    - paragraph: 本页收件箱暂无未关闭 Case。可先打开「Case 收件箱」核对过滤条件，或前往「找店候选」发起演示邀请。\n  - button \"打开收件箱\":\n    - generic: 打开收件箱\n  - button \"找店候选\":\n    - generic: 找店候选\n  - button \"loading 刷新 Case\":\n    - img \"loading\":\n    - generic: 刷新 Case\n  - form \"Business 对话输入（待接入）\":\n    - textbox \"Business 对话能力本轮未接入；请从上方真实 Case 进入详情处理。\" [disabled]\n    - button \"发 送\" [disabled]:\n      - generic: 发 送\n- complementary \"当前关注\":\n  - heading \"当前关注\" [level=2]\n  - paragraph: 本页没有可关注的未关闭 Case。\n  - heading \"本页 Case 状态\" [level=2]\n  - paragraph: 来自当前页列表的真实计数，不是全库商机漏斗。\n  - paragraph: 暂无数据。\n  - heading \"需跟进\" [level=2]\n  - paragraph: 取自未关闭 Case 的 next_step，无独立待办表。\n  - paragraph: 暂无待跟进项。"
+    },
+    {
+      "label": "engineering-context-1600",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\" [active]:\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /FDE\n- banner:\n  - heading \"FDE\" [level=1]\n  - generic: 待命\n  - paragraph: 需求澄清 · 方案设计 · 任务拆解 · 开发协同 · 交付验收。登记目标后异步出报告；正式工程评审在 Engineering。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&role=fde&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: FDE 负责方案与交付组织；Business 管经营会话，Engineering 管实现与正式评审。\n- region \"交付工作区\":\n  - heading \"交付工作区\" [level=2]\n  - paragraph: 异步登记目标 → 报告与工具轨迹。不是创始人自由多轮聊天。\n  - generic: 最多返回 50 条\n  - generic \"工作区\":\n    - generic: 工作记录\n    - generic: 需求/方案文档库与多轮对话暂无后端\n  - paragraph: 还没有 FDE 工作。\n  - paragraph: 在下方登记项目目标后，处理结果会出现在这里。\n  - generic \"给 FDE 一个项目目标\": \"* 给 FDE 一个项目目标\"\n  - textbox \"* 给 FDE 一个项目目标\":\n    - /placeholder: 说明要诊断、组织或澄清的交付目标\n  - button \"登记 FDE 工作\":\n    - generic: 登记 FDE 工作\n  - generic: 提交后显示「已登记工作」；报告不等于方案已确认。\n- complementary \"项目方案工作台\":\n  - heading \"项目方案工作台\" [level=2]\n  - generic: 已有接受任务\n  - heading \"C0+C1a HTTP 模拟验证\" [level=3]\n  - paragraph: 证明草稿持久化，不运行 Agent\n  - paragraph:\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&project=651dc06f-e29d-49c8-8be0-da242bb65799&role=fde&purpose=delivery\"\n  - list \"交付进展（由真实 Work/Task 派生）\":\n    - strong: 交付工作\n    - text: 尚未登记\n    - strong: 目标与未知项\n    - text: 0 项未知\n    - strong: 工程拆解\n    - text: 1 个 Task\n    - strong: 业务验收\n    - text: 已有接受 Task\n  - heading \"目标与来源\" [level=2]\n  - term: 任务目标摘要\n  - definition:\n    - text: 检查控制接口\n    - generic: 取自首个 Task objective，不是独立方案版本\n  - term: 来源\n  - definition: 模拟演示项目\n  - term: 固定版本提示\n  - definition: task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2 spec_version=1\n  - heading \"方案与工程产出\" [level=2]\n  - generic: 真实 Task / Work，非文档库\n  - list:\n    - link \"模拟工程草稿 已接受\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2\"\n      - strong: 模拟工程草稿\n      - generic: 已接受\n    - paragraph: 检查控制接口\n    - generic: 已接受 · spec v1\n  - heading \"关键事项\" [level=2]\n  - paragraph: 暂无待确认未知项、处理中工作或评审建议。\n  - heading \"最近 Run 摘要\" [level=2]\n  - paragraph: 来自 Run.result_summary，不是结构化检查通过。\n  - list:\n    - listitem: 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。"
+    },
+    {
+      "label": "engineering-submission-null-evidence",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1600,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&view=submission",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n  - text: /\n  - link \"C0+C1a HTTP 模拟验证\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 有已接受任务\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- paragraph:\n  - link \"查 Knowledge\":\n    - /url: \"#/knowledge?from=engineering&project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&role=engineering&purpose=delivery\"\n  - link \"回 FDE\":\n    - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - link \"项目中心\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"当前任务进度\":\n  - strong: 模拟工程草稿\n  - paragraph: C0+C1a HTTP 模拟验证 · Task 9bb8c6ff…\n  - generic: 已接受\n  - list:\n    - strong: 开发执行\n    - text: 第 1 轮 · completed\n    - strong: 固定检查\n    - text: 打开提交查看 Diff / 复验（不以口头摘要代替）\n    - strong: 业务验收\n    - text: 已接受\n- complementary \"工程任务\":\n  - heading \"工程任务\" [level=2]\n  - paragraph: C0+C1a HTTP 模拟验证\n  - list:\n    - button \"模拟工程草稿 已接受\":\n      - generic: 模拟工程草稿\n      - generic: 已接受\n- generic \"工作区\":\n  - generic: 任务活动\n  - generic: 代码 Diff / 检查在「查看提交」；无沙盒文件树 API\n- heading \"模拟工程草稿\" [level=2]\n- generic: 已接受\n- generic \"历史轮次\"\n- article:\n  - generic: T\n  - heading \"任务目标\" [level=3]\n  - paragraph: 检查控制接口\n  - generic \"范围与验收\"\n  - generic: 规格 v1 · revision 6\n- region \"运行命令\":\n  - generic: 模型修订\n  - combobox \"模型修订 deterministic-test/fixture-no-model-call · configured\"\n  - generic \"deterministic-test/fixture-no-model-call · configured\"\n- article:\n  - generic: R\n  - heading \"第 1 轮运行 已结束 / submitted\" [level=3]:\n    - text: 第 1 轮运行\n    - generic: 已结束 / submitted\n  - paragraph: 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。\n  - paragraph: Run f40cc92e-738d-48ab-afdf-eb3796277679 · 规格 v1\n  - generic \"运行事件 · 4\"\n  - strong: 固定提交证据\n  - generic: 检查、Diff、产物与正式评审在右侧面板打开；无沙盒文件树。\n  - button \"查看提交\":\n    - generic: 查看提交\n- region \"任务输入\":\n  - heading \"输入与问题\" [level=3]\n  - list\n  - paragraph: 还没有输入记录。\n  - combobox\n  - generic \"补充澄清\"\n  - textbox \"记录补充或澄清…\"\n  - generic: 保存为 pending，不会热更新正在执行的 Run。\n  - button \"保存输入\" [disabled]:\n    - generic: 保存输入\n- region \"历史评审\":\n  - heading \"评审记录\" [level=3]\n  - list:\n    - strong: 已接受\n    - paragraph: 对照当前检查结果接受这一版。\n- dialog \"固定提交证据 · 代码与验收\":\n  - button \"关闭\":\n    - img \"close\":\n  - generic: 固定提交证据 · 代码与验收\n  - strong: 本轮暂无固定证据\n  - paragraph: 可能尚未提交、归档不完整，或该 Run 没有匹配的评审证据。缺失不能标为通过。\n  - paragraph: 只有当前待评审、规格匹配、带有固定产物且无 pending 输入的提交可以正式评审。\n  - alert:\n    - img \"exclamation-circle\":\n    - generic: 本轮没有固定评审证据，请勿把缺失当成已通过。"
+    },
+    {
+      "label": "engineering-refresh-task",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n  - text: /\n  - link \"C0+C1a HTTP 模拟验证\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 有已接受任务\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- paragraph:\n  - link \"查 Knowledge\":\n    - /url: \"#/knowledge?from=engineering&project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&role=engineering&purpose=delivery\"\n  - link \"回 FDE\":\n    - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - link \"项目中心\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"当前任务进度\":\n  - strong: 模拟工程草稿\n  - paragraph: C0+C1a HTTP 模拟验证 · Task 9bb8c6ff…\n  - generic: 已接受\n  - list:\n    - strong: 开发执行\n    - text: 已接受\n    - strong: 固定检查\n    - text: 打开提交查看 Diff / 复验（不以口头摘要代替）\n    - strong: 业务验收\n    - text: 已接受\n- complementary \"工程任务\":\n  - heading \"工程任务\" [level=2]\n  - paragraph: C0+C1a HTTP 模拟验证\n  - list:\n    - button \"模拟工程草稿 已接受\":\n      - generic: 模拟工程草稿\n      - generic: 已接受\n- generic \"工作区\":\n  - generic: 任务活动\n  - generic: 代码 Diff / 检查在「查看提交」；无沙盒文件树 API\n- heading \"模拟工程草稿\" [level=2]\n- generic: 已接受\n- generic \"历史轮次\"\n- article:\n  - generic: T\n  - heading \"任务目标\" [level=3]\n  - paragraph: 检查控制接口\n  - generic \"范围与验收\"\n  - generic: 规格 v1 · revision 6\n- region \"运行命令\":\n  - generic: 模型修订\n  - combobox \"模型修订 deterministic-test/fixture-no-model-call · configured\"\n  - generic \"deterministic-test/fixture-no-model-call · configured\"\n- paragraph: 还没有运行。准备并开始后，这里会显示真实轮次与事件。\n- region \"任务输入\":\n  - heading \"输入与问题\" [level=3]\n  - list\n  - combobox\n  - generic \"补充澄清\"\n  - textbox \"记录补充或澄清…\"\n  - generic: 保存为 pending，不会热更新正在执行的 Run。\n  - button \"保存输入\" [disabled]:\n    - generic: 保存输入\n- region \"历史评审\":\n  - heading \"评审记录\" [level=3]\n  - list:\n    - strong: 已接受\n    - paragraph: 对照当前检查结果接受这一版。"
+    },
+    {
+      "label": "engineering-task-1280",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n  - text: /\n  - link \"C0+C1a HTTP 模拟验证\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 有已接受任务\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- paragraph:\n  - link \"查 Knowledge\":\n    - /url: \"#/knowledge?from=engineering&project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&role=engineering&purpose=delivery\"\n  - link \"回 FDE\":\n    - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - link \"项目中心\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"当前任务进度\":\n  - strong: 模拟工程草稿\n  - paragraph: C0+C1a HTTP 模拟验证 · Task 9bb8c6ff…\n  - generic: 已接受\n  - list:\n    - strong: 开发执行\n    - text: 第 1 轮 · completed\n    - strong: 固定检查\n    - text: 打开提交查看 Diff / 复验（不以口头摘要代替）\n    - strong: 业务验收\n    - text: 已接受\n- complementary \"工程任务\":\n  - heading \"工程任务\" [level=2]\n  - paragraph: C0+C1a HTTP 模拟验证\n  - list:\n    - button \"模拟工程草稿 已接受\":\n      - generic: 模拟工程草稿\n      - generic: 已接受\n- generic \"工作区\":\n  - generic: 任务活动\n  - generic: 代码 Diff / 检查在「查看提交」；无沙盒文件树 API\n- heading \"模拟工程草稿\" [level=2]\n- generic: 已接受\n- generic \"历史轮次\"\n- article:\n  - generic: T\n  - heading \"任务目标\" [level=3]\n  - paragraph: 检查控制接口\n  - generic \"范围与验收\"\n  - generic: 规格 v1 · revision 6\n- region \"运行命令\":\n  - generic: 模型修订\n  - combobox \"模型修订 deterministic-test/fixture-no-model-call · configured\"\n  - generic \"deterministic-test/fixture-no-model-call · configured\"\n- article:\n  - generic: R\n  - heading \"第 1 轮运行 已结束 / submitted\" [level=3]:\n    - text: 第 1 轮运行\n    - generic: 已结束 / submitted\n  - paragraph: 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。\n  - paragraph: Run f40cc92e-738d-48ab-afdf-eb3796277679 · 规格 v1\n  - generic \"运行事件 · 4\"\n  - strong: 固定提交证据\n  - generic: 检查、Diff、产物与正式评审在右侧面板打开；无沙盒文件树。\n  - button \"查看提交\":\n    - generic: 查看提交\n- region \"任务输入\":\n  - heading \"输入与问题\" [level=3]\n  - list\n  - paragraph: 还没有输入记录。\n  - combobox\n  - generic \"补充澄清\"\n  - textbox \"记录补充或澄清…\"\n  - generic: 保存为 pending，不会热更新正在执行的 Run。\n  - button \"保存输入\" [disabled]:\n    - generic: 保存输入\n- region \"历史评审\":\n  - heading \"评审记录\" [level=3]\n  - list:\n    - strong: 已接受\n    - paragraph: 对照当前检查结果接受这一版。"
+    },
+    {
+      "label": "fde-context-1280",
+      "images": [
+        {
+          "naturalHeight": 467,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/fde-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/fde.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\" [active]:\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /FDE\n- banner:\n  - heading \"FDE\" [level=1]\n  - generic: 待命\n  - paragraph: 需求澄清 · 方案设计 · 任务拆解 · 开发协同 · 交付验收。登记目标后异步出报告；正式工程评审在 Engineering。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&role=fde&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: FDE 负责方案与交付组织；Business 管经营会话，Engineering 管实现与正式评审。\n- region \"交付工作区\":\n  - heading \"交付工作区\" [level=2]\n  - paragraph: 异步登记目标 → 报告与工具轨迹。不是创始人自由多轮聊天。\n  - generic: 最多返回 50 条\n  - generic \"工作区\":\n    - generic: 工作记录\n    - generic: 需求/方案文档库与多轮对话暂无后端\n  - paragraph: 还没有 FDE 工作。\n  - paragraph: 在下方登记项目目标后，处理结果会出现在这里。\n  - generic \"给 FDE 一个项目目标\": \"* 给 FDE 一个项目目标\"\n  - textbox \"* 给 FDE 一个项目目标\":\n    - /placeholder: 说明要诊断、组织或澄清的交付目标\n  - button \"登记 FDE 工作\":\n    - generic: 登记 FDE 工作\n  - generic: 提交后显示「已登记工作」；报告不等于方案已确认。\n- complementary \"项目方案工作台\":\n  - heading \"项目方案工作台\" [level=2]\n  - generic: 已有接受任务\n  - heading \"C0+C1a HTTP 模拟验证\" [level=3]\n  - paragraph: 证明草稿持久化，不运行 Agent\n  - paragraph:\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&project=651dc06f-e29d-49c8-8be0-da242bb65799&role=fde&purpose=delivery\"\n  - list \"交付进展（由真实 Work/Task 派生）\":\n    - strong: 交付工作\n    - text: 尚未登记\n    - strong: 目标与未知项\n    - text: 0 项未知\n    - strong: 工程拆解\n    - text: 1 个 Task\n    - strong: 业务验收\n    - text: 已有接受 Task\n  - heading \"目标与来源\" [level=2]\n  - term: 任务目标摘要\n  - definition:\n    - text: 检查控制接口\n    - generic: 取自首个 Task objective，不是独立方案版本\n  - term: 来源\n  - definition: 模拟演示项目\n  - term: 固定版本提示\n  - definition: task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2 spec_version=1\n  - heading \"方案与工程产出\" [level=2]\n  - generic: 真实 Task / Work，非文档库\n  - list:\n    - link \"模拟工程草稿 已接受\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2\"\n      - strong: 模拟工程草稿\n      - generic: 已接受\n    - paragraph: 检查控制接口\n    - generic: 已接受 · spec v1\n  - heading \"关键事项\" [level=2]\n  - paragraph: 暂无待确认未知项、处理中工作或评审建议。\n  - heading \"最近 Run 摘要\" [level=2]\n  - paragraph: 来自 Run.result_summary，不是结构化检查通过。\n  - list:\n    - listitem: 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。"
+    },
+    {
+      "label": "fde-hero-knowledge-context",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/knowledge?from=fde&role=fde&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 待命\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\"\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - paragraph: 输入关键词后检索。\n  - paragraph: 可试「报价」「CSV」「比较」。无结果时如实显示，不编造条目。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - paragraph: 从左侧选择一条结果。\n  - paragraph: 查看版本、适用条件、限制与获准来源；可复制固定版本引用。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - term: 来源入口\n  - definition: fde\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - paragraph: 尚无检索结果。不做全库文档/SOP/技能数量展示。\n  - heading \"选中摘要\" [level=2]\n  - paragraph: 选择结果后显示固定版本引用入口。\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "knowledge-return-fde",
+      "images": [
+        {
+          "naturalHeight": 467,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/fde-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/fde.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /FDE\n- banner:\n  - heading \"FDE\" [level=1]\n  - generic: 待命\n  - paragraph: 需求澄清 · 方案设计 · 任务拆解 · 开发协同 · 交付验收。登记目标后异步出报告；正式工程评审在 Engineering。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&role=fde&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: FDE 负责方案与交付组织；Business 管经营会话，Engineering 管实现与正式评审。\n- region \"交付工作区\":\n  - heading \"交付工作区\" [level=2]\n  - paragraph: 异步登记目标 → 报告与工具轨迹。不是创始人自由多轮聊天。\n  - generic: 最多返回 50 条\n  - generic \"工作区\":\n    - generic: 工作记录\n    - generic: 需求/方案文档库与多轮对话暂无后端\n  - paragraph: 还没有 FDE 工作。\n  - paragraph: 在下方登记项目目标后，处理结果会出现在这里。\n  - generic \"给 FDE 一个项目目标\": \"* 给 FDE 一个项目目标\"\n  - textbox \"* 给 FDE 一个项目目标\":\n    - /placeholder: 说明要诊断、组织或澄清的交付目标\n  - button \"登记 FDE 工作\":\n    - generic: 登记 FDE 工作\n  - generic: 提交后显示「已登记工作」；报告不等于方案已确认。\n- complementary \"项目方案工作台\":\n  - heading \"项目方案工作台\" [level=2]\n  - generic: 已有接受任务\n  - heading \"C0+C1a HTTP 模拟验证\" [level=3]\n  - paragraph: 证明草稿持久化，不运行 Agent\n  - paragraph:\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&project=651dc06f-e29d-49c8-8be0-da242bb65799&role=fde&purpose=delivery\"\n  - list \"交付进展（由真实 Work/Task 派生）\":\n    - strong: 交付工作\n    - text: 尚未登记\n    - strong: 目标与未知项\n    - text: 0 项未知\n    - strong: 工程拆解\n    - text: 1 个 Task\n    - strong: 业务验收\n    - text: 已有接受 Task\n  - heading \"目标与来源\" [level=2]\n  - term: 任务目标摘要\n  - definition:\n    - text: 检查控制接口\n    - generic: 取自首个 Task objective，不是独立方案版本\n  - term: 来源\n  - definition: 模拟演示项目\n  - term: 固定版本提示\n  - definition: task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2 spec_version=1\n  - heading \"方案与工程产出\" [level=2]\n  - generic: 真实 Task / Work，非文档库\n  - list:\n    - link \"模拟工程草稿 已接受\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2\"\n      - strong: 模拟工程草稿\n      - generic: 已接受\n    - paragraph: 检查控制接口\n    - generic: 已接受 · spec v1\n  - heading \"关键事项\" [level=2]\n  - paragraph: 暂无待确认未知项、处理中工作或评审建议。\n  - heading \"最近 Run 摘要\" [level=2]\n  - paragraph: 来自 Run.result_summary，不是结构化检查通过。\n  - list:\n    - listitem: 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。"
+    },
+    {
+      "label": "invalid-project-path",
+      "images": [],
+      "placeholder": false,
+      "scrollWidth": 1280,
+      "url": "http://localhost:8000/#/projects/not-a-uuid",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- alert:\n  - img \"exclamation-circle\":\n  - generic: 项目地址无效，请从项目中心选择项目。\n- link \"打开项目中心\":\n  - /url: \"#/projects\""
+    },
+    {
+      "label": "invalid-case-path",
+      "images": [],
+      "placeholder": false,
+      "scrollWidth": 1280,
+      "url": "http://localhost:8000/#/business/not-a-uuid",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- alert:\n  - img \"exclamation-circle\":\n  - generic: 会话地址无效，请从 Case 收件箱选择会话。\n- link \"打开 Case 收件箱\":\n  - /url: \"#/business\""
+    },
+    {
+      "label": "invalid-fde-query",
+      "images": [
+        {
+          "naturalHeight": 467,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/fde-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/fde.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1280,
+      "url": "http://localhost:8000/#/fde",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /FDE\n- banner:\n  - heading \"FDE\" [level=1]\n  - generic: 待命\n  - paragraph: 需求澄清 · 方案设计 · 任务拆解 · 开发协同 · 交付验收。登记目标后异步出报告；正式工程评审在 Engineering。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&role=fde&purpose=delivery\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 选择项目\"\n- generic: 选择项目\n- paragraph: FDE 负责方案与交付组织；Business 管经营会话，Engineering 管实现与正式评审。\n- list:\n  - link \"C0+C1a HTTP 模拟验证 证明草稿持久化，不运行 Agent\":\n    - /url: \"#/fde?project=ea2c8b88-be38-4ecb-97ca-dfe928a3fefe\"\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 证明草稿持久化，不运行 Agent\n  - link \"C0+C1a HTTP 模拟验证 证明草稿持久化，不运行 Agent\":\n    - /url: \"#/fde?project=3be1db5e-d5a2-4ff8-8f99-3577f34738a2\"\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 证明草稿持久化，不运行 Agent\n  - link \"C0+C1a HTTP 模拟验证 证明草稿持久化，不运行 Agent\":\n    - /url: \"#/fde?project=9556c0ea-2bc2-4f34-bb51-c8a6fad8efd0\"\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 证明草稿持久化，不运行 Agent\n  - link \"C0+C1a HTTP 模拟验证 证明草稿持久化，不运行 Agent\":\n    - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 证明草稿持久化，不运行 Agent"
+    },
+    {
+      "label": "invalid-engineering-query",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1280,
+      "url": "http://localhost:8000/#/engineering",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 待命\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 选择项目\"\n- generic: 选择项目\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- list:\n  - button \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent\":\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 模拟 · 证明草稿持久化，不运行 Agent\n  - button \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent\":\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 模拟 · 证明草稿持久化，不运行 Agent\n  - button \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent\":\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 模拟 · 证明草稿持久化，不运行 Agent\n  - button \"C0+C1a HTTP 模拟验证 模拟 · 证明草稿持久化，不运行 Agent\":\n    - strong: C0+C1a HTTP 模拟验证\n    - generic: 模拟 · 证明草稿持久化，不运行 Agent"
+    },
+    {
+      "label": "mismatched-task-no-fallback",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=ea2c8b88-be38-4ecb-97ca-dfe928a3fefe",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n  - text: /\n  - link \"C0+C1a HTTP 模拟验证\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 有已接受任务\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- alert:\n  - img \"exclamation-circle\":\n  - generic: 地址中的任务不属于当前项目，请从任务列表重新选择。\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- complementary \"工程任务\":\n  - heading \"工程任务\" [level=2]\n  - paragraph: C0+C1a HTTP 模拟验证\n  - list:\n    - button \"模拟工程草稿 已接受\":\n      - generic: 模拟工程草稿\n      - generic: 已接受\n- generic \"工作区\":\n  - generic: 任务活动\n  - generic: 代码 Diff / 检查在「查看提交」；无沙盒文件树 API"
+    },
+    {
+      "label": "mismatched-run-read-only",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&run=ea2c8b88-be38-4ecb-97ca-dfe928a3fefe",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n  - text: /\n  - link \"C0+C1a HTTP 模拟验证\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 有已接受任务\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- alert:\n  - img \"exclamation-circle\":\n  - generic: 当前已读取的任务轮次中没有地址指定的 Run，暂不开放操作。请从历史轮次选择或跟随当前。\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- paragraph:\n  - link \"查 Knowledge\":\n    - /url: \"#/knowledge?from=engineering&project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&role=engineering&purpose=delivery\"\n  - link \"回 FDE\":\n    - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - link \"项目中心\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"当前任务进度\":\n  - strong: 模拟工程草稿\n  - paragraph: C0+C1a HTTP 模拟验证 · Task 9bb8c6ff…\n  - generic: 已接受\n  - list:\n    - strong: 开发执行\n    - text: 已接受\n    - strong: 固定检查\n    - text: 打开提交查看 Diff / 复验（不以口头摘要代替）\n    - strong: 业务验收\n    - text: 已接受\n- complementary \"工程任务\":\n  - heading \"工程任务\" [level=2]\n  - paragraph: C0+C1a HTTP 模拟验证\n  - list:\n    - button \"模拟工程草稿 已接受\":\n      - generic: 模拟工程草稿\n      - generic: 已接受\n- generic \"工作区\":\n  - generic: 任务活动\n  - generic: 代码 Diff / 检查在「查看提交」；无沙盒文件树 API\n- heading \"模拟工程草稿\" [level=2]\n- generic: 已接受\n- generic: 历史轮次 · 只读\n- generic \"历史轮次\"\n- article:\n  - generic: T\n  - heading \"任务目标\" [level=3]\n  - paragraph: 检查控制接口\n  - generic \"范围与验收\"\n  - generic: 规格 v1 · revision 6\n- paragraph: 历史轮次只读，运行命令已禁用。\n- paragraph: 还没有运行。准备并开始后，这里会显示真实轮次与事件。\n- region \"任务输入\":\n  - heading \"输入与问题\" [level=3]\n  - list\n  - paragraph: 还没有输入记录。\n- region \"历史评审\":\n  - heading \"评审记录\" [level=3]\n  - list:\n    - strong: 已接受\n    - paragraph: 对照当前检查结果接受这一版。\n- paragraph:\n  - text: 当前有更新的运行。\n  - button \"返回当前\":\n    - generic: 返回当前"
+    },
+    {
+      "label": "final-build-mismatched-run",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&run=ea2c8b88-be38-4ecb-97ca-dfe928a3fefe",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n  - text: /\n  - link \"C0+C1a HTTP 模拟验证\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 有已接受任务\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- alert:\n  - img \"exclamation-circle\":\n  - generic: 当前已读取的任务轮次中没有地址指定的 Run，暂不开放操作。请从历史轮次选择或跟随当前。\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- paragraph:\n  - link \"查 Knowledge\":\n    - /url: \"#/knowledge?from=engineering&project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&role=engineering&purpose=delivery\"\n  - link \"回 FDE\":\n    - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - link \"项目中心\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"当前任务进度\":\n  - strong: 模拟工程草稿\n  - paragraph: C0+C1a HTTP 模拟验证 · Task 9bb8c6ff…\n  - generic: 已接受\n  - list:\n    - strong: 开发执行\n    - text: 已接受\n    - strong: 提交证据\n    - text: 查看固定检查结果；任务状态不代表检查通过\n    - strong: 业务验收\n    - text: 已接受\n- complementary \"工程任务\":\n  - heading \"工程任务\" [level=2]\n  - paragraph: C0+C1a HTTP 模拟验证\n  - list:\n    - button \"模拟工程草稿 已接受\":\n      - generic: 模拟工程草稿\n      - generic: 已接受\n- generic \"工作区\":\n  - generic: 任务活动\n  - generic: 代码 Diff / 检查在「查看提交」；无沙盒文件树 API\n- heading \"模拟工程草稿\" [level=2]\n- generic: 已接受\n- generic: 轮次待核对 · 只读\n- generic \"历史轮次\"\n- article:\n  - generic: T\n  - heading \"任务目标\" [level=3]\n  - paragraph: 检查控制接口\n  - generic \"范围与验收\"\n  - generic: 规格 v1 · revision 6\n- paragraph: 历史轮次只读，运行命令已禁用。\n- paragraph: 指定轮次尚未确认，请核对上方提示或返回当前。\n- region \"任务输入\":\n  - heading \"输入与问题\" [level=3]\n  - list\n- region \"历史评审\":\n  - heading \"评审记录\" [level=3]\n  - list:\n    - strong: 已接受\n    - paragraph: 对照当前检查结果接受这一版。\n- paragraph:\n  - text: 可返回当前任务的运行。\n  - button \"返回当前\":\n    - generic: 返回当前"
+    },
+    {
+      "label": "final-build-engineering-task-1280",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n  - text: /\n  - link \"C0+C1a HTTP 模拟验证\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 有已接受任务\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- paragraph:\n  - link \"查 Knowledge\":\n    - /url: \"#/knowledge?from=engineering&project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&role=engineering&purpose=delivery\"\n  - link \"回 FDE\":\n    - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - link \"项目中心\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"当前任务进度\":\n  - strong: 模拟工程草稿\n  - paragraph: C0+C1a HTTP 模拟验证 · Task 9bb8c6ff…\n  - generic: 已接受\n  - list:\n    - strong: 开发执行\n    - text: 第 1 轮 · completed\n    - strong: 提交证据\n    - text: 查看固定检查结果；任务状态不代表检查通过\n    - strong: 业务验收\n    - text: 已接受\n- complementary \"工程任务\":\n  - heading \"工程任务\" [level=2]\n  - paragraph: C0+C1a HTTP 模拟验证\n  - list:\n    - button \"模拟工程草稿 已接受\":\n      - generic: 模拟工程草稿\n      - generic: 已接受\n- generic \"工作区\":\n  - generic: 任务活动\n  - generic: 代码 Diff / 检查在「查看提交」；无沙盒文件树 API\n- heading \"模拟工程草稿\" [level=2]\n- generic: 已接受\n- generic \"历史轮次\"\n- article:\n  - generic: T\n  - heading \"任务目标\" [level=3]\n  - paragraph: 检查控制接口\n  - generic \"范围与验收\"\n  - generic: 规格 v1 · revision 6\n- region \"运行命令\":\n  - generic: 模型修订\n  - combobox \"模型修订 deterministic-test/fixture-no-model-call · configured\"\n  - generic \"deterministic-test/fixture-no-model-call · configured\"\n- article:\n  - generic: R\n  - heading \"第 1 轮运行 已结束 / submitted\" [level=3]:\n    - text: 第 1 轮运行\n    - generic: 已结束 / submitted\n  - paragraph: 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。\n  - paragraph: Run f40cc92e-738d-48ab-afdf-eb3796277679 · 规格 v1\n  - generic \"运行事件 · 4\"\n  - strong: 固定提交证据\n  - generic: 检查、Diff、产物与正式评审在右侧面板打开；无沙盒文件树。\n  - button \"查看提交\":\n    - generic: 查看提交\n- region \"任务输入\":\n  - heading \"输入与问题\" [level=3]\n  - list\n  - paragraph: 还没有输入记录。\n  - combobox\n  - generic \"补充澄清\"\n  - textbox \"记录补充或澄清…\"\n  - generic: 保存为 pending，不会热更新正在执行的 Run。\n  - button \"保存输入\" [disabled]:\n    - generic: 保存输入\n- region \"历史评审\":\n  - heading \"评审记录\" [level=3]\n  - list:\n    - strong: 已接受\n    - paragraph: 对照当前检查结果接受这一版。"
+    },
+    {
+      "label": "final-fde-context-1600",
+      "images": [
+        {
+          "naturalHeight": 467,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/fde-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/fde.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\" [active]:\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /FDE\n- banner:\n  - heading \"FDE\" [level=1]\n  - generic: 待命\n  - paragraph: 需求澄清 · 方案设计 · 任务拆解 · 开发协同 · 交付验收。登记目标后异步出报告；正式工程评审在 Engineering。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&role=fde&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: FDE 负责方案与交付组织；Business 管经营会话，Engineering 管实现与正式评审。\n- region \"交付工作区\":\n  - heading \"交付工作区\" [level=2]\n  - paragraph: 异步登记目标 → 报告与工具轨迹。不是创始人自由多轮聊天。\n  - generic: 最多返回 50 条\n  - generic \"工作区\":\n    - generic: 工作记录\n    - generic: 需求/方案文档库与多轮对话暂无后端\n  - paragraph: 还没有 FDE 工作。\n  - paragraph: 在下方登记项目目标后，处理结果会出现在这里。\n  - generic \"给 FDE 一个项目目标\": \"* 给 FDE 一个项目目标\"\n  - textbox \"* 给 FDE 一个项目目标\":\n    - /placeholder: 说明要诊断、组织或澄清的交付目标\n  - button \"登记 FDE 工作\":\n    - generic: 登记 FDE 工作\n  - generic: 提交后显示「已登记工作」；报告不等于方案已确认。\n- complementary \"项目方案工作台\":\n  - heading \"项目方案工作台\" [level=2]\n  - generic: 已有接受任务\n  - heading \"C0+C1a HTTP 模拟验证\" [level=3]\n  - paragraph: 证明草稿持久化，不运行 Agent\n  - paragraph:\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=fde&project=651dc06f-e29d-49c8-8be0-da242bb65799&role=fde&purpose=delivery\"\n  - list \"交付进展（由真实 Work/Task 派生）\":\n    - strong: 交付工作\n    - text: 尚未登记\n    - strong: 目标与未知项\n    - text: 0 项未知\n    - strong: 工程拆解\n    - text: 1 个 Task\n    - strong: 业务验收\n    - text: 已有接受 Task\n  - heading \"目标与来源\" [level=2]\n  - term: 任务目标摘要\n  - definition:\n    - text: 检查控制接口\n    - generic: 取自首个 Task objective，不是独立方案版本\n  - term: 来源\n  - definition: 模拟演示项目\n  - term: 固定版本提示\n  - definition: task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2 spec_version=1\n  - heading \"方案与工程产出\" [level=2]\n  - generic: 真实 Task / Work，非文档库\n  - list:\n    - link \"模拟工程草稿 已接受\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2\"\n      - strong: 模拟工程草稿\n      - generic: 已接受\n    - paragraph: 检查控制接口\n    - generic: 已接受 · spec v1\n  - heading \"关键事项\" [level=2]\n  - paragraph: 暂无待确认未知项、处理中工作或评审建议。\n  - heading \"最近 Run 摘要\" [level=2]\n  - paragraph: 来自 Run.result_summary，不是结构化检查通过。\n  - list:\n    - listitem: 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。"
+    },
+    {
+      "label": "knowledge-context-1600",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\" [active]:\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 待命\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\"\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - paragraph: 输入关键词后检索。\n  - paragraph: 可试「报价」「CSV」「比较」。无结果时如实显示，不编造条目。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - paragraph: 从左侧选择一条结果。\n  - paragraph: 查看版本、适用条件、限制与获准来源；可复制固定版本引用。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - paragraph: 尚无检索结果。不做全库文档/SOP/技能数量展示。\n  - heading \"选中摘要\" [level=2]\n  - paragraph: 选择结果后显示固定版本引用入口。\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "knowledge-query-restore-start",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799&q=%E6%8A%A5%E4%BB%B7",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 待命\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\" [active]: 报价\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - generic: 关键词「报价」\n  - list:\n    - button \"业务模块 limited 生鲜报价 CSV 同口径比较 fresh-quote-compare-csv@1.1.0 cross_project_internal · demo-supplier-quotes\":\n      - generic: 业务模块\n      - generic: limited\n      - strong: 生鲜报价 CSV 同口径比较\n      - generic: fresh-quote-compare-csv@1.1.0\n      - generic: cross_project_internal · demo-supplier-quotes\n  - paragraph: 共 1 条可见结果 · 非全库统计。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - paragraph: 从左侧选择一条结果。\n  - paragraph: 查看版本、适用条件、限制与获准来源；可复制固定版本引用。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - list:\n    - strong: \"1\"\n    - generic: 业务模块\n  - heading \"选中摘要\" [level=2]\n  - paragraph: 选择结果后显示固定版本引用入口。\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "knowledge-back-clears-draft",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 待命\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\" [active]\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - paragraph: 输入关键词后检索。\n  - paragraph: 可试「报价」「CSV」「比较」。无结果时如实显示，不编造条目。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - paragraph: 从左侧选择一条结果。\n  - paragraph: 查看版本、适用条件、限制与获准来源；可复制固定版本引用。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - paragraph: 尚无检索结果。不做全库文档/SOP/技能数量展示。\n  - heading \"选中摘要\" [level=2]\n  - paragraph: 选择结果后显示固定版本引用入口。\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "knowledge-forward-restores-draft",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/knowledge-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/knowledge.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1585,
+      "url": "http://localhost:8000/#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799&q=%E6%8A%A5%E4%BB%B7",
+      "validationError": false,
+      "width": 1600,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Knowledge\n- banner:\n  - heading \"Knowledge\" [level=1]\n  - generic: 待命\n  - paragraph: 知识检索 · 经验复用 · 能力支持。按角色与用途查询获准资产；关键词匹配当前 manifest，不是语义检索。\n  - paragraph:\n    - link \"回办公室\":\n      - /url: \"#/\"\n- paragraph: 为 Business / FDE / Engineering 提供有用途限制的资产检索。无图谱、无上传、无全局资产统计接口。\n- link \"返回原工作\":\n  - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"检索条件\":\n  - generic: 请求角色\n  - combobox \"请求角色 FDE\"\n  - generic \"FDE\"\n  - generic: 用途\n  - combobox \"用途 交付复用\"\n  - generic \"交付复用\"\n  - generic: 关键词\n  - searchbox \"关键词 检 索\" [active]: 报价\n  - button \"检 索\":\n    - generic: 检 索\n- paragraph: 当前用途：内部交付可见字段。切换角色/用途会清空本页 Knowledge 缓存。\n- generic \"工作区\":\n  - generic: 资产检索\n  - generic: 对话 / 知识库管理 / 图谱 / 沉淀流暂无后端\n- region \"检索结果\":\n  - heading \"检索结果\" [level=2]\n  - generic: 关键词「报价」\n  - list:\n    - button \"业务模块 limited 生鲜报价 CSV 同口径比较 fresh-quote-compare-csv@1.1.0 cross_project_internal · demo-supplier-quotes\":\n      - generic: 业务模块\n      - generic: limited\n      - strong: 生鲜报价 CSV 同口径比较\n      - generic: fresh-quote-compare-csv@1.1.0\n      - generic: cross_project_internal · demo-supplier-quotes\n  - paragraph: 共 1 条可见结果 · 非全库统计。\n- region \"资产详情\":\n  - heading \"资产详情\" [level=2]\n  - paragraph: 从左侧选择一条结果。\n  - paragraph: 查看版本、适用条件、限制与获准来源；可复制固定版本引用。\n- complementary \"检索上下文\":\n  - heading \"当前上下文\" [level=2]\n  - term: 请求角色\n  - definition: FDE\n  - term: 用途\n  - definition: 交付复用\n  - paragraph:\n    - link \"返回原工作\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"项目中心\":\n      - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"Engineering\":\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - heading \"本页结果分布\" [level=2]\n  - generic: 仅当前检索\n  - list:\n    - strong: \"1\"\n    - generic: 业务模块\n  - heading \"选中摘要\" [level=2]\n  - paragraph: 选择结果后显示固定版本引用入口。\n  - heading \"能力边界\" [level=2]\n  - list:\n    - listitem: 无知识图谱 / 关系可视化 API\n    - listitem: 无最近沉淀活动流\n    - listitem: 无历史版本列表或上传维护台\n    - listitem: 查询结果不自动变成资产确认或执行授权"
+    },
+    {
+      "label": "final-engineering-check-evidence-copy",
+      "images": [
+        {
+          "naturalHeight": 560,
+          "naturalWidth": 1400,
+          "renderedHeight": 120,
+          "renderedWidth": 280,
+          "src": "/engineering-hero-scene.png"
+        },
+        {
+          "naturalHeight": 1254,
+          "naturalWidth": 1254,
+          "renderedHeight": 64,
+          "renderedWidth": 64,
+          "src": "/avatars/engineering.png"
+        }
+      ],
+      "placeholder": false,
+      "scrollWidth": 1265,
+      "url": "http://localhost:8000/#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2",
+      "validationError": false,
+      "width": 1280,
+      "state": "- complementary \"主导航\":\n  - link \"OneFDE AI 技术服务公司\":\n    - /url: \"#/\"\n    - strong: OneFDE\n    - generic: AI 技术服务公司\n  - navigation:\n    - link \"办公室 公司总览\":\n      - /url: \"#/\"\n      - generic: 办公室\n      - generic: 公司总览\n    - link \"项目中心 目标与任务\":\n      - /url: \"#/projects\"\n      - generic: 项目中心\n      - generic: 目标与任务\n    - link \"客户与经营 Business\":\n      - /url: \"#/business?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 客户与经营\n      - generic: Business\n    - link \"方案与交付 FDE\":\n      - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 方案与交付\n      - generic: FDE\n    - link \"软件开发 Engineering\" [active]:\n      - /url: \"#/engineering?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 软件开发\n      - generic: Engineering\n    - link \"知识与能力 Knowledge\":\n      - /url: \"#/knowledge?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n      - generic: 知识与能力\n      - generic: Knowledge\n  - generic: FOU\n  - paragraph: founder\n  - text: 创始人\n  - button \"退 出\":\n    - generic: 退 出\n- navigation \"当前位置\":\n  - link \"OneFDE\":\n    - /url: \"#/\"\n  - generic: /Engineering\n  - text: /\n  - link \"C0+C1a HTTP 模拟验证\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- banner:\n  - heading \"Engineering\" [level=1]\n  - generic: 有已接受任务\n  - paragraph: 代码开发 · 功能实现 · 固定验证 · 交付评审。浏览器不直连 Worker；正式验收看固定提交证据。\n  - paragraph:\n    - link \"查 Knowledge\":\n      - /url: \"#/knowledge?from=engineering&role=engineering&purpose=delivery&project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n    - link \"回办公室\":\n      - /url: \"#/\"\n- generic: 当前项目\n- combobox \"当前项目 C0+C1a HTTP 模拟验证\"\n- generic \"C0+C1a HTTP 模拟验证\"\n- paragraph: Engineering 负责实现与正式评审；FDE 组织方案，Business 管经营会话。无文件树 / 交互终端入口。\n- paragraph:\n  - link \"查 Knowledge\":\n    - /url: \"#/knowledge?from=engineering&project=651dc06f-e29d-49c8-8be0-da242bb65799&task=9bb8c6ff-74b3-436e-9184-58ae3756f0f2&role=engineering&purpose=delivery\"\n  - link \"回 FDE\":\n    - /url: \"#/fde?project=651dc06f-e29d-49c8-8be0-da242bb65799\"\n  - link \"项目中心\":\n    - /url: \"#/projects/651dc06f-e29d-49c8-8be0-da242bb65799\"\n- region \"当前任务进度\":\n  - strong: 模拟工程草稿\n  - paragraph: C0+C1a HTTP 模拟验证 · Task 9bb8c6ff…\n  - generic: 已接受\n  - list:\n    - strong: 开发执行\n    - text: 第 1 轮 · completed\n    - strong: 提交证据\n    - text: 查看固定检查结果；任务状态不代表检查通过\n    - strong: 业务验收\n    - text: 已接受\n- complementary \"工程任务\":\n  - heading \"工程任务\" [level=2]\n  - paragraph: C0+C1a HTTP 模拟验证\n  - list:\n    - button \"模拟工程草稿 已接受\":\n      - generic: 模拟工程草稿\n      - generic: 已接受\n- generic \"工作区\":\n  - generic: 任务活动\n  - generic: 代码 Diff / 检查在「查看提交」；无沙盒文件树 API\n- heading \"模拟工程草稿\" [level=2]\n- generic: 已接受\n- generic \"历史轮次\"\n- article:\n  - generic: T\n  - heading \"任务目标\" [level=3]\n  - paragraph: 检查控制接口\n  - generic \"范围与验收\"\n  - generic: 规格 v1 · revision 6\n- region \"运行命令\":\n  - generic: 模型修订\n  - combobox \"模型修订 deterministic-test/fixture-no-model-call · configured\"\n  - generic \"deterministic-test/fixture-no-model-call · configured\"\n- article:\n  - generic: R\n  - heading \"第 1 轮运行 已结束 / submitted\" [level=3]:\n    - text: 第 1 轮运行\n    - generic: 已结束 / submitted\n  - paragraph: 固定检查通过：报价字段与样例一致。此结果由确定性登记写入，未调用模型。\n  - paragraph: Run f40cc92e-738d-48ab-afdf-eb3796277679 · 规格 v1\n  - generic \"运行事件 · 4\"\n  - strong: 固定提交证据\n  - generic: 检查、Diff、产物与正式评审在右侧面板打开；无沙盒文件树。\n  - button \"查看提交\":\n    - generic: 查看提交\n- region \"任务输入\":\n  - heading \"输入与问题\" [level=3]\n  - list\n  - paragraph: 还没有输入记录。\n  - combobox\n  - generic \"补充澄清\"\n  - textbox \"记录补充或澄清…\"\n  - generic: 保存为 pending，不会热更新正在执行的 Run。\n  - button \"保存输入\" [disabled]:\n    - generic: 保存输入\n- region \"历史评审\":\n  - heading \"评审记录\" [level=3]\n  - list:\n    - strong: 已接受\n    - paragraph: 对照当前检查结果接受这一版。"
+    }
+  ]
+}

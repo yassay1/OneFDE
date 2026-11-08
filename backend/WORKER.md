@@ -1,8 +1,14 @@
 # C2 受控 Worker
 
+本地可选择固定的[Playwright 工程镜像](../deploy/agent-browser/README.md)，基础与浏览器镜像分别审核，标签不能绕过 ID 校验。镜像支持时在工程上下文提供系统 Chromium 路径；网络、资源、私有挂载、统一预算与独立复验边界保持现有规则。
+
+Engineering 已接入后端打包的首批五个受信技能，继续关闭宿主/公共/客户目录自动发现。版本核对、无模型命令及本轮调用记录见[技能运行约定](../docs/operations/engineering-skills.md)。
+
+MiMo 有限收尾：已通过登记自测且普通阶段达到迭代上限时，可在原有剩余额度内执行一次无编辑/终端工具的提交阶段，不新增第三阶段。固定源码摘要变化会阻止沿用检查证据，最终提交仍需固定归档独立复验。实际经过及人工恢复边界见[产品演练](../docs/operations/testing.md#mimo-果采报价台产品全链路2026-11-07)。
+
 本地开发已获用户授权采用WSL2+Docker，操作见[本地WSL手册](local-wsl/README.md)，边界以[ADR0007](../docs/architecture/ADR/0007-local-wsl-development.md)为准。以下dedicated节点步骤是当前代码已提供的操作模式，不再是MVP物理部署要求；云端单ECS设计以[ADR0009](../docs/architecture/ADR/0009-single-ecs-mvp.md)和[部署设计](../docs/operations/deployment.md)为准。环境就绪与真实模型工程成功分开记录。
 
-已实现 PostgreSQL 认领、心跳、停止确认和结果回填，以及固定版本 OpenHands 接线。本地WSL开发环境已实际验证，单ECS生产Compose/容器化Worker及安全验收仍待实施；模型执行关闭，真实模型工程小任务未运行，C2退出条件尚未满足。实际检查见 [C2验证](../docs/operations/c2-verification.md)。
+已实现 PostgreSQL 认领、心跳、停止确认和结果回填，以及固定版本 OpenHands 接线。本地 WSL 与后续演练的通过范围见 [测试与验收](../docs/operations/testing.md)。单 ECS 生产 Compose 仍待实施。未获授权时保持模型执行关闭。
 
 ## 控制 API 与迁移
 
@@ -15,7 +21,7 @@ uv run --locked alembic check
 uv run --locked uvicorn onefde.entrypoints.api:create_app --factory --host 127.0.0.1 --port 8000
 ```
 
-新 head 为 `d5454eda0523`，只扩展 dispatch_jobs：Worker标识/随机认领代次、数据库时钟租约、认领/结束时间、次数、现场引用、结果摘要和回填正文。已有两份迁移不变；存在 C2 认领历史时拒绝降级擦除。升级前按部署文档备份。
+C2 迁移 `d5454eda0523` 只扩展 dispatch_jobs：Worker 标识、随机认领代次、数据库时钟租约、认领与结束时间、次数、现场引用、结果摘要和回填正文。存在 C2 认领历史时拒绝降级擦除。当前链尾见 [代码组织](../docs/development/code-structure.md)。升级前按部署文档备份。
 
 ## 既有 dedicated 模式配置（非单ECS实施手册）
 
@@ -46,6 +52,8 @@ uv run --locked --extra worker python -m onefde.entrypoints.worker once
 uv run --locked --extra worker python -m onefde.entrypoints.worker run
 ```
 
+已授权单次执行时，用 `once --run-id <Run UUID>` 将认领限定到指定 Run。
+
 实际使用前替换示例中的占位端点/模型，勿原样导入。import-profile仅创建不可变配置修订，输出 revision_id；状态是 configured，未标为 smoke_passed。通过登录后的 `GET /api/v1/model-profiles` 查询；按原HTTP契约 queue/start，并在start传该 revision_id。202表示持久接单，之后按 Run/事件查询。配置检查不调用模型；有阻塞返回2。所选修订的凭据在认领后、创建资源前解析，缺失则技术失败且明确尚未创建现场。
 
 SDK/workspace/tools均固定1.59.0；Agent Server固定 `1.59.0-python@sha256:96038f92dc66228e389a95c2e5081dfc2cd4f5d307f051a7df9b1d50ccb86be7`。默认1 CPU/2GiB/256进程；ecs_shared在docker create时设置只读根/非root/NNP/无cap及限额，无端口发布，SDK只获workspace/session。旧模式仍在创建后、启动Agent前设置资源限制；失败不执行Agent。15分钟执行截止、SDK最多20次迭代、无LLM自动重试、无condenser/critic；SDK费用上限必须填写，提供方也必须配置限额。迭代限制和SDK成本统计不等于已实测的提供方硬调用/费用封顶，真实请求计数/最后一请求费用及停止延迟需在接入冒烟核验。
@@ -58,10 +66,20 @@ SDK/workspace/tools均固定1.59.0；Agent Server固定 `1.59.0-python@sha256:96
 - 租约过期、适配异常且现场不明、Docker不可达均为interrupted，继续占用全局名额。绝不因租约过期自动重新执行。心跳数据库错误立即请求停机，保留本地回执，不再以原归属回填；数据库恢复后的下一次轮询将过期现场冻结。`once`模式在此情形需要后续受控轮询完成过期检测。
 - 工作源码在 `root/tasks/<task_id>/workspace`；每Run Session在 `root/sessions/<run_id>`。只将这两处挂载工程容器，不挂载Worker环境、DB文件、Docker socket、产物仓库或私有密钥目录。Session通过Agent Server的 `OH_CONVERSATIONS_PATH=/session` 落盘；加密/会话密钥在 `root/private/<run_id>/session.key`，不挂载，备份需独立受限。
 - 确认停止后把源码打包为不可变私有blob，校验大小/SHA-256后在同一回填事务登记Artifact；拒绝符号链接、特殊文件和超限源码。Worker先保存不可变结果回执到 `root/artifacts/receipts`，DB异常时供核查；回执不自动触发重放或重执行。
-- Final文本只作结构化结果提案。`completion_criteria`中`[auto]`/`[check]`前缀登记自动检查命令；submitted须固定源码，且每条自动检查有匹配的成功命令证据（无关exit 0或自报passed不够）。有自动检查时，归档后另起无模型验证容器顺序执行同一命令。验证使用本 Run 的停止信号和总截止时间；已取消或已超时则不创建验证容器。新增、删除、修改的源码都不能通过，只有 `bash_events/` 工具日志不计入源码。验证初始化、执行或清理异常后，任一所属容器无法确认停止则返回 interrupted，不释放名额。检查覆盖与验证结果写入作业`proof`。此条件不替代业务评审。模型问题沿原TaskInput机制记录，不让Worker空等答案。
+- Finish 提交的是候选提案。`completion_criteria` 中的 `[auto]` 或 `[check]` 登记检查 ID、命令和目录。Worker 检查当前阶段的终端观察，并在独立无模型容器里复验固定候选。可设置 `ONEFDE_WORKER_VALIDATION_NETWORK` 选用独立内部网桥，设置后该验证容器无出口代理。复验凭据绑定候选摘要、检查修订与 Task 规格版本。工程容器停止后确认源码与通过复验的候选一致，再登记 submitted。
+- 有自动检查时预留一段同 Run 修复轮次。Worker 按检查 ID 区分缺少证据、失败和超时，把失败摘要与限长输出交回 Engineering。修复用同一工作区和总截止时间，并重新取得全部检查证据。诊断摘要可从原 Run 的 `/events` 查询。授权运维可查 `root/private/<run_id>/submission-check-<phase>.json` 的输出摘录及该 Run 的私有 SDK 会话。评审接口只投影通过门槛的固定产物、原基线和检查摘要。业务问题继续登记为 TaskInput。
+- 验证沿用本 Run 的停止信号。候选与复验树的源码新增、删除或修改会阻断提交，`bash_events/` 工具日志不计入源码。任一所属容器停止状态无法核实时，Run 进入 interrupted 并保留占用。
 - 新Run前比对Task工作区与上次可信`source-snapshot`。基准包括已确认停止的 completed 与 failed 归档，不包括 interrupted。未知差异以`WORKSPACE_DRIFT`失败并阻塞，不静默覆盖，也不关闭比对。空目录可从归档受控恢复。`runtime_ref.resources`可同时登记engineering与validation现场，释放前须全部核实停止。
 
 同任务新Run保留工作区，默认新建SDK Conversation，ID使用Run UUID；未实现自动复用旧Session或interrupted运维解锁。私有本地blob是真实文件，但S3上传/备份、签名下载及产物跨节点读取尚未接入；API目前只列元数据。Session可能包含敏感内容，不能作为公开Artifact。受限模型凭据可能存在同一个工程容器内，这是ADR0003明确的限制，真实模型出口尚未验证；共享模式当前仅开放离线fixture代理，未允许任何模型或依赖公网访问。
+
+## 隔离演练自动续办
+
+默认关闭。只在独立 `_test` PostgreSQL 库的模拟项目中为单个已装配 Task 配置 `ONEFDE_WORKER_RECOVERY_TASK_ID`、带时区的 `ONEFDE_WORKER_RECOVERY_EXPIRES_AT` 和 `ONEFDE_WORKER_RECOVERY_TOTAL_COST_USD`。总额须覆盖两次 Worker 单 Run 上限，提供方另设同一额度的硬门槛。
+
+仅在演练库给 Worker 角色增加 `INSERT ON runs, dispatch_jobs`。FDE 授权派发的演练另外需要 `UPDATE (runs) ON fde_agent_grants`，且活跃授权仍有 Run 配额，原会话版本仍匹配。普通数据库沿用原权限。原 Run 明确达到 SDK 迭代限制、已核实所有现场停止且已保存本 Task 固定候选时，回填事务才可登记一次后续 Run。后续 Run 固定原授权的截止时间、费用和迭代上限。Task 规格变化、待采用输入、会话变化或额度不足会阻止自动续办或后续认领。若待派发期间授权失效，按现有停止命令撤销待派发作业。
+
+续办 Run 以原 Run 的固定候选恢复工作区。原装配基线仍用于审查文件范围和评审差异。已运行的报价演练及控制检查见 [验收记录](../docs/operations/testing.md#engineering-提交前修复与续办)。
 
 ## 无模型检查
 

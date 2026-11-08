@@ -1,0 +1,123 @@
+{
+  "date": "2026-11-07",
+  "model": "openai/mimo-v2.6-pro",
+  "task_id": "5594b5db-7c90-4888-af1f-89be2dc53119",
+  "run_id": "271a6c1f-fd9c-45ff-ab2c-d82bd5da5308",
+  "attempt": 1,
+  "final_task_state": "succeeded",
+  "run": {
+    "state": "completed",
+    "outcome": "submitted",
+    "summary": "Created /workspace/index.html with the exact heading <h1>OneFDE C2 Smoke</h1> and a short paragraph stating this is a local demo page. Created /workspace/check.sh (executable, run via sh) that exits 0 only when that exact heading is present in /workspace/index.html, otherwise exits 1. Ran the registered automatic check `sh /workspace/check.sh` as its own terminal command in /workspace and it exited 0. Scope respected: only index.html and check.sh were created; no network installs, no git remotes, no deployment, no secrets.",
+    "error_code": null,
+    "spec_version": 1
+  },
+  "engagement_id": "23ef0e84-8213-4139-9a4a-2a8915e241fe",
+  "monitor": {
+    "worker_exit": 0,
+    "identity": {
+      "scope": "c2_real_webpage_smoke",
+      "checked_at_utc": "2026-11-07T04:37:34.937132+00:00",
+      "model_provider": "mimo",
+      "max_cost_usd": 0.8,
+      "model_called": true,
+      "steps": [
+        {
+          "name": "http_start",
+          "state": "queued",
+          "http_status": 202
+        }
+      ],
+      "model_profile_revision_id": "7b83e738-e2d7-481e-bfc0-7a6b658c449d",
+      "model": "openai/mimo-v2.6-pro",
+      "engagement_id": "23ef0e84-8213-4139-9a4a-2a8915e241fe",
+      "task_id": "5594b5db-7c90-4888-af1f-89be2dc53119",
+      "run_id": "271a6c1f-fd9c-45ff-ab2c-d82bd5da5308"
+    },
+    "budget_cny": 10,
+    "sdk_max_cost_usd": 0.8,
+    "max_iterations": 20,
+    "loop_stop_requested": false,
+    "cost_upper_estimate_cny": 0.279864,
+    "elapsed_seconds": 54.17,
+    "tool_calls": 9,
+    "log_path": "/srv/onefde-local/worker/evidence/mimo-monitored-20261107T043734Z.jsonl"
+  },
+  "usage": {
+    "prompt_tokens": 53212,
+    "cache_read_tokens": 37248,
+    "completion_tokens": 1414,
+    "requests": 8,
+    "sdk_cost_usd": 0.0243774
+  },
+  "artifact_id": "1dc21cdd-134d-4784-9921-0bbfcd9198b7",
+  "archive_path": "/srv/onefde-local/worker/artifacts/engagements/23ef0e84-8213-4139-9a4a-2a8915e241fe/runs/271a6c1f-fd9c-45ff-ab2c-d82bd5da5308/ac5ba4c7-3c4c-4c9a-aff4-e02a757e6424",
+  "source_sha256": "f7c4cf23b8fc7bd234eef211a7eb63a7396b4aef768f9fae935ef24d1785cab6",
+  "dispatch": {
+    "attempts": 1,
+    "claim_owner": "onefde-c2-smoke-once",
+    "runtime_roles": [
+      "engineering",
+      "validation"
+    ],
+    "stopped": true,
+    "source_digest": "de2aca77224421be86253457c7fc35230cd82af3a0dd08cd2f8a99b42c7a7819",
+    "check_coverage": [
+      {
+        "id": "auto-1",
+        "cwd": "/workspace",
+        "kind": "automatic",
+        "source": "completion_criteria",
+        "status": "passed",
+        "command": "sh /workspace/check.sh",
+        "matched": true,
+        "evidence": {
+          "cwd": "/workspace",
+          "command": "sh /workspace/check.sh",
+          "timeout": false,
+          "exit_code": 0
+        },
+        "criterion": "[auto] sh /workspace/check.sh",
+        "diagnostic": "passed",
+        "cwd_verified": true,
+        "observed_exit_code": 0
+      },
+      {
+        "id": "review-2",
+        "kind": "business_review",
+        "source": "completion_criteria",
+        "status": "pending_review",
+        "matched": false,
+        "criterion": "Page content matches the frozen demo heading"
+      }
+    ],
+    "validation": {
+      "passed": true,
+      "stopped": true,
+      "source_unchanged": true,
+      "error_code": null,
+      "results": [
+        {
+          "id": "auto-1",
+          "cwd": "/workspace",
+          "command": "sh /workspace/check.sh",
+          "timeout": false,
+          "exit_code": 0
+        }
+      ]
+    },
+    "context_revisions": {
+      "role": "engineering-role-v1",
+      "context": "engineering-context-v1"
+    }
+  },
+  "worker_logs": {
+    "stdout_log": "/srv/onefde-local/worker/evidence/271a6c1f-fd9c-45ff-ab2c-d82bd5da5308-worker.stdout.log",
+    "stderr_log": "/srv/onefde-local/worker/evidence/271a6c1f-fd9c-45ff-ab2c-d82bd5da5308-worker.stderr.log"
+  },
+  "worker_elapsed_seconds": 50.71,
+  "billing": "Conservative SDK prompt plus cache-read tokens charged entirely at uncached CNY3/M, output CNY6/M",
+  "pricing_source": "https://mimo.mi.com/docs/pricing",
+  "review_http_status": 201,
+  "business_accepted": true
+}

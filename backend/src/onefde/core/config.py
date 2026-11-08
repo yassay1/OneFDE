@@ -1,5 +1,6 @@
 from typing import Literal
 from urllib.parse import urlsplit
+from uuid import UUID
 
 from argon2 import extract_parameters
 from argon2.low_level import Type
@@ -16,9 +17,13 @@ class Settings(BaseSettings):
     owner_username: str = Field(min_length=1, max_length=128)
     owner_password_hash: SecretStr
     trusted_origin: str
+    business_amap_key: SecretStr | None = None
+    business_customer_origin: str = "http://127.0.0.1:8765"
     session_hours: int = Field(default=8, ge=1, le=24)
     cookie_secure: bool = True
     login_limit: int = Field(default=10, ge=1, le=100)
+    staff_chat_mode: Literal["scripted", "live"] = "scripted"
+    staff_model_revision_id: UUID | None = None
 
     @model_validator(mode="after")
     def check_security(self):
@@ -50,6 +55,17 @@ class Settings(BaseSettings):
             not self.cookie_secure or origin.scheme != "https"
         ):
             raise ValueError("production requires HTTPS and secure cookies")
+        customer = urlsplit(self.business_customer_origin)
+        if (
+            customer.scheme not in ("http", "https")
+            or not customer.hostname
+            or customer.path
+            or customer.query
+            or customer.fragment
+            or customer.username
+            or self.business_customer_origin == self.trusted_origin
+        ):
+            raise ValueError("business_customer_origin must be an independent origin")
         return self
 
     @property

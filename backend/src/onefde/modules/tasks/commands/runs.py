@@ -50,7 +50,17 @@ def current_prior(db, task, expected_id, state):
     return run
 
 
-def action(db, task_id, data, actor):
+def action(
+    db,
+    task_id,
+    data,
+    actor,
+    *,
+    initial_source=None,
+    reuse_asset=None,
+    recovery_source=None,
+    recovery_policy=None,
+):
     global_slot(db)
     task = locked_task(db, task_id, data.expected_revision)
     open_task(task)
@@ -93,12 +103,21 @@ def action(db, task_id, data, actor):
         validate_spec(s.TaskSpec.model_validate(task.spec))
         if db.scalar(select(m.Run.id).where(m.Run.state.in_(ACTIVE)).limit(1)):
             conflict("ACTIVE_RUN_EXISTS", "全局已有活动或现场不明的工程运行")
-        profile = db.get(m.ModelProfileRevision, data.model_profile_revision_id)
-        if not profile or profile.integration_status == "unavailable":
+        verification = isinstance(data, s.VerificationStart)
+        if verification and (not initial_source or not reuse_asset):
+            conflict("REUSE_SOURCE_REQUIRED", "复用验证必须固定已授权能力及归档")
+        profile = (
+            None
+            if verification
+            else db.get(m.ModelProfileRevision, data.model_profile_revision_id)
+        )
+        if not verification and (
+            not profile or profile.integration_status == "unavailable"
+        ):
             conflict(
                 "MODEL_PROFILE_UNAVAILABLE", "未供给可用模型配置修订；当前不会调用模型"
             )
-        if set(profile.config) - {
+        if profile and set(profile.config) - {
             "base_url",
             "secret_ref",
             "max_requests",
@@ -126,7 +145,13 @@ def action(db, task_id, data, actor):
             db.scalar(select(func.max(m.Run.attempt)).where(m.Run.task_id == task.id))
             or 0
         ) + 1
-        prior_source = trusted_prior_source(db, task.id)
+        # A trusted start or retry can explicitly pin its baseline. The Worker
+        # still compares the existing workspace before allowing any writes.
+        prior_source = recovery_source or (
+            None
+            if command in ("start", "retry") and initial_source is not None
+            else trusted_prior_source(db, task.id)
+        )
         prior_failures = [
             {
                 "run_id": str(item.id),
@@ -149,10 +174,11 @@ def action(db, task_id, data, actor):
             task_id=task.id,
             task_spec_version=task.spec_version,
             attempt=attempt,
-            model_profile_revision_id=profile.revision_id,
+            model_profile_revision_id=profile.revision_id if profile else None,
             applied_input_ids=copy.deepcopy(version.applied_input_ids),
             snapshot={
                 "spec_version": task.spec_version,
+                "original_request": task.original_request,
                 "spec": copy.deepcopy(version.spec),
                 "inputs": [
                     s.TaskInput.model_validate(i).model_dump(mode="json")
@@ -161,10 +187,12 @@ def action(db, task_id, data, actor):
                 "actor": actor,
                 "owner_role": task.owner_role,
                 "executor_role": task.executor_role,
-                "model_profile": s.ModelProfile.model_validate(profile).model_dump(
-                    mode="json"
+                "model_profile": (
+                    s.ModelProfile.model_validate(profile).model_dump(mode="json")
+                    if profile
+                    else None
                 ),
-                "config": copy.deepcopy(profile.config),
+                "config": copy.deepcopy(profile.config) if profile else {},
                 "permissions": ["engineering:task-workspace"],
                 "engineering": {
                     "role_revision": ROLE_REVISION,
@@ -183,6 +211,20 @@ def action(db, task_id, data, actor):
                     ),
                     "prior_failures": prior_failures,
                     "workspace_policy": "compare_or_block",
+                    **(
+                        {
+                            "recovery_parent_run_id": str(recovery_source.run_id),
+                            "recovery_policy": recovery_policy,
+                        }
+                        if recovery_source is not None
+                        else {}
+                    ),
+                    **({"reuse_asset": reuse_asset} if verification else {}),
+                    **(
+                        {"initial_source": copy.deepcopy(initial_source)}
+                        if initial_source
+                        else {}
+                    ),
                 },
             },
         )

@@ -182,9 +182,9 @@ def test_p2_quote_delivery_via_fde_tools(client, auth, app, profile):
         "SIMULATED engineering submit: quote product v1.0 + S01—S05 checks",
         blob,
     )
-    task = _fde(
-        client, auth, eid, "get_task", {"task_id": tid}, key="p2-get-1"
-    )["result"]["task"]
+    task = _fde(client, auth, eid, "get_task", {"task_id": tid}, key="p2-get-1")[
+        "result"
+    ]["task"]
     assert task["state"] == "review"
 
     arts = client.get(f"/api/v1/runs/{run1['id']}/artifacts", headers=auth).json()[
@@ -211,7 +211,9 @@ def test_p2_quote_delivery_via_fde_tools(client, auth, app, profile):
     assert task["state"] == "draft"
 
     inputs = client.get(f"/api/v1/tasks/{tid}/inputs", headers=auth).json()["items"]
-    change = next(i for i in inputs if i["kind"] == "change_request" and i["status"] == "pending")
+    change = next(
+        i for i in inputs if i["kind"] == "change_request" and i["status"] == "pending"
+    )
     modified_spec = QUOTE_SPEC | {
         "scope": QUOTE_SPEC["scope"] + "；含待核对单独导出",
         "completion_criteria": QUOTE_SPEC["completion_criteria"]
@@ -266,9 +268,9 @@ def test_p2_quote_delivery_via_fde_tools(client, auth, app, profile):
         "SIMULATED engineering submit: quote product v1.1 pending export",
         blob + b"\nv1.1",
     )
-    task = _fde(
-        client, auth, eid, "get_task", {"task_id": tid}, key="p2-get-2"
-    )["result"]["task"]
+    task = _fde(client, auth, eid, "get_task", {"task_id": tid}, key="p2-get-2")[
+        "result"
+    ]["task"]
     arts2 = client.get(f"/api/v1/runs/{run2['id']}/artifacts", headers=auth).json()[
         "items"
     ]

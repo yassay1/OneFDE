@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>果采报价台 · 水果供应商报价比较</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <h1>果采报价台</h1>
+    <p class="tagline">水果店供应商报价比较工具</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="notice" id="notice">
+    <p class="notice-title">数据来源：<span id="sourceBadge" class="source-badge">模拟示例</span>　模拟示例仅供演示比较口径，非真实供应商报价；导入或粘贴的 CSV 为您提供的实际数据。</p>
+    <p><strong>比较规则与限制：</strong></p>
+    <ul>
+      <li>仅比较商品 + 等级 + 规格相同、单位为 kg、币种为 CNY 的报价（公斤 CNY 口径）。</li>
+      <li>箱价（单位非 kg）、缺信息、无效价格一律标记为「待核对」并给出原因。</li>
+      <li>不同等级 / 规格不合并，各自独立成行比较。</li>
+      <li>同口径只有一行报价时显示「无可比对象」。</li>
+      <li>结果完整保留全部输入行，不自动选定供应商，不丢弃待核对项。</li>
+    </ul>
+    <p class="notice-foot">未计入运费、起订量、送货条件，最终采购由人决定。</p>
+  </section>
+
+  <section class="panel" aria-labelledby="importTitle">
+    <h2 id="importTitle">导入 / 粘贴报价</h2>
+    <p class="hint">CSV 需为 UTF-8 编码，八列表头：
+      <code>supplier,product,grade,spec,unit,unit_price,currency,note</code>
+    </p>
+
+    <div class="import-row">
+      <label class="file-label" for="csvFile">选择 CSV 文件</label>
+      <input type="file" id="csvFile" accept=".csv,text/csv">
+      <button type="button" id="templateBtn" class="btn btn-ghost">下载 CSV 模板</button>
+      <button type="button" id="loadSample" class="btn btn-ghost">载入模拟示例</button>
+    </div>
+
+    <label class="paste-label" for="csvInput">粘贴 CSV 文本</label>
+    <textarea id="csvInput" rows="6" spellcheck="false" placeholder="在此粘贴 UTF-8 CSV 文本，然后点击「比较报价」"></textarea>
+    <div class="actions">
+      <button type="button" id="compareBtn" class="btn btn-primary">比较报价</button>
+      <span id="feedback" class="feedback" role="status"></span>
+    </div>
+    <p class="sample-label">模拟示例数据（非真实报价）</p>
+    <pre id="samplePreview" class="sample-preview" aria-label="模拟示例数据预览"></pre>
+    <p class="hint">模拟示例（6 行）：富士苹果一级 8.0 / 7.5 同口径比较；蜜桔盒装待核对；香蕉一级、二级各自保留。</p>
+  </section>
+
+  <section class="panel" aria-labelledby="resultTitle">
+    <h2 id="resultTitle">比较结果</h2>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="searchInput">搜索供应商或商品</label>
+        <input type="search" id="searchInput" placeholder="输入供应商名称或商品名称">
+      </div>
+      <div class="field">
+        <label for="statusFilter">按结果状态筛选</label>
+        <select id="statusFilter">
+          <option value="">全部</option>
+          <option value="comparable">比较</option>
+          <option value="pending">待核对</option>
+          <option value="incomparable">无可比对象</option>
+        </select>
+      </div>
+      <div class="field field-btns">
+        <button type="button" id="clearFilters" class="btn btn-ghost">清空筛选</button>
+        <button type="button" id="exportAll" class="btn btn-primary">导出全部结果 CSV</button>
+        <button type="button" id="exportPending" class="btn btn-ghost">导出需核对报价 CSV</button>
+      </div>
+    </div>
+
+    <p id="counts" class="counts"></p>
+
+    <div class="table-scroll">
+      <table id="resultTable">
+        <thead>
+          <tr>
+            <th scope="col">供应商</th>
+            <th scope="col">商品</th>
+            <th scope="col">等级</th>
+            <th scope="col">规格</th>
+            <th scope="col">单位</th>
+            <th scope="col">单价</th>
+            <th scope="col">币种</th>
+            <th scope="col">结果状态</th>
+            <th scope="col">同口径最低价对照</th>
+            <th scope="col">原因 / 说明</th>
+            <th scope="col">备注</th>
+          </tr>
+        </thead>
+        <tbody id="resultBody"></tbody>
+      </table>
+    </div>
+    <p class="hint">结果完整保留所有输入行；搜索与筛选仅影响显示，不影响导出数据。</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>果采报价台 · 未计入运费、起订量、送货条件，最终采购由人决定。</p>
+  </div>
+</footer>
+
+<script src="compare.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

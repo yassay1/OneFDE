@@ -1,0 +1,11 @@
+{
+  "browser": "Chrome/156.0.8078.80",
+  "http_origin": "http://127.0.0.1:51683",
+  "selected_demo": "demo-repair-quote-view",
+  "authenticated_project_page": true,
+  "project_goal_submitted": true,
+  "linked_task_visible": true,
+  "summary_visible_after_poll": true,
+  "model_transport": "deterministic browser fixture",
+  "model_calls": 0
+}

@@ -1,0 +1,607 @@
+{
+  "checked_at": "2026-11-05T20:57:57.149427+08:00",
+  "scope": "local full project chain; simulated store and testers",
+  "overall": "business lifecycle completed; workbench support review path blocked",
+  "control": {
+    "initial_archive_sha256": "60b8df28817863f89e3f8f0d5fcedb6eeb77ee188f8a630b6270caf940c117de",
+    "initial_deployment_api_origin": "http://127.0.0.1:8012",
+    "check_sha256": "20c8ab641616a72254d33e51beab979dc4251b299d35f4fc7ab5fd3815e9390c",
+    "product_origin": "http://127.0.0.1:8770",
+    "api_origin": "http://127.0.0.1:8012",
+    "profile_id": "488fa83c-a2d7-410b-8981-b55cbb053c9d"
+  },
+  "frontend_build_sha256": {
+    "index.html": "7bd12a7c47e14601ef0677b13e5a452408f860a4b5651ecdce0e027921af6017",
+    "assets/index-Am7DYX2I.js": "8f499485b9dbed46a995f2708d4c94309021df8bf516510203a4719fc5de09e4",
+    "assets/index-D6mpVMqZ.css": "7d85d7c018b0e207bbbb94608235322ef5fc5a16ad713a7e1d814525c62b3978"
+  },
+  "lifecycle": {
+    "browser": "Chrome/156.0.8078.80",
+    "candidate_count": 2,
+    "invitation_id": "8d593b30-a60a-4118-9dab-99f1caa7c8db",
+    "invitation_case_id": "0a68a251-84be-4684-8d01-c7dacedb0c98",
+    "intake_handoff": {
+      "title": "报价工具需求",
+      "goal": "确认客户需求及交付范围",
+      "sources": [
+        "business:0a68a251-84be-4684-8d01-c7dacedb0c98/messages/12",
+        "business:0a68a251-84be-4684-8d01-c7dacedb0c98/messages/14"
+      ],
+      "unknowns": [
+        "项目及产品版本待核实",
+        "客户描述待 FDE 核验"
+      ],
+      "is_demo": true,
+      "notes": "",
+      "id": "4d30fc18-c78a-4e7e-a84b-c4049b7859e3",
+      "confirmed_facts": [
+        "客户已补充说明，见消息 14。"
+      ],
+      "product_version": null,
+      "reproduction": null
+    },
+    "consent_verified": true,
+    "engagement_id": "73a40b02-ed27-41b1-9369-6dc4a77454ae",
+    "first_task_id": "03200872-57ed-4532-84ea-c571039c9471",
+    "fde_handoff_accepted": "handling",
+    "knowledge_asset": {
+      "id": "fresh-quote-compare-csv",
+      "version": "1.1.0"
+    },
+    "fde_spec": {
+      "title": "首次交付｜采用固定报价能力",
+      "objective": "按获准既有能力配置独立报价页，验证客户 CSV 比较与导出。",
+      "scope": "固定资产 fresh-quote-compare-csv@1.1.0，R01–R05；无缺净重推断。",
+      "inputs": [
+        "邀请交接 4d30fc18-c78a-4e7e-a84b-c4049b7859e3",
+        "S01 同口径、S02 缺净重、S03 等级不同、S05 混合。",
+        "缺净重只标待核对，既有固定能力可满足首轮范围。"
+      ],
+      "confirmed_rules": [
+        "同商品、等级、规格和 kg 比较。",
+        "缺净重标待核对，采购由客户决定。"
+      ],
+      "completion_criteria": [
+        "S01 可比较两行，仅 B 最低。",
+        "S02 全部待核对。",
+        "CSV 实际可导出。"
+      ],
+      "dependencies": [],
+      "capability_versions": [
+        "fresh-quote-compare-csv@1.1.0"
+      ]
+    },
+    "initial_delivery": {
+      "origin": "http://127.0.0.1:8770",
+      "s01": {
+        "summary": "可比较 2 行 · 待核对 0 行 · 同口径单家 0 行",
+        "rows": [
+          [
+            "示例供应商A",
+            "富士苹果",
+            "一级",
+            "净重明确按公斤报价",
+            "kg",
+            "8.0",
+            "comparable",
+            "同商品/等级/规格/单位(kg)可比较",
+            ""
+          ],
+          [
+            "示例供应商B",
+            "富士苹果",
+            "一级",
+            "净重明确按公斤报价",
+            "kg",
+            "7.5",
+            "comparable",
+            "同商品/等级/规格/单位(kg)可比较",
+            "是（组内）"
+          ]
+        ],
+        "export_enabled": true
+      },
+      "s02": {
+        "summary": "可比较 0 行 · 待核对 2 行 · 同口径单家 0 行",
+        "rows": [
+          [
+            "示例供应商A",
+            "蜜桔",
+            "一级",
+            "盒装未标明净重",
+            "box",
+            "25.0",
+            "pending",
+            "P0 仅比较 unit=kg；当前单位无法在未确认换算表下比较",
+            ""
+          ],
+          [
+            "示例供应商B",
+            "蜜桔",
+            "一级",
+            "盒装未标明净重",
+            "box",
+            "22.0",
+            "pending",
+            "P0 仅比较 unit=kg；当前单位无法在未确认换算表下比较",
+            ""
+          ]
+        ],
+        "export_enabled": true
+      },
+      "export": {
+        "sha256": "82cb6e738d61783a46b49e3d27ee8baf77944d03084c73cc0ec24bd2b7ff4b55",
+        "rows": [
+          [
+            "示例供应商A",
+            "8.0",
+            "false"
+          ],
+          [
+            "示例供应商B",
+            "7.5",
+            "true"
+          ]
+        ]
+      },
+      "observed_defect": {
+        "summary": "缺少列: unit_price",
+        "rows": [],
+        "export_enabled": false
+      }
+    },
+    "support_case_id": "808310d6-1eb4-487c-a7b2-3a952b7c276d",
+    "dispatch": {
+      "case_id": "808310d6-1eb4-487c-a7b2-3a952b7c276d",
+      "engagement_id": "73a40b02-ed27-41b1-9369-6dc4a77454ae",
+      "seed_sha256": "c5c60cfcb2365d0755dcd62f3f6d3dae3d53aa18072750b590a646fe4902db79",
+      "task_id": "99613e5c-be49-4ac3-a869-88024dd0ce55",
+      "max_runs": 1,
+      "revision": 2,
+      "handoff_id": "fe27bcbe-7420-4aa0-8602-42a50b299925",
+      "intake_answer_id": 23,
+      "intake_prompt_id": 22,
+      "previous_notice_id": null,
+      "feedback_message_id": null,
+      "run_id": "a3f8dc0c-99c5-4926-897e-7db28747fbb0",
+      "operation_id": "8fd9622e-d7c9-4f0a-bec2-7bd9ff6d104a",
+      "runs": 1
+    },
+    "findings": [
+      {
+        "id": "FULL-01",
+        "status": "observed",
+        "surface": "Workbench project delivery page",
+        "symptom": "Project has an earlier delivery Task and a later support Task in review. UI renders only delivery.tasks[0] and offers no control to select the later Task.",
+        "expected": "Authorized founder can select and review the support Task from the project page.",
+        "visible_task_id": "03200872-57ed-4532-84ea-c571039c9471",
+        "unavailable_review_task_id": "99613e5c-be49-4ac3-a869-88024dd0ce55",
+        "repair_applied": false,
+        "continuation": "Existing authenticated Task review API, same Task and Run."
+      },
+      {
+        "id": "FULL-02",
+        "status": "observed limitation",
+        "symptom": "Initial delivery using an approved existing capability is recorded by staff reply and verified in the browser. The corresponding first-delivery Task remains draft because Task acceptance requires a submitted Run.",
+        "repair_applied": false
+      },
+      {
+        "id": "FULL-03",
+        "status": "observed",
+        "symptom": "Engineering invoked the registered Node check with a cd /workspace && prefix. The command matcher accepted the compound command; the separate validation container reran the exact command successfully.",
+        "repair_applied": false
+      }
+    ],
+    "workbench_review": {
+      "result": "blocked",
+      "first_task_state": "draft",
+      "support_task_state": "review",
+      "review_button_available": false
+    },
+    "review": {
+      "via": "authenticated Task review API",
+      "id": "4fa41c13-7cea-42ba-9706-ab8b9c85a0da",
+      "verdict": "accept",
+      "task_state": "succeeded",
+      "artifact_id": "3f956bc9-a29a-4e73-9142-f4bd97c27f29"
+    },
+    "retest": {
+      "notification": {
+        "steps": "导入 S01-unit-price-space，确认 A=8、B=7.5 且仅 B 为组内最低。",
+        "run_id": "a3f8dc0c-99c5-4926-897e-7db28747fbb0",
+        "sha256": "71385cdb7cb99ab49619a38fcb477cfd470e8eebb1ea06c5d4c2fc769090861c",
+        "version": "quote-test-71385cdb7cb9",
+        "notice_id": 26,
+        "review_id": "4fa41c13-7cea-42ba-9706-ab8b9c85a0da",
+        "access_url": "http://127.0.0.1:8771/",
+        "artifact_id": "3f956bc9-a29a-4e73-9142-f4bd97c27f29",
+        "confirmed_by": "service:fde:quote-support",
+        "spec_version": 1,
+        "access_evidence": "受信验证器核对回环测试入口和固定产物内容"
+      },
+      "checks": {
+        "original": {
+          "summary": "可比较 2 行 · 待核对 0 行 · 同口径单家 0 行",
+          "rows": [
+            [
+              "示例供应商A",
+              "富士苹果",
+              "一级",
+              "净重明确按公斤报价",
+              "kg",
+              "8.0",
+              "comparable",
+              "同商品/等级/规格/单位(kg)可比较",
+              ""
+            ],
+            [
+              "示例供应商B",
+              "富士苹果",
+              "一级",
+              "净重明确按公斤报价",
+              "kg",
+              "7.5",
+              "comparable",
+              "同商品/等级/规格/单位(kg)可比较",
+              "是（组内）"
+            ]
+          ],
+          "export_enabled": true
+        },
+        "ascii_tail": {
+          "summary": "可比较 2 行 · 待核对 0 行 · 同口径单家 0 行",
+          "rows": [
+            [
+              "示例供应商A",
+              "富士苹果",
+              "一级",
+              "净重明确按公斤报价",
+              "kg",
+              "8.0",
+              "comparable",
+              "同商品/等级/规格/单位(kg)可比较",
+              ""
+            ],
+            [
+              "示例供应商B",
+              "富士苹果",
+              "一级",
+              "净重明确按公斤报价",
+              "kg",
+              "7.5",
+              "comparable",
+              "同商品/等级/规格/单位(kg)可比较",
+              "是（组内）"
+            ]
+          ],
+          "export_enabled": true
+        },
+        "missing": {
+          "summary": "缺少列: unit_price",
+          "rows": [],
+          "export_enabled": false
+        },
+        "non_ascii": {
+          "summary": "缺少列: unit_price",
+          "rows": [],
+          "export_enabled": false
+        },
+        "price_duplicate": {
+          "summary": "表头冲突: unit_price 列重复",
+          "rows": [],
+          "export_enabled": false
+        },
+        "note_duplicate": {
+          "summary": "可比较 2 行 · 待核对 0 行 · 同口径单家 0 行",
+          "rows": [
+            [
+              "示例供应商A",
+              "富士苹果",
+              "一级",
+              "净重明确按公斤报价",
+              "kg",
+              "8.0",
+              "comparable",
+              "同商品/等级/规格/单位(kg)可比较",
+              ""
+            ],
+            [
+              "示例供应商B",
+              "富士苹果",
+              "一级",
+              "净重明确按公斤报价",
+              "kg",
+              "7.5",
+              "comparable",
+              "同商品/等级/规格/单位(kg)可比较",
+              "是（组内）"
+            ]
+          ],
+          "export_enabled": true
+        }
+      },
+      "export": {
+        "sha256": "82cb6e738d61783a46b49e3d27ee8baf77944d03084c73cc0ec24bd2b7ff4b55",
+        "rows": [
+          [
+            "示例供应商A",
+            "8.0",
+            "false"
+          ],
+          [
+            "示例供应商B",
+            "7.5",
+            "true"
+          ]
+        ]
+      },
+      "feedback_text": "内部测试通过：尾随 ASCII 空格可导入，A=8.0、B=7.5，仅 B 为组内最低。",
+      "closed": {
+        "case_state": "closed",
+        "automation_stage": "closed",
+        "task_state": "succeeded",
+        "retest": {
+          "steps": "导入 S01-unit-price-space，确认 A=8、B=7.5 且仅 B 为组内最低。",
+          "passed": true,
+          "run_id": "a3f8dc0c-99c5-4926-897e-7db28747fbb0",
+          "sha256": "71385cdb7cb99ab49619a38fcb477cfd470e8eebb1ea06c5d4c2fc769090861c",
+          "version": "quote-test-71385cdb7cb9",
+          "notice_id": 26,
+          "review_id": "4fa41c13-7cea-42ba-9706-ab8b9c85a0da",
+          "access_url": "http://127.0.0.1:8771/",
+          "artifact_id": "3f956bc9-a29a-4e73-9142-f4bd97c27f29",
+          "confirmed_by": "service:fde:quote-support",
+          "spec_version": 1,
+          "access_evidence": "受信验证器核对回环测试入口和固定产物内容",
+          "result_message_id": 27
+        }
+      },
+      "no_duplicate_notice": true,
+      "served_sha256": {
+        "index.html": "cf9ccb32c78088bf3bb6bed1a96eb6e0f311882c77d10fd04bc41e2b244e9bc7",
+        "compare.js": "c4ab5340699f9095a620e6b3b575096500a2e7f3350d94b7d99d3b8498a03dfd",
+        "app.js": "cf2f5df6379a26d8adcc8bb657dbdbe6fc8272fb32f258915063ed2bdb2f891f",
+        "business.js": "3083b9a22347c7ad37c3f232c20ca7d710802f76850e127da1899827691bc2b7"
+      }
+    },
+    "knowledge_reuse": {
+      "project_id": "0c1ef765-813f-4797-9ed2-926bdbf2b3a0",
+      "task_id": "c7c45cc2-c388-4ab8-a85b-5d0fff985ca1",
+      "asset": "fresh-quote-compare-csv",
+      "version": "1.1.0",
+      "archive_sha256": "60b8df28817863f89e3f8f0d5fcedb6eeb77ee188f8a630b6270caf940c117de",
+      "checks": {
+        "ok": true,
+        "product": "demo-supplier-quotes",
+        "version": "v1.1",
+        "checked": [
+          "S01",
+          "S02",
+          "S03",
+          "S05"
+        ],
+        "modification": "pending-only CSV export"
+      },
+      "restricted_asset_status": 404,
+      "restricted_content_absent": true
+    },
+    "restart": {
+      "api_restarted": true,
+      "persisted": {
+        "task_state": "succeeded",
+        "run_state": "completed",
+        "artifact_sha256": "71385cdb7cb99ab49619a38fcb477cfd470e8eebb1ea06c5d4c2fc769090861c",
+        "case_state": "closed",
+        "feedback_id": 27,
+        "notice_id": 26
+      }
+    },
+    "http_boundaries": {
+      "workbench_unauthenticated": 401,
+      "http://127.0.0.1:8770": 404,
+      "http://127.0.0.1:8771": 404
+    }
+  },
+  "engineering": {
+    "case_id": "808310d6-1eb4-487c-a7b2-3a952b7c276d",
+    "task_id": "99613e5c-be49-4ac3-a869-88024dd0ce55",
+    "handoff_id": "fe27bcbe-7420-4aa0-8602-42a50b299925",
+    "run_id": "a3f8dc0c-99c5-4926-897e-7db28747fbb0",
+    "operation_id": "8fd9622e-d7c9-4f0a-bec2-7bd9ff6d104a",
+    "seed_sha256": "c5c60cfcb2365d0755dcd62f3f6d3dae3d53aa18072750b590a646fe4902db79",
+    "check_sha256": "20c8ab641616a72254d33e51beab979dc4251b299d35f4fc7ab5fd3815e9390c",
+    "baseline_check": {
+      "ok": true,
+      "product": "demo-supplier-quotes",
+      "version": "v1.1",
+      "checked": [
+        "S01",
+        "S02",
+        "S03",
+        "S05"
+      ],
+      "modification": "pending-only CSV export"
+    },
+    "red_check": {
+      "exit_code": 1,
+      "failure": "Error: 缺少列: unit_price"
+    },
+    "preflight": {
+      "scope": "execution_preflight",
+      "execution_mode": "ecs_shared",
+      "model_execution_enabled": true,
+      "sdk_versions": {
+        "openhands-sdk": "1.59.0",
+        "openhands-workspace": "1.59.0",
+        "openhands-tools": "1.59.0"
+      },
+      "blockers": [],
+      "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+    },
+    "started_at": "2026-11-05T12:54:16.387739+00:00",
+    "model": "deepseek-flash",
+    "model_profile_revision_id": "488fa83c-a2d7-410b-8981-b55cbb053c9d",
+    "sdk_iteration_limit": 10,
+    "relay_max_calls": 12,
+    "relay_budget_usd": 1,
+    "worker_processed": true,
+    "relay_requests": [
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 2478300,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 7837,
+        "completion_tokens": 106
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 199500,
+        "request_kind": "auxiliary",
+        "upstream_status": 200,
+        "prompt_tokens": 625,
+        "completion_tokens": 10
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 3049200,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 9736,
+        "completion_tokens": 107
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 3774300,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 11557,
+        "completion_tokens": 256
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 3729900,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 12061,
+        "completion_tokens": 93
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 3945300,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 12271,
+        "completion_tokens": 220
+      }
+    ],
+    "relay_charged_or_reserved_usd": 0.0171765,
+    "task_state": "review",
+    "run_state": "completed",
+    "outcome": "submitted",
+    "spec_version": 1,
+    "error_code": null,
+    "summary": "In products/demo-supplier-quotes/compare.js parseCsv, only the unit_price header is normalized by stripping leading/trailing ASCII U+0020 spaces; all other headers are untouched. Multiple normalized unit_price columns now throw an explicit conflict/duplicate error, NBSP-suffixed unit_price still reports 缺少列: unit_price, and duplicate note headers keep prior behavior. Registered check `node products/demo-supplier-quotes/check.mjs --support-regression` passed (exit 0), including A=8, B=7.5 with only B lowest.",
+    "attempts": 1,
+    "proof": {
+      "stopped": true,
+      "changed_paths": [
+        "products/demo-supplier-quotes/compare.js"
+      ],
+      "check_coverage": [
+        {
+          "id": "auto-1",
+          "cwd": "/workspace",
+          "kind": "automatic",
+          "source": "completion_criteria",
+          "status": "passed",
+          "command": "node products/demo-supplier-quotes/check.mjs --support-regression",
+          "matched": true,
+          "evidence": {
+            "cwd": null,
+            "command": "cd /workspace && node products/demo-supplier-quotes/check.mjs --support-regression",
+            "timeout": false,
+            "exit_code": 0
+          },
+          "criterion": "[check] node products/demo-supplier-quotes/check.mjs --support-regression"
+        },
+        {
+          "id": "review-2",
+          "kind": "business_review",
+          "source": "completion_criteria",
+          "status": "pending_review",
+          "matched": false,
+          "criterion": "A=8、B=7.5，仅 B 为组内最低。"
+        }
+      ],
+      "validation": {
+        "passed": true,
+        "results": [
+          {
+            "id": "auto-1",
+            "cwd": "/workspace",
+            "command": "node products/demo-supplier-quotes/check.mjs --support-regression",
+            "timeout": false,
+            "exit_code": 0
+          }
+        ],
+        "stopped": true,
+        "comparison": {
+          "added": [],
+          "match": true,
+          "changed": [],
+          "removed": [],
+          "archive_digest": "48e047f6de3c5044acb3c28d190031d1906c403d9b228002b72fddf5a81dae05",
+          "current_digest": "48e047f6de3c5044acb3c28d190031d1906c403d9b228002b72fddf5a81dae05"
+        },
+        "error_code": null,
+        "source_unchanged": true,
+        "source_digest_after": "48e047f6de3c5044acb3c28d190031d1906c403d9b228002b72fddf5a81dae05",
+        "source_digest_before": "48e047f6de3c5044acb3c28d190031d1906c403d9b228002b72fddf5a81dae05"
+      },
+      "workspace": {
+        "policy": "compare_or_block",
+        "status": "restored_from_prior",
+        "blocked": false,
+        "comparison": {
+          "added": [],
+          "match": false,
+          "changed": [],
+          "removed": [
+            "engagements/demo-supplier-quotes/samples/s01-same-basis.csv",
+            "engagements/demo-supplier-quotes/samples/s02-missing-net-weight.csv",
+            "engagements/demo-supplier-quotes/samples/s03-different-grade.csv",
+            "engagements/demo-supplier-quotes/samples/s05-mixed.csv",
+            "products/demo-supplier-quotes/app.js",
+            "products/demo-supplier-quotes/business.js",
+            "products/demo-supplier-quotes/check.mjs",
+            "products/demo-supplier-quotes/compare.js",
+            "products/demo-supplier-quotes/index.html"
+          ],
+          "archive_digest": "e04be5d7514ade57cb17a3a9805cf3a3d1df18c74189aadc1eaa943b0721a680",
+          "current_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "restored_digest": "e04be5d7514ade57cb17a3a9805cf3a3d1df18c74189aadc1eaa943b0721a680"
+      }
+    },
+    "artifacts": [
+      {
+        "id": "3f956bc9-a29a-4e73-9142-f4bd97c27f29",
+        "name": "workspace.tar.gz",
+        "sha256": "71385cdb7cb99ab49619a38fcb477cfd470e8eebb1ea06c5d4c2fc769090861c",
+        "kind": "source-snapshot",
+        "size_bytes": 9232
+      }
+    ],
+    "relay_rule_removed": true
+  },
+  "application_changes_during_acceptance": false,
+  "external_customer_contact": false,
+  "public_release": false
+}

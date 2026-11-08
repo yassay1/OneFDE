@@ -128,7 +128,9 @@ _HANDLERS = {
 }
 
 
-def invoke(db, engagement_id: UUID, actor: str, call: fde.FdeToolCall) -> fde.FdeToolResult:
+def invoke(
+    db, engagement_id: UUID, actor: str, call: fde.FdeToolCall
+) -> fde.FdeToolResult:
     require_engagement(db, engagement_id)
     if call.tool not in TOOL_NAMES or call.tool not in _HANDLERS:
         _forbidden(call.tool)

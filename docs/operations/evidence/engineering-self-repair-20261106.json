@@ -1,0 +1,1378 @@
+{
+  "date": "2026-11-06",
+  "product": "demo-supplier-quotes",
+  "environment": "WSL OneFDE, isolated PostgreSQL, real Worker, OpenHands Agent Server 1.59.0, Docker independent validation on internal offline bridge",
+  "deterministic": {
+    "mode": "Fault injection and deterministic Chat Completions; real Worker, SDK and containers",
+    "database": "onefde_repair_f858900b_test",
+    "scenarios": [
+      {
+        "scenario": "evidence",
+        "engagement_id": "310f5457-3c66-4e0e-986d-a18b381563b6",
+        "task_id": "bf6f28e0-7ca4-4217-be12-7e119908c9ea",
+        "original_sha256": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+        "runs": [
+          {
+            "id": "634beffa-b7e1-49fd-a632-aeb9e584e3aa",
+            "operation_id": "231e0d89-88c6-4148-af97-401fb757bccc",
+            "spec_version": 1,
+            "attempt": 1,
+            "state": "completed",
+            "outcome": "submitted",
+            "error_code": null,
+            "artifact_id": "e494c877-7b13-4ba5-a05a-96d3ccf2ac0e",
+            "artifact_sha256": "c0bf7739416b0b9dc60d59c4c37316b4090e8be1e9aee4c7e910c2c76fc950af",
+            "review_baseline": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+            "review_check_count": 2,
+            "recovery_parent_run_id": null,
+            "recovery_artifact_id": null,
+            "stop_confirmed": true,
+            "workspace_status": "restored_from_prior",
+            "resources": [
+              {
+                "role": "engineering",
+                "container_id": "efd306722b933f4142c7d4bcac10140c26515d42e77ed4089eeebff3ccfde101"
+              },
+              {
+                "role": "validation-repair",
+                "container_id": "9381947a97c3196c349a2b5d13a7ea9ab52eb666ed62dca629ce426c75397150"
+              }
+            ],
+            "submission_diagnostics": [
+              {
+                "phase": 1,
+                "checks": [
+                  {
+                    "id": "auto-1",
+                    "cwd": "/workspace",
+                    "status": "evidence_missing",
+                    "command": "node products/demo-supplier-quotes/check.mjs",
+                    "exit_code": null
+                  },
+                  {
+                    "id": "auto-2",
+                    "cwd": "/workspace",
+                    "status": "evidence_missing",
+                    "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                    "exit_code": null
+                  }
+                ],
+                "spec_version": 1,
+                "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+                "candidate_sha256": "a9c3a7287753de3bad26fb1fbc0a85f52dba9a5fa32630d95dce8831837df8cb"
+              }
+            ],
+            "changed_paths": [
+              "products/demo-supplier-quotes/DESIGN.md",
+              "products/demo-supplier-quotes/app.js",
+              "products/demo-supplier-quotes/compare.js",
+              "products/demo-supplier-quotes/index.html"
+            ],
+            "independent_validation": {
+              "passed": true,
+              "source_unchanged": true,
+              "candidate_sha256": "c0bf7739416b0b9dc60d59c4c37316b4090e8be1e9aee4c7e910c2c76fc950af",
+              "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+              "spec_version": 1,
+              "results": [
+                {
+                  "id": "auto-1",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                },
+                {
+                  "id": "auto-2",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "scenario": "assertion",
+        "engagement_id": "21339bcf-99a9-4443-ada8-b43dbd03f243",
+        "task_id": "25a9d154-2e4b-4dc6-a800-a4738b9dedcd",
+        "original_sha256": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+        "runs": [
+          {
+            "id": "b23e18c9-79ee-4461-9d4d-273a7bb1f1f3",
+            "operation_id": "28ee1bd3-90ed-4c80-995c-3209d833b879",
+            "spec_version": 1,
+            "attempt": 1,
+            "state": "completed",
+            "outcome": "submitted",
+            "error_code": null,
+            "artifact_id": "7921871f-3a9d-48c2-87e1-1af4350c6615",
+            "artifact_sha256": "99815faa75629d6f3e1d3be7cfd597be29be2fdf45deb8722fd7d21a5501c09c",
+            "review_baseline": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+            "review_check_count": 2,
+            "recovery_parent_run_id": null,
+            "recovery_artifact_id": null,
+            "stop_confirmed": true,
+            "workspace_status": "restored_from_prior",
+            "resources": [
+              {
+                "role": "engineering",
+                "container_id": "c75518333f476cb4d3e87dc6bfe425b1ad16071f9b73fe77ee7b6a356adf4df6"
+              },
+              {
+                "role": "validation",
+                "container_id": "d22a998a476126bfc9c1b5f126866fc92cba3f28d54243baef991701544b7b66"
+              },
+              {
+                "role": "validation-repair",
+                "container_id": "7ddc606c9ff0460cd44e56d7d9ffd894b3ec08eb2915e3f71cda869a74d05893"
+              }
+            ],
+            "submission_diagnostics": [
+              {
+                "phase": 1,
+                "checks": [
+                  {
+                    "id": "auto-2",
+                    "status": "check_failed",
+                    "exit_code": 1
+                  }
+                ],
+                "spec_version": 1,
+                "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+                "candidate_sha256": "478d923818bd760a3eaffb15164814fd85fb0794541b85dbdc6b752f79a07870"
+              }
+            ],
+            "changed_paths": [
+              "products/demo-supplier-quotes/DESIGN.md",
+              "products/demo-supplier-quotes/app.js",
+              "products/demo-supplier-quotes/compare.js",
+              "products/demo-supplier-quotes/index.html"
+            ],
+            "independent_validation": {
+              "passed": true,
+              "source_unchanged": true,
+              "candidate_sha256": "99815faa75629d6f3e1d3be7cfd597be29be2fdf45deb8722fd7d21a5501c09c",
+              "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+              "spec_version": 1,
+              "results": [
+                {
+                  "id": "auto-1",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                },
+                {
+                  "id": "auto-2",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "scenario": "iterations",
+        "engagement_id": "7587e3f4-efaa-44e7-90da-58eb10a655c4",
+        "task_id": "0c92d215-2dd9-4048-9d8a-26cea3d341d4",
+        "original_sha256": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+        "runs": [
+          {
+            "id": "83eb0c27-c41a-4851-bb7c-a6bfbc2f8227",
+            "operation_id": "dcbfcf24-521f-420b-b62b-b611b1b20691",
+            "spec_version": 1,
+            "attempt": 1,
+            "state": "failed",
+            "outcome": null,
+            "error_code": "ITERATION_LIMIT_REACHED",
+            "artifact_id": "449e14a8-e147-41de-96c4-4c51b8a2c109",
+            "artifact_sha256": "27025d56d5918460b29d39c77eb6eecf7df062f924ee9b157b4962717a457dbe",
+            "review_baseline": null,
+            "review_check_count": null,
+            "recovery_parent_run_id": null,
+            "recovery_artifact_id": null,
+            "stop_confirmed": true,
+            "workspace_status": "restored_from_prior",
+            "resources": [
+              {
+                "role": "engineering",
+                "container_id": "3e51fa60b98e82154c19d7384f71e551d7f8a485d1663112cf5d86c44c1aae7f"
+              }
+            ],
+            "submission_diagnostics": [],
+            "changed_paths": [
+              "products/demo-supplier-quotes/DESIGN.md",
+              "products/demo-supplier-quotes/app.js",
+              "products/demo-supplier-quotes/compare.js",
+              "products/demo-supplier-quotes/index.html"
+            ],
+            "independent_validation": null
+          },
+          {
+            "id": "1d5b9224-efd2-4e47-9d85-6fe54a23e89c",
+            "operation_id": "2a7660da-c91f-49b1-a7ac-bd01487c0c5f",
+            "spec_version": 1,
+            "attempt": 2,
+            "state": "completed",
+            "outcome": "submitted",
+            "error_code": null,
+            "artifact_id": "6fcdaef7-8f03-4082-bacd-9fe69defa845",
+            "artifact_sha256": "8cfb5e2b38982437331a23169afc5a184eec1e88d4966a556fc75fb718c29130",
+            "review_baseline": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+            "review_check_count": 2,
+            "recovery_parent_run_id": "83eb0c27-c41a-4851-bb7c-a6bfbc2f8227",
+            "recovery_artifact_id": "449e14a8-e147-41de-96c4-4c51b8a2c109",
+            "stop_confirmed": true,
+            "workspace_status": "restored_from_prior",
+            "resources": [
+              {
+                "role": "engineering",
+                "container_id": "a8b817cab66708b59a2759b597d9bd05019f8c1b93afaf4b66d53318f888a686"
+              },
+              {
+                "role": "validation",
+                "container_id": "b8fc8493720e1700af0588097b16c127b9e5b143ea5cc9e39d8f0bc684d9a821"
+              }
+            ],
+            "submission_diagnostics": [],
+            "changed_paths": [
+              "products/demo-supplier-quotes/DESIGN.md",
+              "products/demo-supplier-quotes/app.js",
+              "products/demo-supplier-quotes/compare.js",
+              "products/demo-supplier-quotes/index.html"
+            ],
+            "independent_validation": {
+              "passed": true,
+              "source_unchanged": true,
+              "candidate_sha256": "8cfb5e2b38982437331a23169afc5a184eec1e88d4966a556fc75fb718c29130",
+              "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+              "spec_version": 1,
+              "results": [
+                {
+                  "id": "auto-1",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                },
+                {
+                  "id": "auto-2",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "tool_trace": [
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node --version"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node --version"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "<quote fixture edit of compare.js>"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "tool": "terminal",
+        "command": "<quote fixture edit of compare.js>"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "iterations",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "printf round-0"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "printf round-0"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "printf round-1"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "printf round-2"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "printf round-3"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "printf round-4"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "printf round-5"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "resume",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "printf round-0"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "resume",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "iterations",
+        "phase": "resume",
+        "tool": "finish",
+        "command": null
+      }
+    ],
+    "provider_usage": []
+  },
+  "live_initial_trial": {
+    "mode": "Initial evidence-gap trial, DeepSeek Flash correction",
+    "database": "onefde_repair_9e7a5546_test",
+    "scenarios": [
+      {
+        "scenario": "evidence",
+        "engagement_id": "a5100811-1443-4eb9-ab3e-32f33178380c",
+        "task_id": "525db824-ea1b-4901-81ce-158489082955",
+        "original_sha256": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+        "runs": [
+          {
+            "id": "28079d8f-9f35-4b58-ae42-eb94d23ec967",
+            "operation_id": "3bc7a12e-107c-409d-aa35-493078a7ff98",
+            "spec_version": 1,
+            "attempt": 1,
+            "state": "failed",
+            "outcome": null,
+            "error_code": "ITERATION_LIMIT_REACHED",
+            "artifact_id": "53d3f83e-34b6-4c98-97a6-e28b003b6191",
+            "artifact_sha256": "0a27c8dfc69334643cf0f5e138258788ecb930a0e34bebc6046a889bee57d843",
+            "review_baseline": null,
+            "review_check_count": null,
+            "recovery_parent_run_id": null,
+            "recovery_artifact_id": null,
+            "stop_confirmed": true,
+            "workspace_status": "restored_from_prior",
+            "resources": [
+              {
+                "role": "engineering",
+                "container_id": "dea122d1e3eac374c3b69c46250125e0ae0b9ddf2427b98b4dc8cc1f70febd7d"
+              }
+            ],
+            "submission_diagnostics": [
+              {
+                "phase": 1,
+                "checks": [
+                  {
+                    "id": "auto-1",
+                    "cwd": "/workspace",
+                    "status": "evidence_missing",
+                    "command": "node products/demo-supplier-quotes/check.mjs",
+                    "exit_code": null
+                  },
+                  {
+                    "id": "auto-2",
+                    "cwd": "/workspace",
+                    "status": "evidence_missing",
+                    "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                    "exit_code": null
+                  }
+                ],
+                "spec_version": 1,
+                "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+                "candidate_sha256": "dc04353e73ff20c160f64124e3ae7799460bcb1a15baf5895c3aef60b7c6643f"
+              }
+            ],
+            "changed_paths": [
+              "products/demo-supplier-quotes/DESIGN.md",
+              "products/demo-supplier-quotes/app.js",
+              "products/demo-supplier-quotes/compare.js",
+              "products/demo-supplier-quotes/index.html"
+            ],
+            "independent_validation": null
+          }
+        ]
+      }
+    ],
+    "tool_trace": [
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node --version"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node --version"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node --version"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && ls -la && find . -path ./node_modules -prune -o -type f -print | head -100"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace/products/demo-supplier-quotes && wc -l * && cat check.mjs check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace/products/demo-supplier-quotes && cat compare.js business.js"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace/products/demo-supplier-quotes && cat index.html DESIGN.md && cat ../../engagements/demo-supplier-quotes/samples/*.csv"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace/products/demo-supplier-quotes && cat app.js"
+      }
+    ],
+    "provider_usage": [
+      {
+        "sequence": 1,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2491500,
+        "scenario": "evidence",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 7865,
+        "completion_tokens": 110,
+        "prompt_cache_hit_tokens": 3328
+      },
+      {
+        "sequence": 2,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2673600,
+        "scenario": "evidence",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 8508,
+        "completion_tokens": 101,
+        "prompt_cache_hit_tokens": 7936
+      },
+      {
+        "sequence": 3,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 3234900,
+        "scenario": "evidence",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 10419,
+        "completion_tokens": 91,
+        "prompt_cache_hit_tokens": 8576
+      },
+      {
+        "sequence": 4,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 4254900,
+        "scenario": "evidence",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 13739,
+        "completion_tokens": 111,
+        "prompt_cache_hit_tokens": 10496
+      },
+      {
+        "sequence": 5,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 5127600,
+        "scenario": "evidence",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 16744,
+        "completion_tokens": 87,
+        "prompt_cache_hit_tokens": 13824
+      }
+    ],
+    "cleanup": {
+      "trial_successor_run_id": "a854d093-6de7-4a0d-8964-d2b12cc2f241",
+      "state": "completed",
+      "outcome": "superseded",
+      "executed": false
+    }
+  },
+  "live_final": {
+    "mode": "Deterministic fault injection; DeepSeek Flash chooses repair and continuation tools",
+    "database": "onefde_repair_f75e4459_test",
+    "scenarios": [
+      {
+        "scenario": "evidence",
+        "engagement_id": "2aa3f65e-b54b-4eb2-b0c2-d09d3a24be4c",
+        "task_id": "e23241aa-1433-4212-83a2-7e9c992aeaf2",
+        "original_sha256": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+        "runs": [
+          {
+            "id": "7f47fa96-75fc-4706-9749-0521b1568393",
+            "operation_id": "7a9b4426-a04f-473f-b001-8b7e92b2891e",
+            "spec_version": 1,
+            "attempt": 1,
+            "state": "completed",
+            "outcome": "submitted",
+            "error_code": null,
+            "artifact_id": "254b69a0-ae13-4c7e-8192-7b704428002d",
+            "artifact_sha256": "67a319621979b8e0bb00b420e3defaba8f446b9fbc8cdbaa0d1573db565c3e58",
+            "review_baseline": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+            "review_check_count": 2,
+            "recovery_parent_run_id": null,
+            "recovery_artifact_id": null,
+            "stop_confirmed": true,
+            "workspace_status": "restored_from_prior",
+            "resources": [
+              {
+                "role": "engineering",
+                "container_id": "9e7f210fbd68ebcc140bd8752c44902d388e254ad0f6b1c335b302ae4cd0b2ec"
+              },
+              {
+                "role": "validation-repair",
+                "container_id": "e5fda6939653056dae2fe4c3eb223201ded2bb38ba7ca39d77aead93044829eb"
+              }
+            ],
+            "submission_diagnostics": [
+              {
+                "phase": 1,
+                "checks": [
+                  {
+                    "id": "auto-1",
+                    "cwd": "/workspace",
+                    "status": "evidence_missing",
+                    "command": "node products/demo-supplier-quotes/check.mjs",
+                    "exit_code": null
+                  },
+                  {
+                    "id": "auto-2",
+                    "cwd": "/workspace",
+                    "status": "evidence_missing",
+                    "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                    "exit_code": null
+                  }
+                ],
+                "spec_version": 1,
+                "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+                "candidate_sha256": "2579698e67620b74469d7ba75e509759b1bc104f5ef6d18786704a46c0e9588d"
+              }
+            ],
+            "changed_paths": [
+              "products/demo-supplier-quotes/DESIGN.md",
+              "products/demo-supplier-quotes/app.js",
+              "products/demo-supplier-quotes/compare.js",
+              "products/demo-supplier-quotes/index.html"
+            ],
+            "independent_validation": {
+              "passed": true,
+              "source_unchanged": true,
+              "candidate_sha256": "67a319621979b8e0bb00b420e3defaba8f446b9fbc8cdbaa0d1573db565c3e58",
+              "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+              "spec_version": 1,
+              "results": [
+                {
+                  "id": "auto-1",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                },
+                {
+                  "id": "auto-2",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "scenario": "assertion",
+        "engagement_id": "beab65e1-dbdb-4337-be40-ce83755013a1",
+        "task_id": "dc3320ce-66e5-4672-a609-09ecca57053d",
+        "original_sha256": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+        "runs": [
+          {
+            "id": "e4ae10f9-0715-4c2a-82b1-8f66ab6f5a18",
+            "operation_id": "b2d4a970-881d-4661-af9d-fbeb6e6b8dd1",
+            "spec_version": 1,
+            "attempt": 1,
+            "state": "failed",
+            "outcome": null,
+            "error_code": "ITERATION_LIMIT_REACHED",
+            "artifact_id": "3bd19024-fab9-4c20-aeed-dc50a302b18a",
+            "artifact_sha256": "607fb611ad46e5ccc92c0f1a392793d02f8a3a784949d172b6a831fcd804161b",
+            "review_baseline": null,
+            "review_check_count": null,
+            "recovery_parent_run_id": null,
+            "recovery_artifact_id": null,
+            "stop_confirmed": true,
+            "workspace_status": "restored_from_prior",
+            "resources": [
+              {
+                "role": "engineering",
+                "container_id": "b14afc15ba7c8ec71928e083ce498a1201732cb466d2f67c5f82c7dd9624c60a"
+              },
+              {
+                "role": "validation",
+                "container_id": "aacb053de0909a045f76a716a747b1658e52c237e519c4e633c3946013772a94"
+              }
+            ],
+            "submission_diagnostics": [
+              {
+                "phase": 1,
+                "checks": [
+                  {
+                    "id": "auto-2",
+                    "status": "check_failed",
+                    "exit_code": 1
+                  }
+                ],
+                "spec_version": 1,
+                "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+                "candidate_sha256": "756eb5b5860ed742167600d19c02d4d5131d87f9445ded4f47d138de12af7e69"
+              }
+            ],
+            "changed_paths": [
+              "products/demo-supplier-quotes/DESIGN.md",
+              "products/demo-supplier-quotes/app.js",
+              "products/demo-supplier-quotes/compare.js",
+              "products/demo-supplier-quotes/index.html"
+            ],
+            "independent_validation": null
+          },
+          {
+            "id": "506ec68c-17e8-4b08-bcfb-82edd5aefc9c",
+            "operation_id": "3a000e74-63f4-4cfc-b82f-9df6f8eb510a",
+            "spec_version": 1,
+            "attempt": 2,
+            "state": "completed",
+            "outcome": "submitted",
+            "error_code": null,
+            "artifact_id": "149127f1-56f7-466e-af36-bad525507a1c",
+            "artifact_sha256": "8b23d730f50f36b48eb32f523a828a125177b14f3637ec007025546b974db018",
+            "review_baseline": "7aceaddf79dc75ab1bc7b7c83be3631f9322c043552bf3a56e0b2259fb370056",
+            "review_check_count": 2,
+            "recovery_parent_run_id": "e4ae10f9-0715-4c2a-82b1-8f66ab6f5a18",
+            "recovery_artifact_id": "3bd19024-fab9-4c20-aeed-dc50a302b18a",
+            "stop_confirmed": true,
+            "workspace_status": "match",
+            "resources": [
+              {
+                "role": "engineering",
+                "container_id": "704b1bc9e9898185c83bb0557ec2b808a7c717cf6c18a1caef74ee36aee22bc6"
+              },
+              {
+                "role": "validation-repair",
+                "container_id": "f7b64d59c5cb694bc625665c830eea097273481a4b9025e583f643f1143c3b55"
+              }
+            ],
+            "submission_diagnostics": [
+              {
+                "phase": 1,
+                "checks": [
+                  {
+                    "id": "auto-1",
+                    "cwd": "/workspace",
+                    "status": "evidence_missing",
+                    "command": "node products/demo-supplier-quotes/check.mjs",
+                    "exit_code": null
+                  },
+                  {
+                    "id": "auto-2",
+                    "cwd": "/workspace",
+                    "status": "evidence_missing",
+                    "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                    "exit_code": null
+                  }
+                ],
+                "spec_version": 1,
+                "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+                "candidate_sha256": "cc19cbbbbd7d9ad33f7df86aa2ba344db7d59624556e55aebfc0eb247ac0b904"
+              }
+            ],
+            "changed_paths": [
+              "products/demo-supplier-quotes/DESIGN.md",
+              "products/demo-supplier-quotes/app.js",
+              "products/demo-supplier-quotes/compare.js",
+              "products/demo-supplier-quotes/index.html"
+            ],
+            "independent_validation": {
+              "passed": true,
+              "source_unchanged": true,
+              "candidate_sha256": "8b23d730f50f36b48eb32f523a828a125177b14f3637ec007025546b974db018",
+              "check_revision": "046129f59d2c7d1326b6adeb42b7feb61b1080fc33f3a0d18988ded6096fa812",
+              "spec_version": 1,
+              "results": [
+                {
+                  "id": "auto-1",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                },
+                {
+                  "id": "auto-2",
+                  "cwd": "/workspace",
+                  "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs",
+                  "timeout": false,
+                  "exit_code": 0
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "tool_trace": [
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node --version"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node --version"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "initial",
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "evidence",
+        "phase": "repair",
+        "provider": true,
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "<quote fixture edit of compare.js>"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && ls products/demo-supplier-quotes/ && cat products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && cat products/demo-supplier-quotes/compare.js && cat products/demo-supplier-quotes/DESIGN.md"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "file_editor",
+        "command": "str_replace"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && grep -n \"reason\" products/demo-supplier-quotes/app.js"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "file_editor",
+        "command": "str_replace"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "initial",
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && ls && node products/demo-supplier-quotes/check.mjs; echo \"EXIT:$?\""
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && node products/demo-supplier-quotes/check-pending-reasons.mjs; echo \"EXIT:$?\""
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && find products/demo-supplier-quotes -type f | head -50 && echo \"---\" && wc -l products/demo-supplier-quotes/*"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace/products/demo-supplier-quotes && cat DESIGN.md check-pending-reasons.mjs && echo \"=== compare.js ===\" && cat compare.js"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace/products/demo-supplier-quotes && cat app.js && echo \"=== HTML ===\" && cat index.html"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && git status --short 2>&1 | head -20; echo \"---\"; git --no-pager diff --stat 2>&1 | head"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "terminal",
+        "command": "cd /workspace && node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "resume",
+        "provider": true,
+        "tool": "finish",
+        "command": null
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "terminal",
+        "command": "node products/demo-supplier-quotes/check-pending-reasons.mjs"
+      },
+      {
+        "scenario": "assertion",
+        "phase": "repair",
+        "provider": true,
+        "tool": "finish",
+        "command": null
+      }
+    ],
+    "provider_usage": [
+      {
+        "sequence": 1,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 173100,
+        "scenario": "evidence",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 541,
+        "completion_tokens": 9,
+        "prompt_cache_hit_tokens": 0
+      },
+      {
+        "sequence": 2,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2340600,
+        "scenario": "evidence",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 7074,
+        "completion_tokens": 182,
+        "prompt_cache_hit_tokens": 3584
+      },
+      {
+        "sequence": 3,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2423700,
+        "scenario": "evidence",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 7427,
+        "completion_tokens": 163,
+        "prompt_cache_hit_tokens": 7168
+      },
+      {
+        "sequence": 4,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 178800,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 544,
+        "completion_tokens": 13,
+        "prompt_cache_hit_tokens": 0
+      },
+      {
+        "sequence": 5,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2317200,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 7248,
+        "completion_tokens": 119,
+        "prompt_cache_hit_tokens": 3584
+      },
+      {
+        "sequence": 6,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2487300,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 7875,
+        "completion_tokens": 104,
+        "prompt_cache_hit_tokens": 7296
+      },
+      {
+        "sequence": 7,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 3415800,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 10646,
+        "completion_tokens": 185,
+        "prompt_cache_hit_tokens": 7936
+      },
+      {
+        "sequence": 8,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 3427800,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 10998,
+        "completion_tokens": 107,
+        "prompt_cache_hit_tokens": 10752
+      },
+      {
+        "sequence": 9,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 3573300,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 11511,
+        "completion_tokens": 100,
+        "prompt_cache_hit_tokens": 11008
+      },
+      {
+        "sequence": 10,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 3627600,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 11728,
+        "completion_tokens": 91,
+        "prompt_cache_hit_tokens": 11520
+      },
+      {
+        "sequence": 11,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 3860700,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 11877,
+        "completion_tokens": 248,
+        "prompt_cache_hit_tokens": 11648
+      },
+      {
+        "sequence": 12,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2538900,
+        "scenario": "assertion",
+        "phase": "resume",
+        "http_status": 200,
+        "prompt_tokens": 7643,
+        "completion_tokens": 205,
+        "prompt_cache_hit_tokens": 3584
+      },
+      {
+        "sequence": 13,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2566500,
+        "scenario": "assertion",
+        "phase": "resume",
+        "http_status": 200,
+        "prompt_tokens": 8035,
+        "completion_tokens": 130,
+        "prompt_cache_hit_tokens": 7808
+      },
+      {
+        "sequence": 14,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2651400,
+        "scenario": "assertion",
+        "phase": "resume",
+        "http_status": 200,
+        "prompt_tokens": 8398,
+        "completion_tokens": 110,
+        "prompt_cache_hit_tokens": 8064
+      },
+      {
+        "sequence": 15,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 3612900,
+        "scenario": "assertion",
+        "phase": "resume",
+        "http_status": 200,
+        "prompt_tokens": 11639,
+        "completion_tokens": 101,
+        "prompt_cache_hit_tokens": 8448
+      },
+      {
+        "sequence": 16,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 4615200,
+        "scenario": "assertion",
+        "phase": "resume",
+        "http_status": 200,
+        "prompt_tokens": 14880,
+        "completion_tokens": 126,
+        "prompt_cache_hit_tokens": 11648
+      },
+      {
+        "sequence": 17,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 4629300,
+        "scenario": "assertion",
+        "phase": "resume",
+        "http_status": 200,
+        "prompt_tokens": 15063,
+        "completion_tokens": 92,
+        "prompt_cache_hit_tokens": 14848
+      },
+      {
+        "sequence": 18,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 4696800,
+        "scenario": "assertion",
+        "phase": "resume",
+        "http_status": 200,
+        "prompt_tokens": 15272,
+        "completion_tokens": 96,
+        "prompt_cache_hit_tokens": 15104
+      },
+      {
+        "sequence": 19,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 5350200,
+        "scenario": "assertion",
+        "phase": "resume",
+        "http_status": 200,
+        "prompt_tokens": 15426,
+        "completion_tokens": 602,
+        "prompt_cache_hit_tokens": 15232
+      },
+      {
+        "sequence": 20,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 173400,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 542,
+        "completion_tokens": 9,
+        "prompt_cache_hit_tokens": 0
+      },
+      {
+        "sequence": 21,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2332500,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 7075,
+        "completion_tokens": 175,
+        "prompt_cache_hit_tokens": 3584
+      },
+      {
+        "sequence": 22,
+        "role": "Engineering",
+        "output_cap": 4096,
+        "charged_or_reserved_nanousd": 2415900,
+        "scenario": "assertion",
+        "phase": "repair",
+        "http_status": 200,
+        "prompt_tokens": 7421,
+        "completion_tokens": 158,
+        "prompt_cache_hit_tokens": 7168
+      }
+    ],
+    "observed_repair": {
+      "run_id": "e4ae10f9-0715-4c2a-82b1-8f66ab6f5a18",
+      "tool": "file_editor",
+      "command": "str_replace",
+      "file": "products/demo-supplier-quotes/compare.js",
+      "edit": "Changed the pending reason filter from inequality to equality.",
+      "registered_self_check_exit_codes": [
+        0,
+        0
+      ],
+      "followup": "506ec68c-17e8-4b08-bcfb-82edd5aefc9c"
+    }
+  },
+  "usage": {
+    "provider": "DeepSeek Flash",
+    "requests": 27,
+    "prompt_tokens": 256138,
+    "completion_tokens": 3625,
+    "prompt_cache_hit_tokens": 214144,
+    "peak_uncached_upper_usd": "0.0811914",
+    "off_peak_usage_estimate_usd": "0.009116532",
+    "exercise_cap_usd": "0.50",
+    "deterministic_provider_requests": 0
+  },
+  "formal_review_count": 0,
+  "business_acceptance_recorded": false,
+  "formal_release_recorded": false,
+  "control_tests": {
+    "command": "uv run --locked --extra worker pytest -q",
+    "passed": 188,
+    "failed": 0
+  }
+}

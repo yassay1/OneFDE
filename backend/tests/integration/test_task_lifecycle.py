@@ -16,6 +16,7 @@ from onefde.modules.tasks import events
 from onefde.modules.tasks import schemas as s
 from onefde.modules.tasks import service as tasks
 from onefde.modules.tasks.commands.runs import trusted_prior_source
+from onefde.modules.tasks.configuration import ModelConfiguration, provision_model
 from tests.support import models as m
 from tests.support.constants import ORIGIN, PASSWORD
 from tests.support.factories import create_task
@@ -114,6 +115,46 @@ def test_pending_input_never_changes_running_snapshot(control):
     assert change["id"] not in next_run["applied_input_ids"]
     with Session(c.app.state.engine) as db:
         assert db.get(m.Run, UUID(run["id"])).snapshot["inputs"] == []
+
+
+def test_retry_can_select_a_different_model_without_changing_prior_run(control):
+    c = control
+    configs = (
+        ModelConfiguration(
+            provider="deepseek",
+            model="openai/deepseek-flash",
+            base_url="https://api.deepseek.com",
+            secret_ref="env:ONEFDE_MODEL_ENGINEERING",
+        ),
+        ModelConfiguration(
+            provider="mimo",
+            model="openai/mimo-v2.6-pro",
+            base_url="https://api.xiaomimimo.com/v1",
+            secret_ref="env:ONEFDE_MODEL_ENGINEERING_MIMO",
+        ),
+    )
+    with Session(c.app.state.engine) as db, db.begin():
+        first_profile, second_profile = (
+            str(provision_model(db, cfg)) for cfg in configs
+        )
+
+    profiles = c.client.get("/api/v1/model-profiles").json()
+    assert {first_profile, second_profile} <= {p["revision_id"] for p in profiles}
+    c.profile = first_profile
+    first = c.start()
+    c.claim(first)
+    c.finish(first, state="failed", outcome=None, error_code="SIMULATED_FAILURE")
+    c.profile = second_profile
+    second = c.action("retry", expected_run_id=first["id"])["run"]
+    with Session(c.app.state.engine) as db:
+        for run, cfg, revision_id in zip(
+            (first, second), configs, (first_profile, second_profile), strict=True
+        ):
+            persisted = db.get(m.Run, UUID(run["id"]))
+            assert str(persisted.model_profile_revision_id) == revision_id
+            assert persisted.snapshot["model_profile"]["model"] == cfg.model
+            assert persisted.snapshot["config"]["base_url"] == cfg.base_url
+            assert persisted.snapshot["config"]["secret_ref"] == cfg.secret_ref
 
 
 def test_spec_version_and_input_decisions_idempotent_before_revision(control):
@@ -601,3 +642,35 @@ def test_interrupted_source_is_not_a_repair_baseline(control):
         c.action("retry", expected_run_id=run["id"], status=409)["code"]
         == "RUN_NOT_STOPPED"
     )
+
+
+@pytest.mark.parametrize("command", ["start", "retry"])
+def test_trusted_execution_can_pin_the_selected_seed(control, command):
+    run = control.start()
+    control.claim(run)
+    control.finish(
+        run,
+        state="failed",
+        outcome=None,
+        error_code="SIMULATED_FAILURE",
+        artifacts=[_source_artifact(b"failed-workspace")],
+    )
+    if command == "start":
+        control.action("queue")
+    seed = {"object_key": "seed.tar.gz", "sha256": "1" * 64, "size_bytes": 9}
+    with Session(control.app.state.engine) as db, db.begin():
+        accepted = tasks.action(
+            db,
+            UUID(control.tid),
+            s.TaskAction(
+                command=command,
+                expected_revision=control.get()["revision"],
+                expected_run_id=UUID(run["id"]) if command == "retry" else None,
+                model_profile_revision_id=UUID(control.profile),
+            ),
+            "trusted-execution",
+            initial_source=seed,
+        )
+        snapshot = db.get(m.Run, accepted.run.id).snapshot["engineering"]
+        assert snapshot["prior_source"] is None
+        assert snapshot["initial_source"] == seed

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>维修报价查看</title>
+<style>body{font:1rem/1.6 system-ui;margin:2rem auto;max-width:34rem;padding:0 1rem;color:#1a3441;background:#f4f8fa}form,article{background:white;border:1px solid #c1d7df;border-radius:.5rem;padding:1rem;margin:1rem 0}label{display:block;margin:.4rem 0}button,input{font:inherit;padding:.35rem}button{margin-right:.5rem}</style>
+<main>
+  <h1>维修报价查看</h1>
+  <p>用维修店给你的账号登录，即可查看对应报价。</p>
+  <form id="login">
+    <label>试用账号 <input id="account" required></label>
+    <label>试用码 <input id="code" type="password" required></label>
+    <button>登录查看</button>
+  </form>
+  <p id="status" role="status"></p>
+  <article id="quote" hidden>
+    <h2 id="quote-id"></h2><p id="detail"></p><p id="amount"></p>
+    <div id="manage" hidden><button id="publish">发布</button><button id="withdraw">撤回</button></div>
+  </article>
+</main>
+<script>
+const el = id => document.getElementById(id);
+const id = new URL(location.href).searchParams.get("quote") || "";
+const path = "/api/quotes/" + encodeURIComponent(id);
+async function request(url, data) {
+  const response = await fetch(url, data === undefined ? {} : {
+    method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)
+  });
+  return [response.status, await response.json()];
+}
+async function load() {
+  el("quote").hidden = true;
+  el("manage").hidden = true;
+  for (const key of ["quote-id","detail","amount"]) el(key).textContent = "";
+  if (!id) { el("status").textContent = "请打开维修店发给你的报价链接。"; return; }
+  const [status, value] = await request(path);
+  el("login").hidden = status !== 401;
+  if (status !== 200) { el("status").textContent = value.message; return; }
+  el("quote-id").textContent = "报价 " + value.id;
+  el("detail").textContent = value.detail;
+  el("amount").textContent = "合计 ¥" + (value.amount_minor / 100).toFixed(2);
+  el("manage").hidden = !value.can_manage;
+  el("quote").hidden = false;
+  el("status").textContent = ({published:"已发布", withdrawn:"已撤回", draft:"待发布"})[value.state];
+}
+async function safely(action) {
+  try { await action(); } catch {
+    el("quote").hidden = true;
+    el("status").textContent = "暂时无法连接，请刷新后再试。";
+  }
+}
+el("login").onsubmit = event => {
+  event.preventDefault();
+  safely(async () => {
+    const [status, value] = await request("/api/session", {account:el("account").value,code:el("code").value});
+    el("code").value = "";
+    if (status === 200) await load(); else el("status").textContent = value.message;
+  });
+};
+for (const action of ["publish","withdraw"]) el(action).onclick = () => safely(async () => {
+  const [status, value] = await request(path + "/" + action, {});
+  if (status === 200) await load(); else el("status").textContent = value.message;
+});
+window.addEventListener("pageshow", () => safely(load));
+</script>
+</html>

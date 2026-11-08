@@ -1,4 +1,4 @@
-"""Read ONLY DeepSeek fields from Windows backend/.env; send via local stdin."""
+"""Sync one model provider from Windows backend/.env via local stdin."""
 
 import argparse
 import io
@@ -8,31 +8,45 @@ from pathlib import Path
 
 from dotenv import dotenv_values
 
+PROVIDERS = {
+    "deepseek": (
+        "https://api.deepseek.com",
+        "deepseek-flash",
+        "ONEFDE_MODEL_ENGINEERING",
+        {"https://api.deepseek.com", "https://api.deepseek.com/v1"},
+    ),
+    "mimo": (
+        "https://api.xiaomimimo.com/v1",
+        "mimo-v2.6-pro",
+        "ONEFDE_MODEL_ENGINEERING_MIMO",
+        {"https://api.xiaomimimo.com/v1"},
+    ),
+}
 
-def read_config(path):
+
+def read_config(path, provider="deepseek", *, prepare=False):
     # No shell evaluation or ${...} expansion of other credentials.
     values = dotenv_values(
         stream=io.StringIO(path.read_text(encoding="utf-8-sig")), interpolate=False
     )
-    key = (values.get("DEEPSEEK_API_KEY") or "").strip()
-    endpoint = (values.get("DEEPSEEK_BASE_URL") or "https://api.deepseek.com").strip()
-    model = (values.get("DEEPSEEK_MODEL") or "deepseek-flash").strip()
-    if endpoint.rstrip("/") not in {
-        "https://api.deepseek.com",
-        "https://api.deepseek.com/v1",
-    }:
-        raise ValueError("Expected the official DeepSeek endpoint")
+    default_url, default_model, secret, allowed_urls = PROVIDERS[provider]
+    prefix = provider.upper()
+    key = "" if prepare else (values.get(f"{prefix}_API_KEY") or "").strip()
+    endpoint = (values.get(f"{prefix}_BASE_URL") or default_url).strip().rstrip("/")
+    model = (values.get(f"{prefix}_MODEL") or default_model).strip()
+    if endpoint not in allowed_urls:
+        raise ValueError("Expected the selected provider's approved endpoint")
     if not model or any(c.isspace() for c in model) or "/" in model:
-        raise ValueError("Invalid DeepSeek model ID")
+        raise ValueError("Invalid model ID")
     if key and (len(key) > 8192 or any(c.isspace() for c in key)):
         raise ValueError("Invalid key format")
     return {
         "key": key,
         "profile": {
-            "provider": "deepseek",
+            "provider": provider,
             "model": "openai/" + model,
             "base_url": endpoint,
-            "secret_ref": "env:ONEFDE_MODEL_ENGINEERING",
+            "secret_ref": "env:" + secret,
             "max_requests": 20,
             "timeout_seconds": 60,
         },
@@ -41,14 +55,21 @@ def read_config(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--provider", choices=PROVIDERS, default="deepseek")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check", action="store_true")
+    mode.add_argument(
+        "--prepare", action="store_true", help="Prepare MiMo without a key"
+    )
     args = parser.parse_args()
+    if args.prepare and args.provider != "mimo":
+        parser.error("--prepare requires --provider mimo")
     root = Path(__file__).resolve().parents[1]
     try:
-        packet = read_config(root / "backend/.env")
+        packet = read_config(root / "backend/.env", args.provider, prepare=args.prepare)
     except (OSError, ValueError):
         raise SystemExit(
-            "Cannot load valid DeepSeek fields; configuration values withheld"
+            "Cannot load valid provider fields; configuration values withheld"
         ) from None
     if args.check:
         print(
@@ -60,8 +81,10 @@ def main():
             )
         )
         return
-    if not packet["key"]:
-        raise SystemExit("Fill DEEPSEEK_API_KEY in backend/.env and save first")
+    if not packet["key"] and not args.prepare:
+        raise SystemExit(
+            f"Fill {args.provider.upper()}_API_KEY in backend/.env and save first"
+        )
     result = subprocess.run(
         [
             "wsl",
@@ -82,7 +105,7 @@ def main():
         raise SystemExit("Local secret synchronization failed; values withheld")
     # Never echo child output, even on errors.
     print(
-        "DeepSeek fields synchronized locally; no model call. Recreate standby Worker to load."
+        f"{args.provider} configuration synchronized locally; no model call. Recreate standby Worker to load."
     )
 
 

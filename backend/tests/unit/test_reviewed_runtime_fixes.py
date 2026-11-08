@@ -108,7 +108,7 @@ def test_validation_cleanup_exception_with_unknown_stop_stays_interrupted(
 
     class Fake:
         def execute_command(self, command, cwd, timeout):
-            return SimpleNamespace(exit_code=0, timeout=False)
+            return SimpleNamespace(exit_code=0, timeout_occurred=False)
 
         def cleanup(self):
             raise RuntimeError("validation cleanup failed")
@@ -181,7 +181,7 @@ def test_running_validation_check_stops_before_the_next_check(tmp_path, monkeypa
             commands.append(command)
             clock["now"] = 9_000.0
             assert released.wait(3)
-            return SimpleNamespace(exit_code=0, timeout=False)
+            return SimpleNamespace(exit_code=0, timeout_occurred=False)
 
         def cleanup(self):
             return None
@@ -222,7 +222,7 @@ def test_stop_during_validation_check_does_not_run_later_checks(tmp_path, monkey
             commands.append(command)
             started.set()
             assert released.wait(3)
-            return SimpleNamespace(exit_code=0, timeout=False)
+            return SimpleNamespace(exit_code=0, timeout_occurred=False)
 
         def cleanup(self):
             return None
@@ -274,7 +274,7 @@ def test_new_source_during_validation_is_not_unchanged(tmp_path, monkeypatch):
                 target = workspace / "dist"
                 target.mkdir()
                 (target / "app.js").write_text("new", encoding="utf-8")
-            return SimpleNamespace(exit_code=0, timeout=False)
+            return SimpleNamespace(exit_code=0, timeout_occurred=False)
 
         def cleanup(self):
             return None
@@ -314,7 +314,7 @@ def test_new_source_during_validation_is_not_unchanged(tmp_path, monkeypatch):
             log = workspace / "bash_events"
             log.mkdir()
             (log / "1.json").write_text("{}", encoding="utf-8")
-            return SimpleNamespace(exit_code=0, timeout=False)
+            return SimpleNamespace(exit_code=0, timeout_occurred=False)
 
         def cleanup(self):
             return None

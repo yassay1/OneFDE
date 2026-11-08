@@ -121,7 +121,7 @@ class Run(Base):
     attempt: Mapped[int]
     state: Mapped[str] = mapped_column(String(32), default="queued")
     outcome: Mapped[str | None] = mapped_column(String(32))
-    model_profile_revision_id: Mapped[UUID] = mapped_column(
+    model_profile_revision_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("model_profile_revisions.revision_id")
     )
     applied_input_ids: Mapped[list] = mapped_column(JSONB)

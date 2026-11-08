@@ -1,0 +1,232 @@
+{
+  "status": "passed",
+  "scope": "local internal end-to-end retest of accepted Engineering artifact",
+  "control": {
+    "case_id": "ac8ef624-0ef4-474a-8bed-9a3459e166e0",
+    "task_id": "5b2066c3-1f3c-4f0d-9018-a1f14914d9b9",
+    "run_id": "8952ab51-9c83-4317-af6f-e6f7e4b15787",
+    "artifact_id": "43e6107f-a65d-42ab-9df2-b4d63b7dc829",
+    "sha256": "21bb74d3699ab68784b53389cc8ff4b08b4dfd4c3b595e287cb3cc225b216e36",
+    "spec_version": 2,
+    "review_id": "8da0eae2-41c3-45e0-b144-aeceafcdc00d",
+    "review_verdict": "accept",
+    "reviewed_by": "founder",
+    "accepted_at": "2026-11-05T12:41:36.488772Z",
+    "task_state": "succeeded",
+    "public_before_acceptance": {
+      "state": "open",
+      "notice_id": null,
+      "http_status": 200
+    },
+    "original_origin": "http://127.0.0.1:8765",
+    "preview_origin": "http://127.0.0.1:8767/",
+    "verification": {
+      "passed": true,
+      "expires_at": "2026-11-05T12:42:48.359469+00:00"
+    },
+    "notice_id": 9,
+    "notification": {
+      "artifact_id": "43e6107f-a65d-42ab-9df2-b4d63b7dc829",
+      "sha256": "21bb74d3699ab68784b53389cc8ff4b08b4dfd4c3b595e287cb3cc225b216e36",
+      "review_id": "8da0eae2-41c3-45e0-b144-aeceafcdc00d",
+      "run_id": "8952ab51-9c83-4317-af6f-e6f7e4b15787",
+      "version": "quote-test-21bb74d3699a",
+      "access_url": "http://127.0.0.1:8767/",
+      "steps": "导入 S01-unit-price-space，确认 A=8、B=7.5 且仅 B 为组内最低。"
+    },
+    "case_state": "closed",
+    "automation_stage": "closed",
+    "feedback": {
+      "message_id": 10,
+      "notice_id": 9,
+      "passed": true,
+      "text": "内部复试通过：尾随 ASCII 空格可导入，A=8.0、B=7.5，仅 B 为组内最低。"
+    },
+    "public_after_feedback": {
+      "http_status": 200,
+      "state": "closed",
+      "notice_id": null
+    }
+  },
+  "browser": {
+    "checked_at": "2026-11-05T20:42:37.199534+08:00",
+    "status": "passed",
+    "approval": {
+      "by": "founder",
+      "source": "confirmation in Codex chat on 2026-11-05"
+    },
+    "archive_name": "quote-engineering-revision-source.tar.gz",
+    "archive_sha256": "21bb74d3699ab68784b53389cc8ff4b08b4dfd4c3b595e287cb3cc225b216e36",
+    "archive_size_bytes": 9241,
+    "origin": "http://127.0.0.1:8767",
+    "listen_address": "127.0.0.1",
+    "browser": "Chrome/156.0.8078.80",
+    "served_files_verified_against_archive": {
+      "/": {
+        "http_status": 200,
+        "sha256": "5605627976f8e64a5dfc8d2a1e9b07fe05c8d8071f550c654267e57127b0e112",
+        "size_bytes": 5963
+      },
+      "/compare.js": {
+        "http_status": 200,
+        "sha256": "0590cf7e3c82a9812f77d19f711a8256b7ab4b7025736aa8ff5fd2ec3b94ad18",
+        "size_bytes": 6594
+      },
+      "/app.js": {
+        "http_status": 200,
+        "sha256": "cf2f5df6379a26d8adcc8bb657dbdbe6fc8272fb32f258915063ed2bdb2f891f",
+        "size_bytes": 2967
+      },
+      "/business.js": {
+        "http_status": 200,
+        "sha256": "3083b9a22347c7ad37c3f232c20ca7d710802f76850e127da1899827691bc2b7",
+        "size_bytes": 5050
+      }
+    },
+    "browser_checks": {
+      "original": {
+        "fixture_sha256": "8496a1045578a1828303de44f2acf4dbe51cc58837b6c8dd5b3d0d3015507d64",
+        "summary": "可比较 2 行 · 待核对 0 行 · 同口径单家 0 行",
+        "rows": [
+          [
+            "示例供应商A",
+            "富士苹果",
+            "一级",
+            "净重明确按公斤报价",
+            "kg",
+            "8.0",
+            "comparable",
+            "同商品/等级/规格/单位(kg)可比较",
+            ""
+          ],
+          [
+            "示例供应商B",
+            "富士苹果",
+            "一级",
+            "净重明确按公斤报价",
+            "kg",
+            "7.5",
+            "comparable",
+            "同商品/等级/规格/单位(kg)可比较",
+            "是（组内）"
+          ]
+        ],
+        "all_export_enabled": true,
+        "pending_export_enabled": false
+      },
+      "missing": {
+        "fixture_sha256": "5c10f747ae7e95b45900d8eed02ee4c30b2e775fbdbc359d4b60b4e8f4193fea",
+        "summary": "缺少列: unit_price",
+        "rows": [],
+        "all_export_enabled": false,
+        "pending_export_enabled": false
+      },
+      "non_ascii_space": {
+        "fixture_sha256": "f3467e63dd10eb5445a8656a1ccdd709b5fc970f7c7658532d67904f752faf49",
+        "summary": "缺少列: unit_price",
+        "rows": [],
+        "all_export_enabled": false,
+        "pending_export_enabled": false
+      },
+      "trailing_space": {
+        "fixture_sha256": "5555d8b88cb9e2d67a90e4c5f010e3d2fdf550539e863d83fdb3f6e2ae243e3b",
+        "summary": "可比较 2 行 · 待核对 0 行 · 同口径单家 0 行",
+        "rows": [
+          [
+            "示例供应商A",
+            "富士苹果",
+            "一级",
+            "净重明确按公斤报价",
+            "kg",
+            "8.0",
+            "comparable",
+            "同商品/等级/规格/单位(kg)可比较",
+            ""
+          ],
+          [
+            "示例供应商B",
+            "富士苹果",
+            "一级",
+            "净重明确按公斤报价",
+            "kg",
+            "7.5",
+            "comparable",
+            "同商品/等级/规格/单位(kg)可比较",
+            "是（组内）"
+          ]
+        ],
+        "all_export_enabled": true,
+        "pending_export_enabled": false
+      },
+      "duplicate": {
+        "fixture_sha256": "e2395f933d864f425b60238033777697f18a690e12132009ffe1f78766307e88",
+        "summary": "表头列名重复: unit_price",
+        "rows": [],
+        "all_export_enabled": false,
+        "pending_export_enabled": false
+      },
+      "duplicate_note": {
+        "fixture_sha256": "e09bb22b6addfebae78b7ccd0a59dc8a33ffaa2b0fb74aeea070c8e6a0cf8e1d",
+        "summary": "可比较 2 行 · 待核对 0 行 · 同口径单家 0 行",
+        "rows": [
+          [
+            "示例供应商A",
+            "富士苹果",
+            "一级",
+            "净重明确按公斤报价",
+            "kg",
+            "8.0",
+            "comparable",
+            "同商品/等级/规格/单位(kg)可比较",
+            ""
+          ],
+          [
+            "示例供应商B",
+            "富士苹果",
+            "一级",
+            "净重明确按公斤报价",
+            "kg",
+            "7.5",
+            "comparable",
+            "同商品/等级/规格/单位(kg)可比较",
+            "是（组内）"
+          ]
+        ],
+        "all_export_enabled": true,
+        "pending_export_enabled": false
+      }
+    },
+    "browser_csv_export": {
+      "file": "quote-result.csv",
+      "sha256": "82cb6e738d61783a46b49e3d27ee8baf77944d03084c73cc0ec24bd2b7ff4b55",
+      "prices": [
+        {
+          "supplier": "示例供应商A",
+          "unit_price": "8.0",
+          "is_lowest_in_group": false
+        },
+        {
+          "supplier": "示例供应商B",
+          "unit_price": "7.5",
+          "is_lowest_in_group": true
+        }
+      ]
+    },
+    "fixture_classification": "synthetic quote samples",
+    "engineering_run_status": "completed/submitted; accepted",
+    "business_retest": {
+      "original_origin": "http://127.0.0.1:8765",
+      "notice_id": 9,
+      "notification_preview_origin": "http://127.0.0.1:8767/",
+      "feedback": "内部复试通过：尾随 ASCII 空格可导入，A=8.0、B=7.5，仅 B 为组内最低。",
+      "closed_status": "客户已确认，会话已关闭。"
+    },
+    "formal_release": false
+  },
+  "loopback_listeners_verified": [
+    "127.0.0.1:8000",
+    "127.0.0.1:8765",
+    "127.0.0.1:8767"
+  ],
+  "model_calls_this_retest": 0
+}

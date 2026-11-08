@@ -5,7 +5,12 @@ from pydantic import BaseModel, ConfigDict, Field
 from onefde.core.knowledge import TOOL_NAMES
 from onefde.core.schemas import Input, Nonblank
 
-ToolName = Literal["search_assets", "get_asset", "record_business_handoff"]
+ToolName = Literal[
+    "search_assets",
+    "get_asset",
+    "record_business_handoff",
+    "record_delivery_feedback",
+]
 CallerRole = Literal["business", "fde", "engineering"]
 Purpose = Literal["delivery", "internal_research", "public_marketing"]
 

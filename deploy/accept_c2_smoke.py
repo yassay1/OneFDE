@@ -1,4 +1,9 @@
-"""Founder accept of the authorized C2 webpage smoke submission."""
+"""Finished C2 webpage accept request.
+
+The result is in docs/operations/evidence/c2-webpage-review.json.
+This file is the only copy of the accept reason and check_evidence.
+Running it posts another accept to the local Compose API at 127.0.0.1:8002.
+"""
 
 import json
 from pathlib import Path

@@ -1,0 +1,520 @@
+{
+  "recorded_at": "2026-11-06T02:24:15.237106+00:00",
+  "scope": "simulated store, one real Engineering run, local founder review preview",
+  "fde_and_baseline": {
+    "case_id": "3bc28c6b-ee65-4839-b1c5-3d87510c7f0e",
+    "handoff_id": "506d57ef-6850-4b31-a905-3bf288d68743",
+    "engagement_id": "05e3311c-ff3e-4c05-a4ab-64e9e572a8ad",
+    "task_id": "05d0d128-e47c-4602-a72d-ae4c361d94a9",
+    "related_task_id": "094f4837-276d-4ffd-9bfb-ea1295f2c3c1",
+    "prior_artifact_id": "2effd000-dda4-4b75-a15a-886f0e068382",
+    "prior_archive_sha256": "444b5ccd49bab32686e19c88d9753a5ce3d916e29654f1e344a29de4a78d1662",
+    "confirmation_message_id": 18,
+    "messages": [
+      {
+        "id": 16,
+        "kind": "customer",
+        "text": "员工临时请假时，希望店长能帮忙取消搅拌机预约，还要能查是谁帮忙取消的。"
+      },
+      {
+        "id": 17,
+        "kind": "reply",
+        "text": "我理解了，员工不在时想让店长帮忙腾出时段。想确认两点：普通店员是否仍只能取消自己的预约？店长帮忙取消时，需要记下哪些信息，谁可以看？"
+      },
+      {
+        "id": 18,
+        "kind": "customer",
+        "text": "确认。普通店员只能取消自己的预约。店长可以取消今天任何店员的预约，必须写原因。只让店长看记录，记预约人、代取消人、哪笔预约、原因和取消时间。重复点取消只记一次，员工取消自己的预约照旧。"
+      },
+      {
+        "id": 19,
+        "kind": "reply",
+        "text": "收到。店长帮忙取消时必须填原因，记录也只给店长看；普通店员取消自己的预约照旧。我们会在原预约台基础上加这项功能，评审通过后再在这里告诉你怎么试。"
+      }
+    ],
+    "spec": {
+      "title": "预约台续办｜店长代取消与记录",
+      "objective": "员工不在时，店长能说明原因后取消预约并查阅操作记录。",
+      "scope": "只改预约台服务端、页面和设计说明。现有预约、冲突及本人取消保持原行为。内部试用范围。",
+      "inputs": [
+        "原邀请确认 business:3bc28c6b-ee65-4839-b1c5-3d87510c7f0e/messages/18",
+        "原接受归档 444b5ccd49bab32686e19c88d9753a5ce3d916e29654f1e344a29de4a78d1662"
+      ],
+      "confirmed_rules": [
+        "今天一台设备；普通店员只能取消自己的预约，预约与冲突行为沿用现有版本。",
+        "由服务端从会话核实店长权限。店长可取消今天任意有效预约；必须提供去除首尾空白后 1 至 120 字的原因。重复请求不得新增记录或覆盖原原因。",
+        "代取消与留档须一致。记录预约编号、预约人、实际操作人、原因和带时区的取消时间。仅店长可查看记录。普通店员本人取消流程及记录口径照旧。",
+        "内部模拟入口可使用 manager / demo-manager；不改变正式身份接入范围。"
+      ],
+      "completion_criteria": [
+        "[check] python -B -m unittest -v check_booking check_manager",
+        "[review] 店长浏览器能填原因、取消和查看记录；普通店员看不到记录且仍可取消自己的预约。"
+      ],
+      "dependencies": [],
+      "capability_versions": []
+    },
+    "run_id": "04b34c87-807f-41bf-830b-d763f2d905cf",
+    "operation_id": "8ba566eb-bd1d-4037-8291-dbcdc2937c5a",
+    "seed_sha256": "f44ab68d95682f9b12e7e1be05fa225db5d09e38ecdcd22d74fc26538fde5fb1",
+    "check_sha256": "cd4bcdc47dc8937251eec661f0e810727c7ace5a80b87737075d17803d5c425d",
+    "baseline_red": "Only new manager check failed as expected: restricted audit endpoint missing, HTTP 404 vs expected 403.",
+    "baseline_legacy_checks": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 1.561s\n\nOK\n",
+    "baseline_new_check": "test_manager_cancels_once_and_leaves_readable_audit (check_manager.ManagerChecks.test_manager_cancels_once_and_leaves_readable_audit) ... FAIL\n\n======================================================================\nFAIL: test_manager_cancels_once_and_leaves_readable_audit (check_manager.ManagerChecks.test_manager_cancels_once_and_leaves_readable_audit)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/check_manager.py\", line 13, in test_manager_cancels_once_and_leaves_readable_audit\n    self.assertEqual(self.request(\"/api/cancellation-log\", self.a)[0], 403)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 404 != 403\n\n----------------------------------------------------------------------\nRan 1 test in 0.511s\n\nFAILED (failures=1)\n"
+  },
+  "engineering": {
+    "case_id": "3bc28c6b-ee65-4839-b1c5-3d87510c7f0e",
+    "task_id": "05d0d128-e47c-4602-a72d-ae4c361d94a9",
+    "handoff_id": "506d57ef-6850-4b31-a905-3bf288d68743",
+    "run_id": "04b34c87-807f-41bf-830b-d763f2d905cf",
+    "operation_id": "8ba566eb-bd1d-4037-8291-dbcdc2937c5a",
+    "seed_sha256": "f44ab68d95682f9b12e7e1be05fa225db5d09e38ecdcd22d74fc26538fde5fb1",
+    "check_sha256": "cd4bcdc47dc8937251eec661f0e810727c7ace5a80b87737075d17803d5c425d",
+    "baseline_red": "Only new manager check failed as expected: restricted audit endpoint missing, HTTP 404 vs expected 403.",
+    "preflight": {
+      "scope": "execution_preflight",
+      "execution_mode": "ecs_shared",
+      "model_execution_enabled": true,
+      "sdk_versions": {
+        "openhands-sdk": "1.59.0",
+        "openhands-workspace": "1.59.0",
+        "openhands-tools": "1.59.0"
+      },
+      "blockers": [],
+      "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+    },
+    "started_at": "2026-11-06T02:20:36.839697+00:00",
+    "model": "deepseek-flash",
+    "model_profile_revision_id": "488fa83c-a2d7-410b-8981-b55cbb053c9d",
+    "sdk_iteration_limit": 15,
+    "relay_max_calls": 18,
+    "relay_budget_usd": 1,
+    "worker_processed": true,
+    "relay_requests": [
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 2717400,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 8318,
+        "completion_tokens": 185
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 208200,
+        "request_kind": "auxiliary",
+        "upstream_status": 200,
+        "prompt_tokens": 662,
+        "completion_tokens": 8
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 3750300,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 12189,
+        "completion_tokens": 78
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 4584300,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 13265,
+        "completion_tokens": 504
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 4881600,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 14352,
+        "completion_tokens": 480
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 5353200,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 15284,
+        "completion_tokens": 640
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 5732400,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 16780,
+        "completion_tokens": 582
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 6620100,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 18027,
+        "completion_tokens": 1010
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 6112500,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 20031,
+        "completion_tokens": 86
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 6543300,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 20595,
+        "completion_tokens": 304
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 6457200,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 21176,
+        "completion_tokens": 87
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 6817800,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 21598,
+        "completion_tokens": 282
+      }
+    ],
+    "relay_charged_or_reserved_usd": 0.0597783,
+    "task_state": "review",
+    "run_state": "completed",
+    "outcome": "submitted",
+    "spec_version": 1,
+    "error_code": null,
+    "summary": "Implemented manager-assisted cancellation with audit log. DESIGN.md records the design (session-derived identity, manager role for 'manager'/demo-manager, reason 1-120 chars after trim, single write transaction for cancel+audit, unique booking_id so repeats add no record and keep the original reason, manager-only GET /api/cancellation-log, own-cancel path unchanged). booking.py adds the cancellation table, reason validation, cancel_for_manager and cancellation_log, plus the manager-only log endpoint and manager flag in /api/bookings. index.html adds a labelled reason input and 代取消 button for managers and a manager-only #cancellation-log region rendered with textContent; all existing controls and DOM IDs are unchanged. Registered check 'python -B -m unittest -v check_booking check_manager' passes 10/10. Browser review (review-2) and business acceptance remain unverified.",
+    "attempts": 1,
+    "proof": {
+      "stopped": true,
+      "changed_paths": [
+        "DESIGN.md",
+        "booking.py",
+        "index.html"
+      ],
+      "check_coverage": [
+        {
+          "id": "auto-1",
+          "cwd": "/workspace",
+          "kind": "automatic",
+          "source": "completion_criteria",
+          "status": "passed",
+          "command": "python -B -m unittest -v check_booking check_manager",
+          "matched": true,
+          "evidence": {
+            "cwd": null,
+            "command": "python -B -m unittest -v check_booking check_manager",
+            "timeout": false,
+            "exit_code": 0
+          },
+          "criterion": "[check] python -B -m unittest -v check_booking check_manager",
+          "cwd_verified": false
+        },
+        {
+          "id": "review-2",
+          "kind": "business_review",
+          "source": "completion_criteria",
+          "status": "pending_review",
+          "matched": false,
+          "criterion": "店长浏览器能填原因、取消和查看记录；普通店员看不到记录且仍可取消自己的预约。"
+        }
+      ],
+      "validation": {
+        "passed": true,
+        "results": [
+          {
+            "id": "auto-1",
+            "cwd": "/workspace",
+            "command": "python -B -m unittest -v check_booking check_manager",
+            "timeout": false,
+            "exit_code": 0
+          }
+        ],
+        "stopped": true,
+        "comparison": {
+          "added": [],
+          "match": true,
+          "changed": [],
+          "removed": [],
+          "archive_digest": "6c310f790b2cb6d1ecb08bd0713fd6a5ecd74264a88af9cc2bca6292c4153325",
+          "current_digest": "6c310f790b2cb6d1ecb08bd0713fd6a5ecd74264a88af9cc2bca6292c4153325"
+        },
+        "error_code": null,
+        "source_unchanged": true,
+        "source_digest_after": "6c310f790b2cb6d1ecb08bd0713fd6a5ecd74264a88af9cc2bca6292c4153325",
+        "source_digest_before": "6c310f790b2cb6d1ecb08bd0713fd6a5ecd74264a88af9cc2bca6292c4153325"
+      },
+      "workspace": {
+        "policy": "compare_or_block",
+        "status": "restored_from_prior",
+        "blocked": false,
+        "comparison": {
+          "added": [],
+          "match": false,
+          "changed": [],
+          "removed": [
+            "DESIGN.md",
+            "booking.py",
+            "check_booking.py",
+            "check_manager.py",
+            "index.html"
+          ],
+          "archive_digest": "29f53e0d7b43afe265cb2009ac00fbc2f22c0482c4df3d19db6c73cd71c6c32b",
+          "current_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "restored_digest": "29f53e0d7b43afe265cb2009ac00fbc2f22c0482c4df3d19db6c73cd71c6c32b"
+      }
+    },
+    "artifacts": [
+      {
+        "id": "35e23b13-be4d-43a6-ab58-f98d12aded7a",
+        "name": "workspace.tar.gz",
+        "sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e",
+        "kind": "source-snapshot",
+        "size_bytes": 8780
+      }
+    ]
+  },
+  "engineering_file_modified_times": {
+    "DESIGN.md": "2026-11-06 10:20:49.388488124 +0800",
+    "index.html": "2026-11-06 10:21:00.435258931 +0800",
+    "booking.py": "2026-11-06 10:21:09.577263150 +0800"
+  },
+  "independent_offline": {
+    "command": "python -B -m unittest -v check_booking check_manager",
+    "exit_code": 0,
+    "output": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\ntest_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\ntest_competing_requests (check_manager.ManagerChecks.test_competing_requests) ... ok\ntest_manager_cancels_once_and_leaves_readable_audit (check_manager.ManagerChecks.test_manager_cancels_once_and_leaves_readable_audit) ... ok\ntest_refresh_and_boundaries (check_manager.ManagerChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_manager.ManagerChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 5.175s\n\nOK\n",
+    "changed_paths": [
+      "DESIGN.md",
+      "booking.py",
+      "index.html"
+    ],
+    "files": {
+      "DESIGN.md": "53521d169e020d3c9824d28dc82fb99be44b68b1419f269ac6836afc3b33c48b",
+      "booking.py": "92d8bef9e7d37fcb42517e8fd15e04154c0ec40ea42db774d5b897ddc7e4e5df",
+      "check_booking.py": "eef6bacce83e50f989e6ca2d786cf88d7485d678808ef7e2590143f4a959ea61",
+      "check_manager.py": "cd4bcdc47dc8937251eec661f0e810727c7ace5a80b87737075d17803d5c425d",
+      "index.html": "b37039b50fa4b9df81917c8ba19f09082d55a2394abaece8d35bc1881eb67e02"
+    },
+    "workbench": {
+      "artifact_id": "35e23b13-be4d-43a6-ab58-f98d12aded7a",
+      "artifact_sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e",
+      "baseline_sha256": "f44ab68d95682f9b12e7e1be05fa225db5d09e38ecdcd22d74fc26538fde5fb1",
+      "design_present": true,
+      "diff_present": true,
+      "validation_passed": true
+    },
+    "review_preview": "http://127.0.0.1:8798/",
+    "accepted": false,
+    "trial_notice_sent": false
+  },
+  "independent_integrity": {
+    "legacy_database_upgrade_preserved_booking": true,
+    "audit_insert_failure_rolled_back_cancellation": true,
+    "audit_persisted_after_reopen": true,
+    "linked_task_runs": 1,
+    "archive_sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e"
+  },
+  "browser_and_workbench": {
+    "review_url": "http://127.0.0.1:8036/#/projects/05e3311c-ff3e-4c05-a4ab-64e9e572a8ad?task=05d0d128-e47c-4602-a72d-ae4c361d94a9",
+    "artifact": {
+      "artifact_id": "35e23b13-be4d-43a6-ab58-f98d12aded7a",
+      "artifact_sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e",
+      "baseline_sha256": "f44ab68d95682f9b12e7e1be05fa225db5d09e38ecdcd22d74fc26538fde5fb1",
+      "design_present": true,
+      "diff_present": true,
+      "validation_passed": true
+    },
+    "preview": "http://127.0.0.1:8798/",
+    "browser": "Chrome/156.0.8078.80",
+    "http_page_matches": true,
+    "original_task_state": "succeeded",
+    "linked_task_state": "review",
+    "review_count": 0,
+    "trial_notice_sent": false,
+    "conflict_message": "这个时段已经被同事预约，请换一个时间。",
+    "unauthorized_cancel": {
+      "status": 403,
+      "data": {
+        "message": "只有店长可以代同事取消预约。"
+      }
+    },
+    "unauthorized_log": {
+      "status": 403,
+      "data": {
+        "message": "只有店长可以查看取消记录。"
+      }
+    },
+    "blank_reason_blocked": true,
+    "log": {
+      "booking_id": 1,
+      "booked_by": "baker-a",
+      "cancelled_by": "manager",
+      "reason": "店员临时请假，释放时段",
+      "cancelled_at": "2026-11-06T02:23:00+00:00"
+    },
+    "retry_status": 200,
+    "retry_preserved_original_log": true,
+    "staff_own_cancel_ok": true,
+    "released_slot_rebooked": true
+  },
+  "cost": {
+    "usd_ceiling": 1,
+    "usd_conservative_estimate": 0.0597783,
+    "accounting": "provider token usage at peak cache-miss rates, invoice not checked",
+    "rates_source": "https://api-docs.deepseek.com/quick_start/pricing/"
+  },
+  "observations": [
+    "DESIGN.md says cancelled bookings return 404 in one line. Actual repeat returns HTTP 200 without adding an audit row or overwriting the original reason, as tested. Candidate is retained byte-for-byte.",
+    "The browser harness wrote all assertions before teardown. Windows temporarily denied removal of the headless Chrome Crashpad metrics file; product assertions and evidence persisted."
+  ],
+  "accepted": true,
+  "trial_notice_sent": true,
+  "formal_release": false,
+  "post_acceptance_trial": {
+    "case_id": "3bc28c6b-ee65-4839-b1c5-3d87510c7f0e",
+    "acceptance": {
+      "state": "succeeded",
+      "review": {
+        "id": "e50d67ce-ad83-4f6a-93bb-f391953d73bf",
+        "task_id": "05d0d128-e47c-4602-a72d-ae4c361d94a9",
+        "run_id": "04b34c87-807f-41bf-830b-d763f2d905cf",
+        "task_spec_version": 1,
+        "artifact_ids": [
+          "35e23b13-be4d-43a6-ab58-f98d12aded7a"
+        ],
+        "verdict": "accept",
+        "reason": "按创始人在会话中确认的安排代为登记接受。仅用于预约台内部试用。",
+        "check_evidence": [
+          "离线与三身份浏览器预验通过，普通店员越权拦截、原记录防重和事务回滚均有证据。设计说明的 404 与实际 200 差异保留。SHA-256 851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e"
+        ],
+        "reviewer": "founder",
+        "created_at": "2026-11-06T02:27:13.756271Z"
+      },
+      "recorded_via_workbench_this_turn": true
+    },
+    "entry": {
+      "url": "http://127.0.0.1:8799/",
+      "release": {
+        "run_id": "04b34c87-807f-41bf-830b-d763f2d905cf",
+        "spec_version": 1,
+        "review_id": "e50d67ce-ad83-4f6a-93bb-f391953d73bf",
+        "sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e"
+      },
+      "artifact_id": "35e23b13-be4d-43a6-ab58-f98d12aded7a",
+      "http_status": 200,
+      "http_index_sha256": "b37039b50fa4b9df81917c8ba19f09082d55a2394abaece8d35bc1881eb67e02",
+      "source_file_sha256": {
+        "DESIGN.md": "53521d169e020d3c9824d28dc82fb99be44b68b1419f269ac6836afc3b33c48b",
+        "booking.py": "92d8bef9e7d37fcb42517e8fd15e04154c0ec40ea42db774d5b897ddc7e4e5df",
+        "check_booking.py": "eef6bacce83e50f989e6ca2d786cf88d7485d678808ef7e2590143f4a959ea61",
+        "check_manager.py": "cd4bcdc47dc8937251eec661f0e810727c7ace5a80b87737075d17803d5c425d",
+        "index.html": "b37039b50fa4b9df81917c8ba19f09082d55a2394abaece8d35bc1881eb67e02"
+      },
+      "source_read_status": 404,
+      "unauthenticated_bookings_status": 401
+    },
+    "notice": {
+      "id": 20,
+      "text": "店长代取消功能可以内部试用了：http://127.0.0.1:8799/ 。请一位店员先预约，再由另一位店员尝试取消。随后由店长填写原因代取消，重复提交后确认记录仍只有一笔。试完请直接在这个会话告诉我们结果。"
+    },
+    "model_calls": 0,
+    "cost_usd": 0,
+    "retest": {
+      "browser": "Chrome/156.0.8078.80",
+      "actors": [
+        "baker-a",
+        "baker-b",
+        "manager"
+      ],
+      "conflict_message": "这个时段已经被同事预约，请换一个时间。",
+      "unauthorized_cancel": {
+        "status": 403,
+        "data": {
+          "message": "只有店长可以代同事取消预约。"
+        }
+      },
+      "unauthorized_log": {
+        "status": 403,
+        "data": {
+          "message": "只有店长可以查看取消记录。"
+        }
+      },
+      "blank_reason_blocked": true,
+      "log": {
+        "booking_id": 1,
+        "booked_by": "baker-a",
+        "cancelled_by": "manager",
+        "reason": "店员临时请假，释放时段",
+        "cancelled_at": "2026-11-06T02:28:22+00:00"
+      },
+      "retry_status": 200,
+      "retry_preserved_original_log": true,
+      "staff_own_cancel_ok": true,
+      "released_slot_rebooked": true,
+      "audit_visible_after_refresh": true,
+      "slots": "甲 11:10–12:00；乙重叠 11:25–12:10；乙相邻 12:00–12:45"
+    },
+    "persisted": {
+      "bookings": [
+        [
+          "baker-a",
+          670,
+          720,
+          1
+        ],
+        [
+          "baker-b",
+          720,
+          765,
+          1
+        ],
+        [
+          "baker-a",
+          670,
+          720,
+          1
+        ]
+      ],
+      "audit": [
+        [
+          1,
+          "baker-a",
+          "manager",
+          "店员临时请假，释放时段",
+          "2026-11-06T02:28:22+00:00"
+        ]
+      ]
+    },
+    "feedback": {
+      "id": 21,
+      "text": "三位内部测试者复测通过。普通店员不能取消同事的预约，也看不到记录。店长填原因后代取消成功，重复提交后记录仍只有一笔，原原因保留。释放的时段可以重新预约，店员本人取消也正常。"
+    },
+    "same_invitation_verified": true,
+    "case_state": "handling",
+    "recorded_at": "2026-11-06T02:28:59.077756+00:00",
+    "review_record_note": "Initial read found no acceptance. The user explicitly authorized recording it on their behalf in the workbench."
+  }
+}

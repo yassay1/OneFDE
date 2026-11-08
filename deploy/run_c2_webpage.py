@@ -1,7 +1,7 @@
 """One authorized C2 webpage smoke: real Backend → Worker → Engineering → model.
 
 Uses Compose API + host Worker with latest source. Does not print secrets.
-Hard ceiling: ONEFDE_WORKER_MAX_COST_USD (default 1.0 for this smoke).
+Requires an explicit ONEFDE_WORKER_MAX_COST_USD budget.
 """
 
 from __future__ import annotations
@@ -23,13 +23,24 @@ ROOT = Path(__file__).resolve().parents[1]
 PRIVATE = Path("/srv/onefde-local/private")
 EVIDENCE = Path("/srv/onefde-local/worker/evidence")
 BASE = "http://127.0.0.1:8002"
-COST = float(os.environ.get("ONEFDE_WORKER_MAX_COST_USD", "1"))
+COST = float(os.environ["ONEFDE_WORKER_MAX_COST_USD"])
 assert 0 < COST <= 5, "Smoke cost ceiling must be positive and at most 5 USD"
+PROVIDER = os.environ.get("ONEFDE_SMOKE_PROVIDER", "deepseek")
+MODEL, SECRET = {
+    "deepseek": ("deepseek-flash", "ONEFDE_MODEL_ENGINEERING"),
+    "mimo": ("mimo-v2.6-pro", "ONEFDE_MODEL_ENGINEERING_MIMO"),
+}[PROVIDER]
+RETRY_TASK = os.environ.get("ONEFDE_SMOKE_RETRY_TASK_ID")
+REQUESTS = int(os.environ.get("ONEFDE_WORKER_MAX_REQUESTS", "20"))
+assert 3 <= REQUESTS <= 20
+OUTPUT_NAME = (
+    "c2-webpage-smoke.json" if PROVIDER == "deepseek" else "c2-mimo-webpage-smoke.json"
+)
 
 report = {
     "scope": "c2_real_webpage_smoke",
     "checked_at_utc": datetime.now(UTC).isoformat(),
-    "model_provider": "deepseek",
+    "model_provider": PROVIDER,
     "max_cost_usd": COST,
     "model_called": True,
     "steps": [],
@@ -50,7 +61,7 @@ def write(client, path, body, expected=200):
     return response.json()
 
 
-# Resolve DeepSeek profile revision (references only).
+# Resolve the selected provider's profile revision (references only).
 admin = create_engine(
     (PRIVATE / "admin_url").read_text().strip().replace("@postgres:", "@172.29.240.3:"),
     hide_parameters=True,
@@ -61,13 +72,13 @@ with Session(admin) as db:
     profile = db.scalar(
         select(ModelProfileRevision)
         .where(
-            ModelProfileRevision.provider == "deepseek",
-            ModelProfileRevision.model == "openai/deepseek-flash",
+            ModelProfileRevision.provider == PROVIDER,
+            ModelProfileRevision.model == "openai/" + MODEL,
             ModelProfileRevision.integration_status == "configured",
         )
         .limit(1)
     )
-    assert profile is not None, "DeepSeek profile revision missing; run configure-model"
+    assert profile is not None, "Selected model profile revision missing"
     revision_id = str(profile.revision_id)
     report["model_profile_revision_id"] = revision_id
     report["model"] = profile.model
@@ -85,72 +96,81 @@ with httpx.Client(
     )
     assert login.status_code == 200, login.text
     client.headers["X-CSRF-Token"] = login.json()["csrf_token"]
-    engagement = write(
-        client,
-        "/engagements",
-        {
-            "title": "C2 webpage smoke DEMO",
-            "is_demo": True,
-            "goal": "Authorized real-model Engineering smoke; not supplier quotes",
-        },
-        201,
-    )
-    task = write(
-        client,
-        f"/engagements/{engagement['id']}/tasks",
-        {
-            "request_id": str(uuid4()),
-            "task_key": "c2-webpage-" + datetime.now(UTC).strftime("%H%M%S"),
-            "original_request": (
-                "Create a tiny static demo page and a check script under /workspace. "
-                "Do not ask business questions."
-            ),
-            "owner_role": "fde",
-            "executor_role": "engineering",
-            "spec": {
-                "title": "Static demo page",
-                "objective": (
-                    "Create /workspace/index.html containing the exact heading "
-                    "<h1>OneFDE C2 Smoke</h1> and a short paragraph stating this is a "
-                    "local demo page. Also create /workspace/check.sh that exits 0 only "
-                    "when that heading is present."
-                ),
-                "scope": (
-                    "Only index.html and check.sh under /workspace. No network installs, "
-                    "no git remotes, no deployment, no secrets."
-                ),
-                "inputs": ["Local demo only; not customer data"],
-                "confirmed_rules": [
-                    "Heading text must be exactly OneFDE C2 Smoke",
-                    "check.sh must be executable via sh /workspace/check.sh",
-                ],
-                "completion_criteria": [
-                    "[auto] sh /workspace/check.sh",
-                    "[review] Page content matches the frozen demo heading",
-                ],
-                "dependencies": [],
-                "capability_versions": [],
+    if RETRY_TASK:
+        response = client.get(f"/api/v1/tasks/{RETRY_TASK}")
+        response.raise_for_status()
+        task = response.json()
+        assert task["state"] == "blocked", "Retry requires a stopped blocked smoke task"
+        assert task["spec"]["title"] == "Static demo page"
+        queued = {"task": task}
+        engagement = {"id": task["engagement_id"]}
+    else:
+        engagement = write(
+            client,
+            "/engagements",
+            {
+                "title": f"C2 {PROVIDER} webpage smoke DEMO",
+                "is_demo": True,
+                "goal": "Authorized real-model Engineering smoke; not supplier quotes",
             },
-        },
-        201,
-    )
-    queued = write(
-        client,
-        f"/tasks/{task['id']}/actions",
-        {
-            "command": "queue",
-            "expected_revision": task["revision"],
-            "expected_run_id": None,
-        },
-        202,
-    )
+            201,
+        )
+        task = write(
+            client,
+            f"/engagements/{engagement['id']}/tasks",
+            {
+                "request_id": str(uuid4()),
+                "task_key": "c2-webpage-" + datetime.now(UTC).strftime("%H%M%S"),
+                "original_request": (
+                    "Create a tiny static demo page and a check script under /workspace. "
+                    "Do not ask business questions."
+                ),
+                "owner_role": "fde",
+                "executor_role": "engineering",
+                "spec": {
+                    "title": "Static demo page",
+                    "objective": (
+                        "Create /workspace/index.html containing the exact heading "
+                        "<h1>OneFDE C2 Smoke</h1> and a short paragraph stating this is a "
+                        "local demo page. Also create /workspace/check.sh that exits 0 only "
+                        "when that heading is present."
+                    ),
+                    "scope": (
+                        "Only index.html and check.sh under /workspace. No network installs, "
+                        "no git remotes, no deployment, no secrets."
+                    ),
+                    "inputs": ["Local demo only; not customer data"],
+                    "confirmed_rules": [
+                        "Heading text must be exactly OneFDE C2 Smoke",
+                        "check.sh must be executable via sh /workspace/check.sh",
+                    ],
+                    "completion_criteria": [
+                        "[auto] sh /workspace/check.sh",
+                        "[review] Page content matches the frozen demo heading",
+                    ],
+                    "dependencies": [],
+                    "capability_versions": [],
+                },
+            },
+            201,
+        )
+        queued = write(
+            client,
+            f"/tasks/{task['id']}/actions",
+            {
+                "command": "queue",
+                "expected_revision": task["revision"],
+                "expected_run_id": None,
+            },
+            202,
+        )
     started = write(
         client,
         f"/tasks/{task['id']}/actions",
         {
-            "command": "start",
+            "command": "retry" if RETRY_TASK else "start",
             "expected_revision": queued["task"]["revision"],
-            "expected_run_id": None,
+            "expected_run_id": task["latest_run_id"] if RETRY_TASK else None,
             "model_profile_revision_id": revision_id,
         },
         202,
@@ -160,6 +180,14 @@ with httpx.Client(
     report["task_id"] = task["id"]
     report["run_id"] = run_id
     step("http_start", state=started["run"]["state"], http_status=202)
+    EVIDENCE.mkdir(parents=True, exist_ok=True)
+    (EVIDENCE / f"{run_id}-start.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n"
+    )
+    print(
+        json.dumps({"task_id": task["id"], "run_id": run_id, "state": "queued"}),
+        flush=True,
+    )
 
 worker_url = (
     (PRIVATE / "worker_url").read_text().strip().replace("@postgres:", "@172.29.240.3:")
@@ -178,8 +206,8 @@ env.update(
         "ONEFDE_WORKER_EGRESS_PROXY_URL": "http://172.29.241.3:3128",
         "ONEFDE_WORKER_WORKER_ID": "onefde-c2-smoke-once",
         "ONEFDE_WORKER_MAX_SECONDS": "900",
-        "ONEFDE_WORKER_MAX_REQUESTS": "20",
-        "ONEFDE_MODEL_ENGINEERING": (PRIVATE / "deepseek_api_key").read_text().strip(),
+        "ONEFDE_WORKER_MAX_REQUESTS": str(REQUESTS),
+        SECRET: (PRIVATE / f"{PROVIDER}_api_key").read_text().strip(),
         "OPENHANDS_SUPPRESS_BANNER": "1",
         "LITELLM_LOCAL_MODEL_COST_MAP": "True",
         "HOME": "/tmp",
@@ -219,31 +247,43 @@ if preflight.returncode != 0:
     Path("work").mkdir(exist_ok=True)
     path = Path("work/c2-webpage-blocked.json")
     path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
-    print(json.dumps({"blocked": True, "evidence": str(path), "exit": preflight.returncode}))
+    print(
+        json.dumps(
+            {"blocked": True, "evidence": str(path), "exit": preflight.returncode}
+        )
+    )
     sys.exit(2)
 
 started_at = time.monotonic()
-worker = subprocess.run(
-    [
-        str(ROOT / "backend/.venv/bin/python"),
-        "-m",
-        "onefde.entrypoints.worker",
-        "once",
-    ],
-    cwd=str(ROOT / "backend"),
-    env=env,
-    capture_output=True,
-    text=True,
-    timeout=960,
-    check=False,
-)
+stdout_log = EVIDENCE / f"{run_id}-worker.stdout.log"
+stderr_log = EVIDENCE / f"{run_id}-worker.stderr.log"
+with stdout_log.open("w") as output, stderr_log.open("w") as errors:
+    stdout_log.chmod(0o600)
+    stderr_log.chmod(0o600)
+    worker = subprocess.run(
+        [
+            str(ROOT / "backend/.venv/bin/python"),
+            "-m",
+            "onefde.entrypoints.worker",
+            "once",
+            "--run-id",
+            run_id,
+        ],
+        cwd=str(ROOT / "backend"),
+        env=env,
+        stdout=output,
+        stderr=errors,
+        text=True,
+        timeout=960,
+        check=False,
+    )
 elapsed = round(time.monotonic() - started_at, 2)
 step(
     "worker_once",
     exit_code=worker.returncode,
     elapsed_seconds=elapsed,
-    stdout_tail=(worker.stdout or "")[-2000:],
-    stderr_tail=(worker.stderr or "")[-2000:],
+    stdout_log=str(stdout_log),
+    stderr_log=str(stderr_log),
 )
 
 with httpx.Client(
@@ -285,13 +325,17 @@ report["event_kinds"] = [item.get("kind") for item in events.get("items", [])]
 # Job proof from DB (no secrets).
 worker_db = create_engine(worker_url, hide_parameters=True)
 with worker_db.connect() as db:
-    row = db.execute(
-        text(
-            "SELECT result_payload, runtime_ref, attempts, claim_owner "
-            "FROM dispatch_jobs WHERE run_id = CAST(:r AS uuid)"
-        ),
-        {"r": report["run_id"]},
-    ).mappings().one()
+    row = (
+        db.execute(
+            text(
+                "SELECT result_payload, runtime_ref, attempts, claim_owner "
+                "FROM dispatch_jobs WHERE run_id = CAST(:r AS uuid)"
+            ),
+            {"r": report["run_id"]},
+        )
+        .mappings()
+        .one()
+    )
 payload = row["result_payload"] or {}
 proof = payload.get("proof") or {}
 report["dispatch"] = {
@@ -322,21 +366,25 @@ report["dispatch"] = {
 worker_db.dispose()
 
 workspace = Path("/srv/onefde-local/worker/tasks") / report["task_id"] / "workspace"
-report["workspace_files"] = sorted(
-    p.relative_to(workspace).as_posix()
-    for p in workspace.rglob("*")
-    if p.is_file() and "bash_events" not in p.parts
-) if workspace.exists() else []
+report["workspace_files"] = (
+    sorted(
+        p.relative_to(workspace).as_posix()
+        for p in workspace.rglob("*")
+        if p.is_file() and "bash_events" not in p.parts
+    )
+    if workspace.exists()
+    else []
+)
 if (workspace / "index.html").is_file():
     text = (workspace / "index.html").read_text(encoding="utf-8", errors="replace")
     report["index_has_heading"] = "<h1>OneFDE C2 Smoke</h1>" in text
     report["index_preview"] = text[:500]
 
 EVIDENCE.mkdir(parents=True, exist_ok=True)
-out = EVIDENCE / "c2-webpage-smoke.json"
+out = EVIDENCE / OUTPUT_NAME
 public = Path("work")
 public.mkdir(exist_ok=True)
-public_out = public / "c2-webpage-smoke.json"
+public_out = public / OUTPUT_NAME
 blob = json.dumps(report, ensure_ascii=False, indent=2) + "\n"
 out.write_text(blob, encoding="utf-8")
 public_out.write_text(blob, encoding="utf-8")
@@ -344,6 +392,8 @@ success = (
     report["run"]["state"] == "completed"
     and report["run"]["outcome"] == "submitted"
     and report.get("index_has_heading") is True
+    and proof.get("stopped") is True
+    and (proof.get("validation") or {}).get("passed") is True
 )
 print(
     json.dumps(

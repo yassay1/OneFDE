@@ -1,0 +1,384 @@
+{
+  "recorded_at": "2026-11-06T02:46:57.677158+00:00",
+  "scope": "synthetic stores and local isolated review, zero paid model execution",
+  "booking_accepted_source_trial": {
+    "intake": {
+      "case_id": "5a27d9f5-1885-4cfd-b874-31e4a8d8a391",
+      "invitation_id": "368c5e6f-bbe7-4e02-91da-cda7816292e4",
+      "engagement_id": "05e3311c-ff3e-4c05-a4ab-64e9e572a8ad",
+      "task_id": "9c9968a8-0c48-492c-8642-94d74d0f9878",
+      "spec_version": 2,
+      "confirmed_id": 29,
+      "task_input_id": "adab3b99-e7e0-443e-897d-e03454895128",
+      "sent_message_id": 28,
+      "sent_text": "我理解你的需求是：员工不在时店长能帮忙腾出时段\n想跟你确认一件事：这条取消记录只给店长看吗？\n确认后，我会在这个会话告诉你下一步。",
+      "draft_not_sent_until_explicit_action": true,
+      "draft_internal_summary_hidden": true,
+      "stale_send_status": 409,
+      "before_accepting_handoff_status": 409,
+      "commitment_preview": "我理解你的需求是：员工不在时店长能帮忙腾出时段\n时间、费用或范围需要负责人确认。\n确认结果会在这个会话告诉你。",
+      "model_calls": 0,
+      "accepted_artifact_id": "35e23b13-be4d-43a6-ab58-f98d12aded7a",
+      "accepted_archive_sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e"
+    },
+    "model_calls": 0,
+    "cost_usd": 0,
+    "bad_digest": "SOURCE_DIGEST_MISMATCH",
+    "cross_project_assembly": "SOURCE_SCOPE_CONFLICT",
+    "stale_revision": "REVISION_CONFLICT",
+    "self_check": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\ntest_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\ntest_competing_requests (check_manager.ManagerChecks.test_competing_requests) ... ok\ntest_manager_cancels_once_and_leaves_readable_audit (check_manager.ManagerChecks.test_manager_cancels_once_and_leaves_readable_audit) ... ok\ntest_refresh_and_boundaries (check_manager.ManagerChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_manager.ManagerChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 5.560s\n\nOK\n",
+    "independent_check": "test_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\ntest_competing_requests (check_booking.BookingChecks.test_competing_requests) ... ok\ntest_refresh_and_boundaries (check_booking.BookingChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_booking.BookingChecks.test_retry_permissions_and_release) ... ok\ntest_competing_requests (check_manager.ManagerChecks.test_competing_requests) ... ok\ntest_manager_cancels_once_and_leaves_readable_audit (check_manager.ManagerChecks.test_manager_cancels_once_and_leaves_readable_audit) ... ok\ntest_refresh_and_boundaries (check_manager.ManagerChecks.test_refresh_and_boundaries) ... ok\ntest_retry_permissions_and_release (check_manager.ManagerChecks.test_retry_permissions_and_release) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 5.144s\n\nOK\n",
+    "run_id": "54edd18d-a37d-46e4-b4b9-3fc3aa18d60e",
+    "task_id": "9c9968a8-0c48-492c-8642-94d74d0f9878",
+    "spec_version": 2,
+    "state": "review",
+    "operation_id": "9b5dc407-2426-4105-9c0e-8f2066b9ba06",
+    "material": {
+      "artifact_id": "1bf91061-23b9-44e7-b974-38d80cfc5e6f",
+      "artifact_sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e",
+      "baseline_sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e",
+      "mode": "deterministic",
+      "diff_truncated": false,
+      "self_checks": [
+        {
+          "command": "python -B -m unittest -v check_booking check_manager",
+          "exit_code": 0,
+          "timeout": false
+        }
+      ],
+      "validation_checks": [
+        {
+          "command": "python -B -m unittest -v check_booking check_manager",
+          "exit_code": 0,
+          "timeout": false
+        }
+      ],
+      "validation_passed": true,
+      "guide_revision": "review-v1",
+      "assembly_revision": "standard-v1",
+      "baseline_origin": "accepted_artifact",
+      "baseline_artifact_id": "35e23b13-be4d-43a6-ab58-f98d12aded7a",
+      "known_differences": [
+        "预约台固定设计说明一处写 404，实际重复代取消返回 200，原记录不变。"
+      ]
+    },
+    "snapshot_assembly": {
+      "sha256": "851e907c8fac345c8c62c983abfd3ba89c7b505ba9d9a100d90e3a5998fafa6e",
+      "size_bytes": 8780,
+      "allowed_paths": [
+        "DESIGN.md",
+        "booking.py",
+        "index.html"
+      ],
+      "review_paths": [
+        "DESIGN.md",
+        "booking.py",
+        "index.html"
+      ],
+      "review_guide_revision": "review-v1",
+      "assembly_revision": "standard-v1",
+      "task_id": "9c9968a8-0c48-492c-8642-94d74d0f9878",
+      "engagement_id": "05e3311c-ff3e-4c05-a4ab-64e9e572a8ad",
+      "baseline_origin": "accepted_artifact",
+      "baseline_artifact_id": "35e23b13-be4d-43a6-ab58-f98d12aded7a",
+      "known_differences": [
+        "预约台固定设计说明一处写 404，实际重复代取消返回 200，原记录不变。"
+      ]
+    },
+    "changed_paths": [],
+    "registered_checks": [
+      {
+        "id": "auto-1",
+        "cwd": "/workspace",
+        "kind": "automatic",
+        "source": "completion_criteria",
+        "command": "python -B -m unittest -v check_booking check_manager",
+        "criterion": "[check] python -B -m unittest -v check_booking check_manager"
+      },
+      {
+        "id": "review-2",
+        "kind": "business_review",
+        "source": "completion_criteria",
+        "criterion": "在浏览器复核商家路径及错误提示。"
+      }
+    ],
+    "applied_input_ids": [
+      "adab3b99-e7e0-443e-897d-e03454895128"
+    ]
+  },
+  "repair_new_source_trial": {
+    "intake": {
+      "case_id": "a3550eb3-5279-4e2d-aaa3-3d49a386a09a",
+      "invitation_id": "644624e3-0afe-4a5a-ba75-c6eb957c3a28",
+      "engagement_id": "8fddd0a5-d750-479b-80a6-5f323be6b721",
+      "task_id": "4e1e94e3-f71b-495c-8c19-7d1cf160672a",
+      "spec_version": 2,
+      "confirmed_id": 42,
+      "task_input_id": "976fcc93-6b7d-4a6b-a129-93fb8b4242c1",
+      "sent_message_id": 41,
+      "sent_text": "我理解你的需求是：让客户用维修店发的链接查看自己的报价\n想跟你确认一件事：把链接转给别人时，对方可以看到报价吗？\n确认后，我会在这个会话告诉你下一步。",
+      "draft_not_sent_until_explicit_action": true,
+      "draft_internal_summary_hidden": true,
+      "stale_send_status": 409,
+      "before_accepting_handoff_status": 409,
+      "commitment_preview": "我理解你的需求是：让客户用维修店发的链接查看自己的报价\n时间、费用或范围需要负责人确认。\n确认结果会在这个会话告诉你。",
+      "model_calls": 0,
+      "cross_conversation_source_status": 409
+    },
+    "model_calls": 0,
+    "cost_usd": 0,
+    "fault_injection": {
+      "own_quote_status": 200,
+      "detected_cross_account_leak": true,
+      "check_exit_code": 1,
+      "output": "test_customer_ownership (check_quote.QuoteChecks.test_customer_ownership) ... FAIL\n\n======================================================================\nFAIL: test_customer_ownership (check_quote.QuoteChecks.test_customer_ownership)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/check_quote.py\", line 62, in test_customer_ownership\n    self.assertEqual(unauthorized[:2], missing[:2])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Tuples differ: (200, {'id': 'R101', 'detail': 'A-配件与检测', [61 chars]lse}) != (404, {'message': '这份报价暂不可查看。请联系维修店。'})\n\nFirst differing element 0:\n200\n404\n\n+ (404, {'message': '这份报价暂不可查看。请联系维修店。'})\n- (200,\n-  {'amount_minor': 12800,\n-   'can_manage': False,\n-   'detail': 'A-配件与检测',\n-   'id': 'R101',\n-   'state': 'published'})\n\n----------------------------------------------------------------------\nRan 1 test in 0.513s\n\nFAILED (failures=1)\n"
+    },
+    "bad_digest": "SOURCE_DIGEST_MISMATCH",
+    "cross_project_assembly": "SOURCE_SCOPE_CONFLICT",
+    "stale_revision": "REVISION_CONFLICT",
+    "self_check": "test_customer_ownership (check_quote.QuoteChecks.test_customer_ownership) ... ok\ntest_shop_controls_and_old_url (check_quote.QuoteChecks.test_shop_controls_and_old_url) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 1.069s\n\nOK\n",
+    "independent_check": "test_customer_ownership (check_quote.QuoteChecks.test_customer_ownership) ... ok\ntest_shop_controls_and_old_url (check_quote.QuoteChecks.test_shop_controls_and_old_url) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 1.032s\n\nOK\n",
+    "run_id": "f0c4c594-28ea-4ccd-bcc8-678fc91519b3",
+    "task_id": "4e1e94e3-f71b-495c-8c19-7d1cf160672a",
+    "spec_version": 2,
+    "state": "review",
+    "operation_id": "76b2e3e1-17f0-455c-8ad9-da6ffe877e35",
+    "material": {
+      "artifact_id": "5af54a4f-d8c6-436d-b7f9-80eca0e81297",
+      "artifact_sha256": "aaede81ccf1c55da8a4c80871b393fb3d9459fcd74cf18212ae19ab41fb0e1ea",
+      "baseline_sha256": "81911a583ad66106679d8d4f87dd1e55af7be4694a0a0d1e65ceb6e0b1b540a3",
+      "mode": "deterministic",
+      "diff_truncated": false,
+      "self_checks": [
+        {
+          "command": "python -B -m unittest -v check_quote",
+          "exit_code": 0,
+          "timeout": false
+        }
+      ],
+      "validation_checks": [
+        {
+          "command": "python -B -m unittest -v check_quote",
+          "exit_code": 0,
+          "timeout": false
+        }
+      ],
+      "validation_passed": true,
+      "guide_revision": "review-v1",
+      "assembly_revision": "standard-v1",
+      "baseline_origin": "trusted_starter",
+      "baseline_artifact_id": null,
+      "known_differences": []
+    },
+    "snapshot_assembly": {
+      "sha256": "81911a583ad66106679d8d4f87dd1e55af7be4694a0a0d1e65ceb6e0b1b540a3",
+      "size_bytes": 2006,
+      "allowed_paths": [
+        "DESIGN.md",
+        "index.html",
+        "repair_quotes.py"
+      ],
+      "review_paths": [
+        "DESIGN.md",
+        "index.html",
+        "repair_quotes.py"
+      ],
+      "review_guide_revision": "review-v1",
+      "assembly_revision": "standard-v1",
+      "task_id": "4e1e94e3-f71b-495c-8c19-7d1cf160672a",
+      "engagement_id": "8fddd0a5-d750-479b-80a6-5f323be6b721",
+      "baseline_origin": "trusted_starter",
+      "baseline_artifact_id": null,
+      "known_differences": []
+    },
+    "changed_paths": [
+      "index.html",
+      "repair_quotes.py"
+    ],
+    "registered_checks": [
+      {
+        "id": "auto-1",
+        "cwd": "/workspace",
+        "kind": "automatic",
+        "source": "completion_criteria",
+        "command": "python -B -m unittest -v check_quote",
+        "criterion": "[check] python -B -m unittest -v check_quote"
+      },
+      {
+        "id": "review-2",
+        "kind": "business_review",
+        "source": "completion_criteria",
+        "criterion": "在浏览器复核商家路径及错误提示。"
+      }
+    ],
+    "applied_input_ids": [
+      "976fcc93-6b7d-4a6b-a129-93fb8b4242c1"
+    ]
+  },
+  "browser": {
+    "booking": {
+      "review_url": "http://127.0.0.1:8036/#/projects/05e3311c-ff3e-4c05-a4ab-64e9e572a8ad?task=9c9968a8-0c48-492c-8642-94d74d0f9878",
+      "state": "review",
+      "review_count": 0,
+      "trial_notice_sent": false
+    },
+    "repair": {
+      "review_url": "http://127.0.0.1:8036/#/projects/8fddd0a5-d750-479b-80a6-5f323be6b721?task=4e1e94e3-f71b-495c-8c19-7d1cf160672a",
+      "state": "review",
+      "review_count": 0,
+      "trial_notice_sent": false
+    },
+    "product": {
+      "browser": "Chrome/156.0.8078.80",
+      "preview": "http://127.0.0.1:8806/",
+      "preview_matches_archive": true,
+      "customer_a_own": 200,
+      "customer_b_own": 200,
+      "foreign_link_blocked": true,
+      "foreign_api": {
+        "status": 404,
+        "body": {
+          "message": "这份报价暂不可查看。请联系维修店。"
+        },
+        "cache": "no-store"
+      },
+      "customer_cannot_withdraw": 403,
+      "staff_withdrawn": true,
+      "revoked_original_link": {
+        "status": 404,
+        "body": {
+          "message": "这份报价暂不可查看。请联系维修店。"
+        },
+        "cache": "no-store"
+      }
+    }
+  },
+  "backend_tests": {
+    "total": 167,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "ruff": "passed",
+    "openapi": "checked",
+    "vite_build": "passed",
+    "existing_booking_acceptance_and_messages_verified": true
+  },
+  "observations": [
+    "An initial repair intake phrased with ‘不能’ was routed as support by the existing classifier; the successful exercise used explicit new-feature wording. Generic classification was outside this slice.",
+    "The zero-model trial exercised the common source registration, queue/start and Worker backfill with deterministic adapters. It does not measure model performance."
+  ],
+  "model_calls": 0,
+  "cost_usd": 0,
+  "repair_status": "succeeded",
+  "repair_notice_sent": true,
+  "post_acceptance_repair_trial": {
+    "case_id": "a3550eb3-5279-4e2d-aaa3-3d49a386a09a",
+    "task_id": "4e1e94e3-f71b-495c-8c19-7d1cf160672a",
+    "acceptance": {
+      "task_state": "succeeded",
+      "recorded_via_workbench": true,
+      "review": {
+        "id": "e1013b83-0afd-46d9-8d17-56101d6d35af",
+        "task_id": "4e1e94e3-f71b-495c-8c19-7d1cf160672a",
+        "run_id": "f0c4c594-28ea-4ccd-bcc8-678fc91519b3",
+        "task_spec_version": 2,
+        "artifact_ids": [
+          "5af54a4f-d8c6-436d-b7f9-80eca0e81297"
+        ],
+        "verdict": "accept",
+        "reason": "按创始人在会话中明确授权，代为登记接受维修店报价查看页，用于模拟门店内部试用。",
+        "check_evidence": [
+          "离线复验通过。双客户与店员 Chrome 验证跨账号拒绝和撤回后旧链接失效。归档 aaede81ccf1c55da8a4c80871b393fb3d9459fcd74cf18212ae19ab41fb0e1ea"
+        ],
+        "reviewer": "founder",
+        "created_at": "2026-11-06T02:56:29.982135Z"
+      }
+    },
+    "entry": {
+      "url": "http://127.0.0.1:8808/",
+      "accepted_review": {
+        "run_id": "f0c4c594-28ea-4ccd-bcc8-678fc91519b3",
+        "spec_version": 2,
+        "review_id": "e1013b83-0afd-46d9-8d17-56101d6d35af",
+        "sha256": "aaede81ccf1c55da8a4c80871b393fb3d9459fcd74cf18212ae19ab41fb0e1ea"
+      },
+      "artifact_id": "5af54a4f-d8c6-436d-b7f9-80eca0e81297",
+      "http_status": 200,
+      "served_index_sha256": "8b214e1c89b094af819e150e1055a0e2b10ff135dcb4234999cc91a25a43a856",
+      "file_sha256": {
+        "DESIGN.md": "a438eea85f32c06e7b7667e9f83cf23f707bb178f88891d9a9dfc9ae70e29ef1",
+        "check_quote.py": "3d0985a7241a7e24dd99bad816bd89b704afab2417a2c6647bbbd207946dfc18",
+        "index.html": "8b214e1c89b094af819e150e1055a0e2b10ff135dcb4234999cc91a25a43a856",
+        "repair_quotes.py": "df2ab1612f5bd9e8d58dee3eb32da19cf29bffcf9cd7031f17fc6615327474af"
+      },
+      "unauthenticated_api_status": 401,
+      "private_source_status": 404
+    },
+    "model_calls": 0,
+    "cost_usd": 0,
+    "notice": {
+      "id": 44,
+      "text": "维修报价查看页已可以内部试用：http://127.0.0.1:8808/?quote=R101 。请分别用两位客户账号打开自己的报价，再让另一位客户打开这条链接，确认看不到金额或项目。最后由店员撤回报价，请原客户刷新或重新打开旧链接。试完请在这个会话告诉我们结果。"
+    },
+    "simulation_credential_reissued": true,
+    "retest": {
+      "browser": "Chrome/156.0.8078.80",
+      "identities": [
+        "customer-a",
+        "customer-b",
+        "shop"
+      ],
+      "own_quotes_before_withdraw": 2,
+      "copied_link_blocked": true,
+      "cross_account_api": {
+        "status": 404,
+        "body": {
+          "message": "这份报价暂不可查看。请联系维修店。"
+        },
+        "cache": "no-store"
+      },
+      "unauthorized_withdraw_status": 403,
+      "staff_withdrew_quote": true,
+      "refresh_after_withdraw_blocked": true,
+      "reopen_old_link_blocked": true,
+      "revoked_api": {
+        "status": 404,
+        "body": {
+          "message": "这份报价暂不可查看。请联系维修店。"
+        },
+        "cache": "no-store"
+      },
+      "unaffected_quote_status": 200,
+      "persisted_quote_states": {
+        "R101": "withdrawn",
+        "R202": "published",
+        "R303": "draft"
+      }
+    },
+    "feedback": {
+      "id": 45,
+      "text": "内部复测通过。两位模拟客户能查看自己的报价，转发链接给另一位客户后看不到金额和项目。普通客户无法撤回。店员撤回后，原客户刷新或重新打开旧链接均看不到明细，另一份有效报价仍可查看。"
+    },
+    "same_invitation_verified": true,
+    "case_state": "handling",
+    "recorded_at": "2026-11-06T02:59:00.716942+00:00",
+    "credential_note": "The first ephemeral Chrome session did not retain its public token. A credential was reissued only to the same simulated Case in the isolated database; token value excluded."
+  },
+  "trial_cleanup": {
+    "recorded_at": "2026-11-06T03:04:00.212057+00:00",
+    "closed_loopback_ports": [
+      8036,
+      8795,
+      8806,
+      8808
+    ],
+    "synthetic_customer_credential_revoked": true,
+    "revoked_credential_http_status": 404,
+    "accepted_archive_digest_verified": true,
+    "prior_case_feedback_preserved": true,
+    "model_followup": "cancelled before any run",
+    "cost_usd": 0
+  }
+}

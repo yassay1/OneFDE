@@ -2,6 +2,7 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
+    <meta name="referrer" content="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>模拟水果店报价比较</title>
     <style>
@@ -93,6 +94,13 @@
         color: var(--muted);
         font-size: 0.9rem;
       }
+      .business-form { margin: 1rem 0; }
+      .business-form label { display: block; margin: .5rem 0; }
+      .business-form [hidden] { display: none; }
+      .business-form textarea { display: block; width: min(100%, 44rem); font: inherit; }
+      #business button { min-height: 44px; }
+      #business li { margin: .5rem 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+      #business li[data-kind="reply"] { padding: .65rem; background: var(--paper, #eef4ef); }
     </style>
   </head>
   <body>
@@ -133,8 +141,34 @@
           <tbody></tbody>
         </table>
       </section>
+      <section class="panel" id="business" data-api-origin="http://127.0.0.1:8000">
+        <h2>联系 Business</h2>
+        <p>可以咨询报价工具用法、描述故障或提出需求。请使用模拟资料。发送后可收藏原链接并回来继续。</p>
+        <p role="status" aria-live="polite"></p>
+        <ol aria-label="会话消息"></ol>
+        <form class="business-form">
+          <label>你的消息<textarea name="text" required maxlength="4000" rows="3"></textarea></label>
+          <details>
+            <summary>补充项目和版本（选填）</summary>
+            <label>项目线索<input name="project_hint" maxlength="200" /></label>
+            <label>版本线索<input name="version_hint" maxlength="128" /></label>
+          </details>
+          <label id="business-consent" hidden><input type="checkbox" name="willing_to_continue" /> 我愿意与交付同事继续确认需求</label>
+          <button type="submit">发送消息</button>
+        </form>
+        <form id="business-retest" class="business-form" hidden>
+          <label>复试情况<textarea name="result" maxlength="4000" rows="2"></textarea></label>
+          <div class="actions">
+            <button type="submit" value="passed">确认可以使用</button>
+            <button type="submit" value="failed">仍然失败</button>
+          </div>
+        </form>
+        <button type="button" id="business-refresh">刷新回复</button>
+        <a id="business-follow-link" rel="noreferrer" hidden>本单跟进链接</a>
+      </section>
     </main>
     <script src="./compare.js"></script>
     <script src="./app.js"></script>
+    <script src="./business.js"></script>
   </body>
 </html>

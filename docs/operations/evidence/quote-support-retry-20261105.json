@@ -1,0 +1,244 @@
+{
+  "case_id": "ac8ef624-0ef4-474a-8bed-9a3459e166e0",
+  "task_id": "5b2066c3-1f3c-4f0d-9018-a1f14914d9b9",
+  "handoff_id": "e5828118-36bf-46d8-b039-733e47cc9f23",
+  "prior_run_id": "1a672eba-dceb-4217-9208-268b3240f97f",
+  "run_id": "e5dbb172-e726-47fe-a680-336eb437484d",
+  "operation_id": "4946292a-af68-4209-b3fa-c9d24b8a702a",
+  "seed_sha256": "60b8df28817863f89e3f8f0d5fcedb6eeb77ee188f8a630b6270caf940c117de",
+  "preflight": {
+    "scope": "execution_preflight",
+    "execution_mode": "ecs_shared",
+    "model_execution_enabled": true,
+    "sdk_versions": {
+      "openhands-sdk": "1.59.0",
+      "openhands-workspace": "1.59.0",
+      "openhands-tools": "1.59.0"
+    },
+    "blockers": [],
+    "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+  },
+  "started_at": "2026-11-05T12:24:38.020026+00:00",
+  "model": "deepseek-flash",
+  "model_profile_revision_id": "488fa83c-a2d7-410b-8981-b55cbb053c9d",
+  "sdk_iteration_limit": 10,
+  "relay_max_calls": 12,
+  "relay_budget_usd": 1,
+  "worker_processed": true,
+  "relay_requests": [
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 2432100,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 7663,
+      "completion_tokens": 111
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 204600,
+      "request_kind": "auxiliary",
+      "upstream_status": 200,
+      "prompt_tokens": 642,
+      "completion_tokens": 10
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 2922300,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 8329,
+      "completion_tokens": 353
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 3232800,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 9052,
+      "completion_tokens": 431
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 3045900,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 9797,
+      "completion_tokens": 89
+    },
+    {
+      "max_output_tokens": 4096,
+      "reserved_nanodollars": 319488000,
+      "charged_or_reserved_nanodollars": 3251700,
+      "request_kind": "engineering",
+      "upstream_status": 200,
+      "prompt_tokens": 10003,
+      "completion_tokens": 209
+    }
+  ],
+  "relay_charged_or_reserved_usd": 0.0150894,
+  "task_state": "review",
+  "run_state": "completed",
+  "outcome": "submitted",
+  "spec_version": 1,
+  "error_code": null,
+  "summary": "Modified only products/demo-supplier-quotes/compare.js parseCsv: header cells are normalized so a unit_price header with surrounding ASCII whitespace maps to unit_price; missing columns still raise 缺少列 and duplicate normalized header names now raise 表头列名重复. Row values and R01–R05 logic untouched. Registered check `node products/demo-supplier-quotes/check.mjs --support-regression` ran as its own command and exited 0 (ok: true, S01/S02/S03/S05 checked).",
+  "attempts": 1,
+  "proof": {
+    "stopped": true,
+    "changed_paths": [
+      "products/demo-supplier-quotes/compare.js"
+    ],
+    "check_coverage": [
+      {
+        "id": "auto-1",
+        "cwd": "/workspace",
+        "kind": "automatic",
+        "source": "completion_criteria",
+        "status": "passed",
+        "command": "node products/demo-supplier-quotes/check.mjs --support-regression",
+        "matched": true,
+        "evidence": {
+          "cwd": null,
+          "command": "node products/demo-supplier-quotes/check.mjs --support-regression",
+          "timeout": false,
+          "exit_code": 0
+        },
+        "criterion": "[check] node products/demo-supplier-quotes/check.mjs --support-regression"
+      },
+      {
+        "id": "review-2",
+        "kind": "business_review",
+        "source": "completion_criteria",
+        "status": "pending_review",
+        "matched": false,
+        "criterion": "A=8、B=7.5，仅 B 为组内最低。"
+      }
+    ],
+    "validation": {
+      "passed": true,
+      "results": [
+        {
+          "id": "auto-1",
+          "cwd": "/workspace",
+          "command": "node products/demo-supplier-quotes/check.mjs --support-regression",
+          "timeout": false,
+          "exit_code": 0
+        }
+      ],
+      "stopped": true,
+      "comparison": {
+        "added": [],
+        "match": true,
+        "changed": [],
+        "removed": [],
+        "archive_digest": "9615d0afaab5de35998e90c775fa357bc675eed1032e63a5f0382dd9e7ea9153",
+        "current_digest": "9615d0afaab5de35998e90c775fa357bc675eed1032e63a5f0382dd9e7ea9153"
+      },
+      "error_code": null,
+      "source_unchanged": true,
+      "source_digest_after": "9615d0afaab5de35998e90c775fa357bc675eed1032e63a5f0382dd9e7ea9153",
+      "source_digest_before": "9615d0afaab5de35998e90c775fa357bc675eed1032e63a5f0382dd9e7ea9153"
+    },
+    "workspace": {
+      "policy": "compare_or_block",
+      "status": "match",
+      "blocked": false,
+      "comparison": {
+        "added": [],
+        "match": true,
+        "changed": [],
+        "removed": [],
+        "archive_digest": "c99577df511be1c6ae3004405e668c250e4e00f4a883ee117d97924013d6be37",
+        "current_digest": "c99577df511be1c6ae3004405e668c250e4e00f4a883ee117d97924013d6be37"
+      }
+    }
+  },
+  "artifacts": [
+    {
+      "id": "eea2fff5-b030-4e1c-973e-66ac6e09fc36",
+      "name": "workspace.tar.gz",
+      "sha256": "148354fc51d73ab9cd075086c27497b7518533d20558f09440c6a93ffbf87378",
+      "kind": "source-snapshot",
+      "size_bytes": 9082
+    }
+  ],
+  "relay_firewall_rule_removed": true,
+  "root_cause_previous_run": [
+    "Three engineering iterations were spent on directory discovery, unavailable Git history, and the first source read.",
+    "SDK usage contained a separate model response outside the three engineering iterations."
+  ],
+  "strategy": {
+    "working_scope": "provided exact file and source excerpt, skipped broad discovery",
+    "budget": "fixed DeepSeek Flash endpoint, peak cache-miss price reservation for each forwarded request before sending, settlement from provider token usage, unresolved calls keep their reservation",
+    "auth": "single-run ticket in sandbox; provider credential remained in trusted host relay",
+    "non_thinking": true,
+    "max_output_tokens_per_request": 4096,
+    "upstream_retries": 0,
+    "trusted_host_relay_fixture_checks": [
+      "wrong ticket rejected",
+      "wrong model rejected",
+      "output limit clamped",
+      "usage settled",
+      "missing-usage reserve retained",
+      "12-forward ceiling verified"
+    ],
+    "pricing_reference": "https://api-docs.deepseek.com/quick_start/pricing/"
+  },
+  "review_check": {
+    "checked_at": "2026-11-05T20:26:27.793673+08:00",
+    "artifact_sha256_verified": "148354fc51d73ab9cd075086c27497b7518533d20558f09440c6a93ffbf87378",
+    "scope_status": "request_changes_recommended",
+    "additional_boundary_cases": {
+      "ascii_tail": {
+        "comparable": [
+          {
+            "supplier": "示例供应商A",
+            "price": 8,
+            "lowest": false
+          },
+          {
+            "supplier": "示例供应商B",
+            "price": 7.5,
+            "lowest": true
+          }
+        ]
+      },
+      "non_breaking_space": {
+        "comparable": [
+          {
+            "supplier": "示例供应商A",
+            "price": 8,
+            "lowest": false
+          },
+          {
+            "supplier": "示例供应商B",
+            "price": 7.5,
+            "lowest": true
+          }
+        ]
+      },
+      "unrelated_duplicate_header": {
+        "error": "表头列名重复: note"
+      },
+      "true_missing_price": {
+        "error": "缺少列: unit_price"
+      },
+      "price_collision": {
+        "error": "表头列名重复: unit_price"
+      }
+    },
+    "findings": [
+      "String.trim also accepts non-ASCII whitespace around unit_price.",
+      "The duplicate check applies to unrelated headers too.",
+      "compare.js line endings changed from CRLF to LF; the downloadable review diff ignores line endings."
+    ],
+    "review_diff_sha256": "44f159257d1c0242fc723396e5fca81ca27ae523cb0ca66d6a8532a9f73a8452",
+    "review_verdict_recorded": false
+  }
+}

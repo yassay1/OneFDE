@@ -3,11 +3,13 @@
 import argparse
 import json
 import logging
+import os
 import signal
 import sys
 import threading
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
+from uuid import UUID
 
 from sqlalchemy.orm import Session
 
@@ -61,18 +63,37 @@ def main():
     logging.getLogger("openhands").setLevel(logging.CRITICAL)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "command", choices=("check", "once", "run", "standby", "import-profile")
+        "command",
+        choices=("check", "once", "run", "standby", "import-profile", "verify-reuse"),
     )
     parser.add_argument("--file", type=Path, help="Non-secret model configuration JSON")
+    parser.add_argument(
+        "--run-id", type=UUID, help="Only claim this Run, valid with once"
+    )
     parser.add_argument(
         "--environment-only",
         action="store_true",
         help="Check environment without model budget; valid only with check",
     )
     args = parser.parse_args()
+    if args.run_id and args.command not in ("once", "verify-reuse"):
+        parser.error("--run-id is valid only with once or verify-reuse")
     if args.environment_only and args.command != "check":
         parser.error("--environment-only is valid only with check")
     settings = WorkerSettings()
+    reuse = args.command == "verify-reuse"
+    if reuse and (
+        not args.run_id
+        or settings.model_execution_enabled
+        or settings.egress_proxy_url
+        or settings.network != "onefde-engineering-offline"
+        or settings.execution_mode != "ecs_shared"
+    ):
+        parser.error(
+            "verify-reuse requires --run-id and shared-host settings on the offline bridge, with models and proxy disabled"
+        )
+    if reuse:
+        os.environ["LITELLM_LOCAL_MODEL_COST_MAP"] = "True"
     if args.command == "import-profile":
         if not settings.database_url or not args.file:
             parser.error("import-profile requires Worker database URL and --file")
@@ -98,7 +119,8 @@ def main():
             engine.dispose()
         return
     report = inspect_environment(
-        settings, environment_only=args.environment_only or args.command == "standby"
+        settings,
+        environment_only=args.environment_only or args.command == "standby" or reuse,
     )
     if args.command == "standby" and settings.model_execution_enabled:
         parser.error("standby requires model execution disabled")
@@ -126,10 +148,22 @@ def main():
     for signum in (signal.SIGINT, signal.SIGTERM):
         signal.signal(signum, lambda *_: worker.shutdown.set())
     try:
-        if args.command == "once":
-            print(json.dumps({"processed": worker.run_once()}))
+        from onefde.modules.dialogue.service import record_beat
+
+        if args.command in ("once", "verify-reuse"):
+            record_beat(engine, "engineering_worker")
+            print(
+                json.dumps(
+                    {
+                        "processed": worker.run_once(
+                            expected_run_id=args.run_id, reuse_only=reuse
+                        )
+                    }
+                )
+            )
         else:
             while not worker.shutdown.is_set():
+                record_beat(engine, "engineering_worker")
                 if not worker.run_once():
                     worker.shutdown.wait(settings.poll_seconds)
     finally:

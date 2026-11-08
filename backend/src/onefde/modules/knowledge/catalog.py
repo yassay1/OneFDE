@@ -23,7 +23,9 @@ def library_root() -> Path:
 def load_manifests() -> tuple[dict, ...]:
     root = library_root()
     items = []
-    for path in sorted(root.glob("*/manifest.json")):
+    paths = list(root.glob("*/manifest.json"))
+    paths.extend(root.glob("candidates/*/manifest.json"))
+    for path in sorted(set(paths)):
         data = json.loads(path.read_text(encoding="utf-8"))
         data["_path"] = str(path.relative_to(repo_root())).replace("\\", "/")
         items.append(data)

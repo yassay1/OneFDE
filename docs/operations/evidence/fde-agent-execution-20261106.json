@@ -1,0 +1,36 @@
+{
+  "environment_preflight_exit": 0,
+  "environment_preflight": {
+    "scope": "environment_only",
+    "execution_mode": "local_wsl",
+    "model_execution_enabled": false,
+    "sdk_versions": {
+      "openhands-sdk": "1.59.0",
+      "openhands-workspace": "1.59.0",
+      "openhands-tools": "1.59.0"
+    },
+    "blockers": [],
+    "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+  },
+  "execution_preflight_exit": 2,
+  "execution_preflight": {
+    "scope": "execution_preflight",
+    "execution_mode": "local_wsl",
+    "model_execution_enabled": false,
+    "sdk_versions": {
+      "openhands-sdk": "1.59.0",
+      "openhands-workspace": "1.59.0",
+      "openhands-tools": "1.59.0"
+    },
+    "blockers": [
+      "模型执行未启用；当前禁止消费工程作业",
+      "缺少明确的模型费用上限及提供方配额"
+    ],
+    "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+  },
+  "model_secret_configured": true,
+  "real_dual_agent_run": false,
+  "provider_requests": 0,
+  "billable_tokens": 0,
+  "cost_usd": 0
+}

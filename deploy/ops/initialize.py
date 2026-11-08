@@ -50,6 +50,11 @@ with engine.connect() as db:
     db.execute(text("GRANT SELECT ON ALL TABLES IN SCHEMA public TO onefde_app"))
     db.execute(
         text(
+            "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO onefde_app"
+        )
+    )
+    db.execute(
+        text(
             "GRANT INSERT,UPDATE,DELETE ON auth_sessions,login_attempts,idempotency_records,engagements,tasks,task_inputs,task_reviews,task_versions,task_events,runs,run_events,dispatch_jobs,artifacts TO onefde_app"
         )
     )
@@ -64,5 +69,24 @@ with engine.connect() as db:
             "GRANT INSERT ON task_inputs,task_events,run_events,artifacts TO onefde_worker"
         )
     )
+    db.execute(
+        text(
+            "GRANT INSERT, UPDATE ON business_cases, business_candidates, fde_quote_support TO onefde_app"
+        )
+    )
+    db.execute(text("GRANT INSERT ON business_messages TO onefde_app"))
+    db.execute(text("GRANT SELECT, INSERT, UPDATE ON fde_agent_work, fde_agent_grants TO onefde_app"))
+    db.execute(text("GRANT USAGE ON SEQUENCE business_messages_id_seq TO onefde_app"))
+    db.execute(
+        text(
+            "GRANT SELECT ON business_cases, fde_quote_support, fde_agent_work, fde_agent_grants TO onefde_worker"
+        )
+    )
+    db.execute(
+        text("GRANT SELECT (id, case_id, kind) ON business_messages TO onefde_worker")
+    )
+    # PostgreSQL requires UPDATE privilege on a column for the claim guard's row lock.
+    db.execute(text("GRANT UPDATE (id) ON business_cases TO onefde_worker"))
+    db.execute(text("GRANT UPDATE (id) ON fde_agent_work TO onefde_worker"))
 engine.dispose()
 print("Isolated Compose database initialized; Worker has no auth/DDL/admin privileges.")

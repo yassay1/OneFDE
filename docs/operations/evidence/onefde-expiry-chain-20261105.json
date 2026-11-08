@@ -1,0 +1,905 @@
+{
+  "recorded_at": "2026-11-05T13:32:22.192710+00:00",
+  "scope": "isolated internal browser rehearsal, sample stores and testers",
+  "overall": "planned registered examples and lifecycle passed; supplemental limitations recorded",
+  "intake": {
+    "candidate_source": "sample",
+    "invitation_id": "5f7335bd-8fe5-4993-a070-fcab6e0483ef",
+    "case_id": "13186590-7ac1-43a8-92d5-6eacf2825ca4",
+    "handoff_id": "792b23e0-5e4e-4934-9f78-b1e56c0e4bee",
+    "handoff": {
+      "title": "报价工具需求",
+      "goal": "确认客户需求及交付范围",
+      "sources": [
+        "business:13186590-7ac1-43a8-92d5-6eacf2825ca4/messages/1",
+        "business:13186590-7ac1-43a8-92d5-6eacf2825ca4/messages/3"
+      ],
+      "unknowns": [
+        "项目及产品版本待核实",
+        "客户描述待 FDE 核验"
+      ],
+      "is_demo": true,
+      "notes": "",
+      "id": "792b23e0-5e4e-4934-9f78-b1e56c0e4bee",
+      "confirmed_facts": [
+        "客户已补充说明，见消息 3。"
+      ],
+      "product_version": null,
+      "reproduction": null
+    },
+    "engagement_id": "91f62890-5863-42cc-a2c9-4a1fedfc2af8",
+    "task_id": "218e0ac8-9633-4103-a910-8d25a26910d1",
+    "fde_lookup": {
+      "query": "临期商品清单",
+      "purpose": "delivery",
+      "items": [],
+      "count": 0
+    },
+    "confirmed_message_id": 7,
+    "task_input_id": "1ba0f452-af22-4fac-abfa-1604f2baeb06",
+    "spec": {
+      "title": "首次交付｜临期商品清单",
+      "objective": "希望导入库存 CSV，按日期显示临期商品清单，并导出需处理的批次。",
+      "scope": "静态浏览器应用，仅处理模拟库存 CSV；允许新增 index.html 和 expiry.js。",
+      "inputs": [
+        "交接 792b23e0-5e4e-4934-9f78-b1e56c0e4bee",
+        "商家确认 business:13186590-7ac1-43a8-92d5-6eacf2825ca4/messages/7"
+      ],
+      "confirmed_rules": [
+        "CSV 表头固定为 商品,批次,到期日,数量。UTF-8，支持标准 CSV 引号。",
+        "同一商品不同批次分别显示。",
+        "到期日严格 YYYY-MM-DD，空日期及无效日期标待核对并显示原始数据行号。",
+        "按选定基准日分组为已过期、今日到期、未来 1 至 3 天、其余和待核对。第三天纳入，第四天排除。",
+        "CSV 导出只含已过期、今日到期、未来 1 至 3 天，保留原四列并增加状态。"
+      ],
+      "completion_criteria": [
+        "[check] node check.mjs",
+        "[review] 在浏览器加载固定 CSV，核对批次、跨月分类、待核对和下载。"
+      ],
+      "dependencies": [],
+      "capability_versions": []
+    },
+    "harness_observation": "Corrected test driver path after HTTP 405; continued same Case, Task and recorded input."
+  },
+  "engineering": {
+    "case_id": "13186590-7ac1-43a8-92d5-6eacf2825ca4",
+    "task_id": "218e0ac8-9633-4103-a910-8d25a26910d1",
+    "handoff_id": "792b23e0-5e4e-4934-9f78-b1e56c0e4bee",
+    "run_id": "dc29330c-fe54-42f9-93e5-e79ee3e6d652",
+    "operation_id": "f7675500-d0ac-40c0-84e4-d7d06b02c752",
+    "seed_sha256": "5c9f78f003e532bd0e757be8beacb83d2c6915121ec8ca54896e9d76916387cf",
+    "check_sha256": "9ab842808e6e2b9ddebd79feb8532dc9f62cca57db1abaf76fa2b4c1d0b7c5eb",
+    "baseline_red": "Cannot find module './expiry.js'",
+    "preflight": {
+      "scope": "execution_preflight",
+      "execution_mode": "ecs_shared",
+      "model_execution_enabled": true,
+      "sdk_versions": {
+        "openhands-sdk": "1.59.0",
+        "openhands-workspace": "1.59.0",
+        "openhands-tools": "1.59.0"
+      },
+      "blockers": [],
+      "model_credentials": "按Run冻结的secret_ref解析；环境检查不调用模型"
+    },
+    "started_at": "2026-11-05T13:25:42.302474+00:00",
+    "model": "deepseek-flash",
+    "model_profile_revision_id": "488fa83c-a2d7-410b-8981-b55cbb053c9d",
+    "sdk_iteration_limit": 10,
+    "relay_max_calls": 12,
+    "relay_budget_usd": 1,
+    "worker_processed": true,
+    "relay_requests": [
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 2636100,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 8339,
+        "completion_tokens": 112
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 208500,
+        "request_kind": "auxiliary",
+        "upstream_status": 200,
+        "prompt_tokens": 651,
+        "completion_tokens": 11
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 4524900,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 9499,
+        "completion_tokens": 1396
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 4912500,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 10919,
+        "completion_tokens": 1364
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 3783900,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 12305,
+        "completion_tokens": 77
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 3839700,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 12463,
+        "completion_tokens": 84
+      },
+      {
+        "max_output_tokens": 4096,
+        "reserved_nanodollars": 319488000,
+        "charged_or_reserved_nanodollars": 4051800,
+        "request_kind": "engineering",
+        "upstream_status": 200,
+        "prompt_tokens": 12614,
+        "completion_tokens": 223
+      }
+    ],
+    "relay_charged_or_reserved_usd": 0.0239574,
+    "task_state": "review",
+    "run_state": "completed",
+    "outcome": "submitted",
+    "spec_version": 2,
+    "error_code": null,
+    "summary": "Added index.html and expiry.js only. expiry.js parses UTF-8/BOM/CRLF CSV with quoted commas, newlines and escaped quotes, tracks physical record start lines, validates strict Gregorian YYYY-MM-DD dates and the fixed header (throwing on invalid base date or wrong header), classifies rows by UTC calendar-day difference into expired/today/soon(1-3 days)/later/review, and exports only expired/today/soon rows in input order with Chinese status labels and BOM. index.html provides #file, #as-of, #run, #summary, #results table (product,batch,expires,quantity,status,sourceLine) rendered via textContent, and #export downloading expiry-result.csv; no network beyond local expiry.js. Registered check `node check.mjs` passed (exit 0). Business review in browser remains pending.",
+    "attempts": 1,
+    "proof": {
+      "stopped": true,
+      "changed_paths": [
+        "expiry.js",
+        "index.html"
+      ],
+      "check_coverage": [
+        {
+          "id": "auto-1",
+          "cwd": "/workspace",
+          "kind": "automatic",
+          "source": "completion_criteria",
+          "status": "passed",
+          "command": "node check.mjs",
+          "matched": true,
+          "evidence": {
+            "cwd": null,
+            "command": "node check.mjs",
+            "timeout": false,
+            "exit_code": 0
+          },
+          "criterion": "[check] node check.mjs",
+          "cwd_verified": false
+        },
+        {
+          "id": "review-2",
+          "kind": "business_review",
+          "source": "completion_criteria",
+          "status": "pending_review",
+          "matched": false,
+          "criterion": "在浏览器加载固定 CSV，核对批次、跨月分类、待核对和下载。"
+        }
+      ],
+      "validation": {
+        "passed": true,
+        "results": [
+          {
+            "id": "auto-1",
+            "cwd": "/workspace",
+            "command": "node check.mjs",
+            "timeout": false,
+            "exit_code": 0
+          }
+        ],
+        "stopped": true,
+        "comparison": {
+          "added": [],
+          "match": true,
+          "changed": [],
+          "removed": [],
+          "archive_digest": "8b340dde3b93cd79a208366d2b606d210231491054802a7d21d62abaef05197a",
+          "current_digest": "8b340dde3b93cd79a208366d2b606d210231491054802a7d21d62abaef05197a"
+        },
+        "error_code": null,
+        "source_unchanged": true,
+        "source_digest_after": "8b340dde3b93cd79a208366d2b606d210231491054802a7d21d62abaef05197a",
+        "source_digest_before": "8b340dde3b93cd79a208366d2b606d210231491054802a7d21d62abaef05197a"
+      },
+      "workspace": {
+        "policy": "compare_or_block",
+        "status": "restored_from_prior",
+        "blocked": false,
+        "comparison": {
+          "added": [],
+          "match": false,
+          "changed": [],
+          "removed": [
+            "check.mjs",
+            "inventory.csv"
+          ],
+          "archive_digest": "dc6bee3319eb69cd96969aad718835509b56e172848c14e967a64c04e8ef0927",
+          "current_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "restored_digest": "dc6bee3319eb69cd96969aad718835509b56e172848c14e967a64c04e8ef0927"
+      }
+    },
+    "artifacts": [
+      {
+        "id": "23874cb3-cb4d-42bb-bdda-0f8b97ada31a",
+        "name": "workspace.tar.gz",
+        "sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+        "kind": "source-snapshot",
+        "size_bytes": 4289
+      }
+    ]
+  },
+  "lifecycle": {
+    "browser": "Chrome/156.0.8078.80",
+    "started_at": "2026-11-05T13:27:51.355449+00:00",
+    "pre_review": {
+      "url": "http://127.0.0.1:8792/",
+      "archive_sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+      "artifact_id": "23874cb3-cb4d-42bb-bdda-0f8b97ada31a",
+      "check_stdout": "PASS: 8 batches, month boundary, invalid/missing/slash dates, BOM and CRLF, quoted CSV and 5 export rows",
+      "served_sha256": {
+        "index.html": "d6fa9a5bb78a4e85f433cc71489bf6fbfcaa2062fa9a66df28d8655d6634568c",
+        "expiry.js": "4d8173da42015cc38f3931022b5736aa35d11674031387680c610c66c8659f50"
+      },
+      "accepted_release": null,
+      "fixture_not_served": true
+    },
+    "preview": {
+      "summary": "共 8 个批次：已过期 1，今日到期 1，临期 3，其余 1，待核对 2。",
+      "rows": [
+        [
+          "酸奶",
+          "Y1",
+          "2026-01-29",
+          "2",
+          "已过期",
+          "2"
+        ],
+        [
+          "酸奶",
+          "Y2",
+          "2026-01-30",
+          "3",
+          "今日到期",
+          "3"
+        ],
+        [
+          "面包",
+          "B1",
+          "2026-01-31",
+          "1",
+          "临期",
+          "4"
+        ],
+        [
+          "奶酪",
+          "C1",
+          "2026-02-02",
+          "5",
+          "临期",
+          "5"
+        ],
+        [
+          "果汁",
+          "J1",
+          "2026-02-03",
+          "4",
+          "其余",
+          "6"
+        ],
+        [
+          "牛奶",
+          "M1",
+          "2026-02-30",
+          "6",
+          "待核对",
+          "7"
+        ],
+        [
+          "豆乳",
+          "S1",
+          "",
+          "7",
+          "待核对",
+          "8"
+        ],
+        [
+          "果酱,原味",
+          "G1",
+          "2026-02-01",
+          "8",
+          "临期",
+          "9"
+        ]
+      ]
+    },
+    "export": {
+      "sha256": "a484788eeefcc06946c1ba3e8148813bd5c04b2eee2bf0be445b862f853aa102",
+      "rows": [
+        [
+          "商品",
+          "批次",
+          "到期日",
+          "数量",
+          "状态"
+        ],
+        [
+          "酸奶",
+          "Y1",
+          "2026-01-29",
+          "2",
+          "已过期"
+        ],
+        [
+          "酸奶",
+          "Y2",
+          "2026-01-30",
+          "3",
+          "今日到期"
+        ],
+        [
+          "面包",
+          "B1",
+          "2026-01-31",
+          "1",
+          "临期"
+        ],
+        [
+          "奶酪",
+          "C1",
+          "2026-02-02",
+          "5",
+          "临期"
+        ],
+        [
+          "果酱,原味",
+          "G1",
+          "2026-02-01",
+          "8",
+          "临期"
+        ]
+      ]
+    },
+    "delivery_before_acceptance": "rejected",
+    "review": {
+      "id": "c29e45f1-6729-41f8-bb14-76cac03d9008",
+      "task_id": "218e0ac8-9633-4103-a910-8d25a26910d1",
+      "run_id": "dc29330c-fe54-42f9-93e5-e79ee3e6d652",
+      "task_spec_version": 2,
+      "artifact_ids": [
+        "23874cb3-cb4d-42bb-bdda-0f8b97ada31a"
+      ],
+      "verdict": "accept",
+      "reason": "代创始人验收。独立离线检查通过，浏览器核对 8 个批次及 5 条导出，采纳规格 v2 固定产物。",
+      "check_evidence": [
+        "node check.mjs 通过；浏览器逐行检查、下载核验；SHA-256 52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883"
+      ],
+      "reviewer": "founder",
+      "created_at": "2026-11-05T13:27:52.717123Z"
+    },
+    "task_state": "succeeded",
+    "accepted_delivery": {
+      "url": "http://127.0.0.1:8791/",
+      "archive_sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+      "artifact_id": "23874cb3-cb4d-42bb-bdda-0f8b97ada31a",
+      "check_stdout": "PASS: 8 batches, month boundary, invalid/missing/slash dates, BOM and CRLF, quoted CSV and 5 export rows",
+      "served_sha256": {
+        "index.html": "d6fa9a5bb78a4e85f433cc71489bf6fbfcaa2062fa9a66df28d8655d6634568c",
+        "expiry.js": "4d8173da42015cc38f3931022b5736aa35d11674031387680c610c66c8659f50"
+      },
+      "accepted_release": {
+        "run_id": "dc29330c-fe54-42f9-93e5-e79ee3e6d652",
+        "spec_version": 2,
+        "review_id": "c29e45f1-6729-41f8-bb14-76cac03d9008",
+        "sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883"
+      },
+      "fixture_not_served": true
+    },
+    "first_delivery_message_id": 9,
+    "original_feedback_message_id": 10,
+    "support_case_id": "677aca81-76e8-4182-bbf8-a257618ff2c7",
+    "support_report_observation": {
+      "summary": "共 8 个批次：已过期 1，今日到期 0，临期 3，其余 1，待核对 3。",
+      "rows": [
+        [
+          "酸奶",
+          "Y1",
+          "2026-01-29",
+          "2",
+          "已过期",
+          "2"
+        ],
+        [
+          "酸奶",
+          "Y2",
+          "2026/01/30",
+          "3",
+          "待核对",
+          "3"
+        ],
+        [
+          "面包",
+          "B1",
+          "2026-01-31",
+          "1",
+          "临期",
+          "4"
+        ],
+        [
+          "奶酪",
+          "C1",
+          "2026-02-02",
+          "5",
+          "临期",
+          "5"
+        ],
+        [
+          "果汁",
+          "J1",
+          "2026-02-03",
+          "4",
+          "其余",
+          "6"
+        ],
+        [
+          "牛奶",
+          "M1",
+          "2026-02-30",
+          "6",
+          "待核对",
+          "7"
+        ],
+        [
+          "豆乳",
+          "S1",
+          "",
+          "7",
+          "待核对",
+          "8"
+        ],
+        [
+          "果酱,原味",
+          "G1",
+          "2026-02-01",
+          "8",
+          "临期",
+          "9"
+        ]
+      ]
+    },
+    "support_handoff": {
+      "title": "报价工具故障",
+      "goal": "核实客户报告并确定下一步",
+      "sources": [
+        "business:677aca81-76e8-4182-bbf8-a257618ff2c7/messages/11",
+        "business:677aca81-76e8-4182-bbf8-a257618ff2c7/messages/13"
+      ],
+      "unknowns": [
+        "项目及产品版本待核实",
+        "客户描述待 FDE 核验"
+      ],
+      "is_demo": true,
+      "notes": "",
+      "id": "8933e733-8d3f-4095-bc0e-6222c26a2b53",
+      "confirmed_facts": [
+        "客户已补充说明，见消息 13。"
+      ],
+      "product_version": null,
+      "reproduction": "上传库存 CSV 后点击生成，酸奶 Y2 第 3 行显示待核对，日期写成 2026/01/30。"
+    },
+    "support_notice": {
+      "artifact_id": "23874cb3-cb4d-42bb-bdda-0f8b97ada31a",
+      "version": "临期清单 v1.0",
+      "access_url": "http://127.0.0.1:8791/",
+      "steps": "将第 3 行改为 2026-01-30，导入后确认 Y2 为今日到期，再下载。",
+      "access_evidence": "HTTP 200；两份文件逐字节匹配已接受归档；SHA-256 52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+      "run_id": "dc29330c-fe54-42f9-93e5-e79ee3e6d652",
+      "spec_version": 2,
+      "review_id": "c29e45f1-6729-41f8-bb14-76cac03d9008",
+      "sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+      "confirmed_by": "founder",
+      "notice_id": 17
+    },
+    "support_state": "closed",
+    "support_result": {
+      "steps": "将第 3 行改为 2026-01-30，导入后确认 Y2 为今日到期，再下载。",
+      "passed": true,
+      "run_id": "dc29330c-fe54-42f9-93e5-e79ee3e6d652",
+      "sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+      "version": "临期清单 v1.0",
+      "notice_id": 17,
+      "review_id": "c29e45f1-6729-41f8-bb14-76cac03d9008",
+      "access_url": "http://127.0.0.1:8791/",
+      "artifact_id": "23874cb3-cb4d-42bb-bdda-0f8b97ada31a",
+      "confirmed_by": "founder",
+      "spec_version": 2,
+      "access_evidence": "HTTP 200；两份文件逐字节匹配已接受归档；SHA-256 52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+      "result_message_id": 18
+    },
+    "support_retest": {
+      "summary": "共 8 个批次：已过期 1，今日到期 1，临期 3，其余 1，待核对 2。",
+      "rows": [
+        [
+          "酸奶",
+          "Y1",
+          "2026-01-29",
+          "2",
+          "已过期",
+          "2"
+        ],
+        [
+          "酸奶",
+          "Y2",
+          "2026-01-30",
+          "3",
+          "今日到期",
+          "3"
+        ],
+        [
+          "面包",
+          "B1",
+          "2026-01-31",
+          "1",
+          "临期",
+          "4"
+        ],
+        [
+          "奶酪",
+          "C1",
+          "2026-02-02",
+          "5",
+          "临期",
+          "5"
+        ],
+        [
+          "果汁",
+          "J1",
+          "2026-02-03",
+          "4",
+          "其余",
+          "6"
+        ],
+        [
+          "牛奶",
+          "M1",
+          "2026-02-30",
+          "6",
+          "待核对",
+          "7"
+        ],
+        [
+          "豆乳",
+          "S1",
+          "",
+          "7",
+          "待核对",
+          "8"
+        ],
+        [
+          "果酱,原味",
+          "G1",
+          "2026-02-01",
+          "8",
+          "临期",
+          "9"
+        ]
+      ]
+    },
+    "support_export": {
+      "sha256": "a484788eeefcc06946c1ba3e8148813bd5c04b2eee2bf0be445b862f853aa102",
+      "rows": [
+        [
+          "商品",
+          "批次",
+          "到期日",
+          "数量",
+          "状态"
+        ],
+        [
+          "酸奶",
+          "Y1",
+          "2026-01-29",
+          "2",
+          "已过期"
+        ],
+        [
+          "酸奶",
+          "Y2",
+          "2026-01-30",
+          "3",
+          "今日到期"
+        ],
+        [
+          "面包",
+          "B1",
+          "2026-01-31",
+          "1",
+          "临期"
+        ],
+        [
+          "奶酪",
+          "C1",
+          "2026-02-02",
+          "5",
+          "临期"
+        ],
+        [
+          "果酱,原味",
+          "G1",
+          "2026-02-01",
+          "8",
+          "临期"
+        ]
+      ]
+    },
+    "support_model_calls": 0
+  },
+  "knowledge_reuse": {
+    "run_id": "b0e6fac8-480a-4713-b5da-b56920a62f7e",
+    "task_id": "7fffd091-1407-48e9-86fb-3725e8bdd1cd",
+    "operation_id": "1f546b75-d73c-4cf6-81a6-b7b4a6f792ee",
+    "run_state": "completed",
+    "outcome": "submitted",
+    "spec_version": 1,
+    "proof": {
+      "stopped": true,
+      "resources": [
+        {
+          "role": "validation",
+          "container_id": "f924b0ff530af72a889d294316ff087452aa65e0be4e0ea94c4a08bc1d9e5e14"
+        }
+      ],
+      "validation": {
+        "passed": true,
+        "results": [
+          {
+            "id": "auto-1",
+            "cwd": "/workspace",
+            "command": "node check.mjs",
+            "timeout": false,
+            "exit_code": 0
+          }
+        ],
+        "stopped": true,
+        "comparison": {
+          "added": [],
+          "match": true,
+          "changed": [],
+          "removed": [],
+          "archive_digest": "8b340dde3b93cd79a208366d2b606d210231491054802a7d21d62abaef05197a",
+          "current_digest": "8b340dde3b93cd79a208366d2b606d210231491054802a7d21d62abaef05197a"
+        },
+        "error_code": null,
+        "source_unchanged": true,
+        "source_digest_after": "8b340dde3b93cd79a208366d2b606d210231491054802a7d21d62abaef05197a",
+        "source_digest_before": "8b340dde3b93cd79a208366d2b606d210231491054802a7d21d62abaef05197a"
+      },
+      "reuse_asset": "expiry-inventory-csv@1.0.0",
+      "model_called": false,
+      "source_sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883"
+    },
+    "source_sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+    "model_profile_revision_id": null,
+    "artifacts": [
+      {
+        "id": "5cd8e951-4c58-4399-b016-c08ad8c3ff79",
+        "sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+        "kind": "source-snapshot"
+      }
+    ],
+    "attempts": 1,
+    "engagement_id": "94c64ebe-d5b7-45b4-ab74-3c1d3bd550f6",
+    "asset": {
+      "id": "expiry-inventory-csv",
+      "name": "临期商品清单 CSV",
+      "type": "business_module",
+      "version": "1.0.0",
+      "updated_at": "2026-11-05",
+      "visibility": "internal",
+      "reuse_scope": "cross_project_internal",
+      "verification_status": "limited",
+      "problem": "按商家确认的基准日识别库存 CSV 中需处理的批次",
+      "applicable_when": [
+        "UTF-8 四列 CSV",
+        "到期日为 YYYY-MM-DD",
+        "第三天纳入，第四天排除"
+      ],
+      "not_applicable_when": [
+        "Excel 日期序号或多种日期格式",
+        "自动处置库存或触发提醒"
+      ],
+      "inputs": [
+        "CSV: 商品,批次,到期日,数量",
+        "基准日 YYYY-MM-DD"
+      ],
+      "outputs": [
+        "带行号的分类结果",
+        "需处理批次 CSV"
+      ],
+      "implementation_ref": "products/demo-expiry-inventory",
+      "implementation_archive_sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+      "source_engagement": "91f62890-5863-42cc-a2c9-4a1fedfc2af8",
+      "source_task": "218e0ac8-9633-4103-a910-8d25a26910d1",
+      "source_run": "dc29330c-fe54-42f9-93e5-e79ee3e6d652",
+      "source_artifact": "23874cb3-cb4d-42bb-bdda-0f8b97ada31a",
+      "evidence": [
+        "docs/operations/evidence/onefde-expiry-chain-20261105.json"
+      ],
+      "verified_samples": [
+        "inventory.csv"
+      ],
+      "keywords": [
+        "临期商品清单",
+        "库存",
+        "批次",
+        "CSV",
+        "到期日"
+      ]
+    },
+    "public_marketing_status": 404,
+    "support_after_api_restart": "closed",
+    "browser": {
+      "summary": "共 4 个批次：已过期 0，今日到期 1，临期 1，其余 1，待核对 1。",
+      "rows": [
+        [
+          "豆腐",
+          "D1",
+          "2026-12-30",
+          "6",
+          "今日到期",
+          "2"
+        ],
+        [
+          "豆腐",
+          "D2",
+          "2027-01-02",
+          "7",
+          "临期",
+          "3"
+        ],
+        [
+          "果泥",
+          "P1",
+          "2027-01-03",
+          "1",
+          "其余",
+          "4"
+        ],
+        [
+          "果泥",
+          "P2",
+          "2027-02-29",
+          "2",
+          "待核对",
+          "5"
+        ]
+      ]
+    },
+    "export": {
+      "sha256": "5bc46420dd02a98eacb2f9d5b1d569ebb05c8fa6a48e83519f53a680197087c5",
+      "rows": [
+        [
+          "商品",
+          "批次",
+          "到期日",
+          "数量",
+          "状态"
+        ],
+        [
+          "豆腐",
+          "D1",
+          "2026-12-30",
+          "6",
+          "今日到期"
+        ],
+        [
+          "豆腐",
+          "D2",
+          "2027-01-02",
+          "7",
+          "临期"
+        ]
+      ]
+    },
+    "fixture_sha256": "42773cc06d3f1dec7d30fcc92aa1243d66de0228fd263a179670f08776d4dd2d",
+    "fixture": "商品,批次,到期日,数量\n豆腐,D1,2026-12-30,6\n豆腐,D2,2027-01-02,7\n果泥,P1,2027-01-03,1\n果泥,P2,2027-02-29,2\n",
+    "baseline_date": "2026-12-30",
+    "adoption": "same frozen archive, zero source changes; verification Run plus separate second-store browser data",
+    "review": {
+      "id": "e0182b91-406d-4769-b6a7-c560eb8c017a",
+      "task_id": "7fffd091-1407-48e9-86fb-3725e8bdd1cd",
+      "run_id": "b0e6fac8-480a-4713-b5da-b56920a62f7e",
+      "task_spec_version": 1,
+      "artifact_ids": [
+        "5cd8e951-4c58-4399-b016-c08ad8c3ff79"
+      ],
+      "verdict": "accept",
+      "reason": "接受第二家模拟门店的内部复用验证。",
+      "check_evidence": [
+        "同一固定归档、独立无模型检查、跨年和异常日期的实际浏览器导出。"
+      ],
+      "reviewer": "founder",
+      "created_at": "2026-11-05T13:30:12.945987Z"
+    },
+    "task_state": "succeeded"
+  },
+  "isolated_database_audit": {
+    "database": "onefde_expiry_test",
+    "engineering_runs": 2,
+    "deepseek_runs": 1,
+    "offline_verification_runs": 1,
+    "run_ids": [
+      "dc29330c-fe54-42f9-93e5-e79ee3e6d652",
+      "b0e6fac8-480a-4713-b5da-b56920a62f7e"
+    ],
+    "finished": true
+  },
+  "archive_source": {
+    "implementation_path": "products/demo-expiry-inventory",
+    "sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+    "files": {
+      "check.mjs": "9ab842808e6e2b9ddebd79feb8532dc9f62cca57db1abaf76fa2b4c1d0b7c5eb",
+      "expiry.js": "4d8173da42015cc38f3931022b5736aa35d11674031387680c610c66c8659f50",
+      "index.html": "d6fa9a5bb78a4e85f433cc71489bf6fbfcaa2062fa9a66df28d8655d6634568c",
+      "inventory.csv": "18d7bc6d19336dc689b592a4a480236a64402c7dc848e9d936972e6d5281e7b3"
+    }
+  },
+  "pricing": {
+    "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+    "basis": "peak cache-miss input and peak output; provider invoice not reconciled",
+    "budget_usd": 1,
+    "prompt_tokens": 66790,
+    "completion_tokens": 3267
+  },
+  "observations": {
+    "product_specific_business_entry": "shared quote Business portal; requirement and support handoffs retain quote-specific titles",
+    "first_delivery": "existing Business reply after separate acceptance and verified local serving; generic first-delivery operation for new products was not part of this run",
+    "support": "separate support Case in the same Engagement, uses accepted original Task and artifact; correction to input by internal tester",
+    "supplemental": {
+      "paddedDate": {
+        "asOf": "2026-01-30",
+        "input": " 2026-01-30 ",
+        "expected": "review",
+        "actual": "today"
+      },
+      "year0099Boundary": {
+        "asOf": "0099-12-31",
+        "input": "0100-01-01",
+        "expected": "soon",
+        "actual": "expired"
+      },
+      "formulaField": {
+        "input": "=1+1",
+        "exportedLine": "=1+1,F1,2026-01-30,1,今日到期",
+        "scope": "Formula-like value is present in exported CSV. Spreadsheet interpretation not exercised."
+      }
+    },
+    "harness": [
+      "HTTP 405 for the test driver's initial apply URL; continued with recorded input on the same Case and Task",
+      "WSL lacks a host Node binary; fixed baseline check used existing offline Docker image",
+      "Launch wrapper reported a trailing CR after successful completion. Worker and persisted results had completed; temporary relay firewall rule absent after exit.",
+      "Reuse evidence collector read a detached ORM object after the successful run; collected the same Run using a read-only DB query. No rerun."
+    ]
+  },
+  "formal_release": "not executed",
+  "external_customer_acceptance": "not executed"
+}

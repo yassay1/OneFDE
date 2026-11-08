@@ -1,0 +1,131 @@
+{
+  "scope": "deterministic PostgreSQL control fixture",
+  "demo": "demo-repair-quote-view",
+  "engagement_id": "f7ff0abf-2bdb-4bc7-bf29-d2de3294ad12",
+  "case_id": "d51a3b13-c28b-4b62-b640-4dd98098f6c9",
+  "work_id": "045cbc1c-2a00-4b65-b2f8-f3df06f76641",
+  "task_id": "3fdd687f-456f-4424-9666-312612ee0a91",
+  "question_run_id": "21426c92-5ee2-47e7-a102-e458bb54bde4",
+  "submitted_run_id": "0253519d-321f-4614-a63c-16b21b2843f3",
+  "baseline_sha256": "506cb66f4d320cb8418e62a80128604ea71754e2d3bbb1c13eaac1925ba7a976",
+  "artifact_id": "30c3dae3-29a0-4b8d-a8bd-e06f041df6ec",
+  "artifact_sha256": "3d99e228ffe51e2759deb51cfa69712dc5886af1eef10738f3e14c872d733d39",
+  "trace": [
+    {
+      "tool": "read_conversation",
+      "last_public_message_id": 64,
+      "latest_customer_message_id": 63
+    },
+    {
+      "tool": "draft_clarification",
+      "source_message_id": 63,
+      "last_public_message_id": 64
+    },
+    {
+      "tool": "send_clarification",
+      "case_id": "d51a3b13-c28b-4b62-b640-4dd98098f6c9",
+      "message_id": 66,
+      "source_message_id": 63
+    },
+    {
+      "tool": "draft_clarification",
+      "source_message_id": 63,
+      "last_public_message_id": 66
+    },
+    {
+      "tool": "send_clarification",
+      "error": "FDE_ALREADY_SENT"
+    },
+    {
+      "tool": "send_clarification",
+      "error": "FDE_MESSAGE_STALE"
+    },
+    {
+      "tool": "create_task",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91"
+    },
+    {
+      "tool": "create_task",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91"
+    },
+    {
+      "tool": "delegate_engineering",
+      "error": "FDE_INPUT_NOT_ADOPTED"
+    },
+    {
+      "tool": "record_customer_input",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91",
+      "input_id": "4cf8911e-aac0-432b-87d6-73522655a831"
+    },
+    {
+      "tool": "adopt_inputs",
+      "spec_version": 2
+    },
+    {
+      "tool": "delegate_engineering",
+      "error": "FDE_TASK_STALE"
+    },
+    {
+      "tool": "delegate_engineering",
+      "run_id": "21426c92-5ee2-47e7-a102-e458bb54bde4",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91"
+    },
+    {
+      "tool": "delegate_engineering",
+      "error": "FDE_ALREADY_DELEGATED"
+    },
+    {
+      "tool": "read_task",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91"
+    },
+    {
+      "tool": "read_task",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91"
+    },
+    {
+      "tool": "record_customer_input",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91",
+      "input_id": "ac08e3de-20d1-4f66-91d2-88034fd8c591"
+    },
+    {
+      "tool": "adopt_inputs",
+      "spec_version": 3
+    },
+    {
+      "tool": "delegate_engineering",
+      "run_id": "0253519d-321f-4614-a63c-16b21b2843f3",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91"
+    },
+    {
+      "tool": "read_task",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91"
+    },
+    {
+      "tool": "read_run",
+      "run_id": "0253519d-321f-4614-a63c-16b21b2843f3",
+      "artifact_id": "30c3dae3-29a0-4b8d-a8bd-e06f041df6ec",
+      "validation_passed": true
+    },
+    {
+      "tool": "suggest_review",
+      "error": "FDE_REVIEW_STALE"
+    },
+    {
+      "tool": "suggest_review",
+      "error": "FDE_TASK_STALE"
+    },
+    {
+      "tool": "suggest_review",
+      "run_id": "0253519d-321f-4614-a63c-16b21b2843f3",
+      "task_id": "3fdd687f-456f-4424-9666-312612ee0a91",
+      "artifact_id": "30c3dae3-29a0-4b8d-a8bd-e06f041df6ec",
+      "spec_version": 3,
+      "validation_passed": true
+    }
+  ],
+  "actual_model_calls": 0,
+  "actual_model_cost_usd": 0,
+  "engineering_submission": "deterministic fixture",
+  "business_acceptance": "not recorded",
+  "release": "not performed"
+}

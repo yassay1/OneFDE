@@ -35,13 +35,16 @@ ALLOWED = {
     "index.html": "text/html; charset=utf-8",
     "app.js": "text/javascript; charset=utf-8",
     "compare.js": "text/javascript; charset=utf-8",
+    "business.js": "text/javascript; charset=utf-8",
     "check.mjs": "text/javascript; charset=utf-8",
     "check.sh": "text/plain; charset=utf-8",
     "README.md": "text/plain; charset=utf-8",
     "CHANGELOG.md": "text/plain; charset=utf-8",
 }
 FORBIDDEN = (*WORKBENCH_ORIGINS, "/api/v1")
-PAGE_FILES = ("index.html", "app.js", "compare.js")
+PAGE_SCRIPTS = ("compare.js", "app.js", "business.js")
+PUBLIC_BUSINESS_API = "/api/v1/public/business/conversations/"
+LOCAL_BUSINESS_ENDPOINT = 'data-api-origin="http://127.0.0.1:8000"'
 
 
 class ProductHandler(BaseHTTPRequestHandler):
@@ -142,7 +145,10 @@ def product_check():
 def main():
     failures = []
     probes = []
-    sample = {"command": "node products/demo-supplier-quotes/check.mjs", "exit_code": None}
+    sample = {
+        "command": "node products/demo-supplier-quotes/check.mjs",
+        "exit_code": None,
+    }
     try:
         server = ThreadingHTTPServer((HOST, PORT), ProductHandler)
     except OSError as error:
@@ -156,10 +162,21 @@ def main():
         html = body.decode("utf-8")
         sources = script_sources(html)
         require(status == 200, f"product index status {status}", failures)
-        require("set-cookie" not in {k.lower() for k in headers}, "product set a cookie", failures)
+        require(
+            "set-cookie" not in {k.lower() for k in headers},
+            "product set a cookie",
+            failures,
+        )
         require("模拟水果店报价比较" in html, "product title missing", failures)
-        require(sources == ["./compare.js", "./app.js"], f"script src {sources}", failures)
-        for name in ("compare.js", "app.js"):
+        require(
+            sources == [f"./{name}" for name in PAGE_SCRIPTS],
+            f"script src {sources}",
+            failures,
+        )
+        require(
+            LOCAL_BUSINESS_ENDPOINT in html, "missing Business API origin", failures
+        )
+        for name in PAGE_SCRIPTS:
             code, file_headers, payload = fetch(f"{PRODUCT_ORIGIN}/{name}")
             require(code == 200, f"{name} status {code}", failures)
             require(
@@ -167,12 +184,26 @@ def main():
                 f"{name} set a cookie",
                 failures,
             )
-            require(b"QuoteCompare" in payload or b"quote" in payload.lower(), f"{name} empty", failures)
-        for blocked in ("/health", "/api/v1/engagements", "/api/v1/auth/session"):
+            marker = (
+                PUBLIC_BUSINESS_API.encode()
+                if name == "business.js"
+                else b"QuoteCompare"
+            )
+            require(marker in payload, f"{name} expected content missing", failures)
+        for blocked in (
+            "/health",
+            "/api/v1/engagements",
+            "/api/v1/auth/session",
+            PUBLIC_BUSINESS_API,
+        ):
             code, _headers, _payload = fetch(PRODUCT_ORIGIN + blocked)
             require(code == 404, f"{blocked} status {code}", failures)
-        for name in PAGE_FILES:
+        for name in ("index.html", *PAGE_SCRIPTS):
             text = (PRODUCT / name).read_text(encoding="utf-8")
+            if name == "index.html":
+                text = text.replace(LOCAL_BUSINESS_ENDPOINT, "", 1)
+            elif name == "business.js":
+                text = text.replace(PUBLIC_BUSINESS_API, "", 1)
             for token in FORBIDDEN:
                 require(token not in text, f"{name} references {token}", failures)
         probes = probe_workbench()
@@ -180,7 +211,11 @@ def main():
             if not probe["running"]:
                 continue
             require(probe["origin"] != PRODUCT_ORIGIN, "origins collided", failures)
-            require(not probe["root_is_product"], f"{probe['origin']} served the product", failures)
+            require(
+                not probe["root_is_product"],
+                f"{probe['origin']} served the product",
+                failures,
+            )
             require(
                 not probe["health_body_is_product"],
                 f"{probe['origin']} /health served the product",
@@ -218,8 +253,15 @@ def _write(failures, probes, sample):
             "Cloud HTTPS, demo video, and thin workbench pages are outside this check."
         ),
     }
-    EVIDENCE.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"ok": report["ok"], "evidence": str(EVIDENCE), "failures": failures}, ensure_ascii=False))
+    EVIDENCE.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {"ok": report["ok"], "evidence": str(EVIDENCE), "failures": failures},
+            ensure_ascii=False,
+        )
+    )
 
 
 def serve():
@@ -233,7 +275,9 @@ def serve():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--serve", action="store_true", help="keep the product origin listening")
+    parser.add_argument(
+        "--serve", action="store_true", help="keep the product origin listening"
+    )
     args = parser.parse_args()
     if args.serve:
         serve()

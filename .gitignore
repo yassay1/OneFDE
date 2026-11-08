@@ -10,3 +10,5 @@ work/
 !.env.example
 !.env.worker.example
 .planning/
+frontend/node_modules/
+frontend/dist/

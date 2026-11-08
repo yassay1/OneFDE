@@ -6,6 +6,7 @@ from uuid import UUID, uuid4
 import pytest
 from alembic import command
 from alembic.config import Config
+from alembic.script import ScriptDirectory
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
@@ -144,6 +145,7 @@ def test_downgrade_refuses_to_discard_c1b_business_history(
         command.downgrade(Config("alembic.ini"), "d3a2bfe5f985")
     with c.app.state.engine.connect() as db:
         assert (
-            db.scalar(text("SELECT version_num FROM alembic_version")) == "d5454eda0523"
+            db.scalar(text("SELECT version_num FROM alembic_version"))
+            == ScriptDirectory.from_config(Config("alembic.ini")).get_current_head()
         )
     assert c.get()["pending_input_count"] == 1

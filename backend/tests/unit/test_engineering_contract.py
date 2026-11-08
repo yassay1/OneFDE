@@ -11,6 +11,35 @@ from onefde.core.engineering import CONTEXT_REVISION, ROLE_REVISION, derive_chec
 from onefde.infrastructure.runtime import engineering as eng
 
 
+def test_review_material_includes_approved_diff_and_marks_unreadable_files():
+    def package(files):
+        result = io.BytesIO()
+        with tarfile.open(fileobj=result, mode="w:gz") as archive:
+            for name, content in files.items():
+                member = tarfile.TarInfo(name)
+                member.size = len(content)
+                archive.addfile(member, io.BytesIO(content))
+        return result.getvalue()
+
+    before = package({"main.py": b"before\n", "binary": b"old\n"})
+    after = package(
+        {
+            "main.py": b"after\n",
+            "DESIGN.md": b"design",
+            "binary": b"\xff",
+            "private.txt": b"not for review",
+        }
+    )
+    material = eng.build_review_material(
+        after, before, ["main.py", "DESIGN.md", "binary"]
+    )
+    assert material["design"] == "design"
+    assert "-before\n+after\n" in material["diff"]
+    assert "private.txt" not in material["diff"]
+    assert "binary" not in material["diff"] and material["diff_truncated"]
+    assert material["baseline_sha256"] != material["artifact_sha256"]
+
+
 def test_derive_checks_splits_automatic_and_review():
     checks = derive_checks(
         {
@@ -136,7 +165,22 @@ def test_invalid_json_and_self_report_do_not_discard_classification():
         eng.parse_proposal("not-json")
 
 
-def test_parse_proposal_accepts_fenced_json_and_compound_checks():
+@pytest.mark.parametrize(
+    ("command", "cwd", "exit_code", "timeout", "expected"),
+    [
+        ("sh /workspace/check.sh", "/workspace", 0, False, True),
+        ("sh /workspace/check.sh", None, 0, False, True),
+        ("cd /workspace && sh /workspace/check.sh", None, 0, False, False),
+        ("sh /workspace/check.sh; true", "/workspace", 0, False, False),
+        ("sh /workspace/check.sh\ntrue", "/workspace", 0, False, False),
+        ("sh /workspace/check.sh", "/tmp", 0, False, False),
+        ("sh /workspace/check.sh", "/workspace", 1, False, False),
+        ("sh /workspace/check.sh", "/workspace", 0, True, False),
+    ],
+)
+def test_fenced_proposal_requires_whole_registered_command(
+    command, cwd, exit_code, timeout, expected
+):
     proposal = eng.parse_proposal(
         'Done.\n```json\n{"outcome":"submitted","summary":"ok"}\n```'
     )
@@ -144,10 +188,10 @@ def test_parse_proposal_accepts_fenced_json_and_compound_checks():
     checks = derive_checks({"completion_criteria": ["[auto] sh /workspace/check.sh"]})
     evidence = [
         {
-            "command": "cd /workspace && sh /workspace/check.sh; echo done",
-            "cwd": None,
-            "exit_code": 0,
-            "timeout": False,
+            "command": command,
+            "cwd": cwd,
+            "exit_code": exit_code,
+            "timeout": timeout,
         }
     ]
     result, extras = eng.decide_result(
@@ -158,8 +202,11 @@ def test_parse_proposal_accepts_fenced_json_and_compound_checks():
         evidence=evidence,
         validation={"passed": True},
     )
-    assert result["outcome"] == "submitted"
-    assert extras["check_coverage"][0]["matched"] is True
+    assert (result.get("outcome") == "submitted") is expected
+    assert extras["check_coverage"][0]["matched"] is expected
+    assert extras["check_coverage"][0]["cwd_verified"] is (
+        expected and cwd == "/workspace"
+    )
 
 
 def _archive(files: dict[str, bytes]) -> bytes:
@@ -170,6 +217,21 @@ def _archive(files: dict[str, bytes]) -> bytes:
             info.size = len(content)
             archive.addfile(info, io.BytesIO(content))
     return buffer.getvalue()
+
+
+def test_submission_diagnostics_distinguishes_missing_from_latest_assertion_failure():
+    from onefde.infrastructure.runtime.engineering import submission_diagnostics
+
+    checks = derive_checks({"completion_criteria": ["[check] node check.mjs"]})
+    unrelated = {"command": "node --version", "exit_code": 0, "timeout": False}
+    passed = {**unrelated, "command": "node check.mjs", "cwd": "/workspace"}
+    failed = {**passed, "exit_code": 1}
+    assert (
+        submission_diagnostics(checks, [unrelated])[0]["status"] == "evidence_missing"
+    )
+    diagnostic = submission_diagnostics(checks, [passed, failed])[0]
+    assert diagnostic["status"] == "check_failed" and diagnostic["exit_code"] == 1
+    assert not submission_diagnostics(checks, [failed, passed])
 
 
 def test_workspace_compare_blocks_unknown_drift(tmp_path: Path):

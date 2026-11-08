@@ -1,0 +1,92 @@
+[
+  {
+    "page": "office",
+    "scroll": 360,
+    "width": 360
+  },
+  {
+    "page": "projects",
+    "scroll": 360,
+    "width": 360
+  },
+  {
+    "page": "business",
+    "scroll": 360,
+    "width": 360
+  },
+  {
+    "page": "fde",
+    "scroll": 360,
+    "width": 360
+  },
+  {
+    "page": "engineering",
+    "scroll": 360,
+    "width": 360
+  },
+  {
+    "page": "knowledge",
+    "scroll": 360,
+    "width": 360
+  },
+  {
+    "page": "office",
+    "scroll": 1024,
+    "width": 1024
+  },
+  {
+    "page": "projects",
+    "scroll": 1024,
+    "width": 1024
+  },
+  {
+    "page": "business",
+    "scroll": 1024,
+    "width": 1024
+  },
+  {
+    "page": "fde",
+    "scroll": 1024,
+    "width": 1024
+  },
+  {
+    "page": "engineering",
+    "scroll": 1024,
+    "width": 1024
+  },
+  {
+    "page": "knowledge",
+    "scroll": 1024,
+    "width": 1024
+  },
+  {
+    "page": "office",
+    "scroll": 1440,
+    "width": 1440
+  },
+  {
+    "page": "projects",
+    "scroll": 1440,
+    "width": 1440
+  },
+  {
+    "page": "business",
+    "scroll": 1440,
+    "width": 1440
+  },
+  {
+    "page": "fde",
+    "scroll": 1440,
+    "width": 1440
+  },
+  {
+    "page": "engineering",
+    "scroll": 1440,
+    "width": 1440
+  },
+  {
+    "page": "knowledge",
+    "scroll": 1440,
+    "width": 1440
+  }
+]

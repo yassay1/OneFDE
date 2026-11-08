@@ -10,6 +10,7 @@ for name in (
     "ONEFDE_OWNER_PASSWORD_HASH",
     "ONEFDE_WORKER_DATABASE_URL",
     "ONEFDE_MODEL_ENGINEERING",
+    "ONEFDE_MODEL_ENGINEERING_MIMO",
 ):
     reference = os.environ.get(name + "_FILE")
     if reference:

@@ -2122,6 +2122,87 @@ paths:
                 $ref: '#/components/schemas/ApiError'
           description: Service Unavailable
       x-onefde-status: implemented
+  /api/v1/runs/{run_id}/review-evidence:
+    get:
+      tags:
+      - tasks
+      summary: Get Run Review Evidence
+      operationId: getRunReviewEvidence
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: run_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Run Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/RunReviewEvidence'
+                - type: 'null'
+                title: Response Getrunreviewevidence
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
   /api/v1/tasks/{task_id}/versions:
     get:
       tags:
@@ -2247,6 +2328,368 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskVersion'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/engagements/{engagement_id}/fde/work-history:
+    get:
+      tags:
+      - fde
+      summary: Work History
+      operationId: pageFdeWork
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: engagement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Engagement Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_WorkView_'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/engagements/{engagement_id}/fde/work/{work_id}:
+    get:
+      tags:
+      - fde
+      summary: Read Work
+      operationId: getFdeWork
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: engagement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Engagement Id
+      - name: work_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Work Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkView'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/engagements/{engagement_id}/fde/work:
+    get:
+      tags:
+      - fde
+      summary: List Work
+      operationId: listFdeWork
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: engagement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Engagement Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkView'
+                title: Response Listfdework
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+    post:
+      tags:
+      - fde
+      summary: Start Work
+      operationId: startFdeWork
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: engagement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Engagement Id
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: \S
+          title: Idempotency-Key
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartWork'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkView'
         '400':
           content:
             application/json:
@@ -2580,6 +3023,2017 @@ paths:
                 $ref: '#/components/schemas/ApiError'
           description: Service Unavailable
       x-onefde-status: implemented
+  /api/v1/office/actionable:
+    get:
+      tags:
+      - office
+      summary: List Office Actionable
+      operationId: listOfficeActionable
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficePage'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/office/activity:
+    get:
+      tags:
+      - office
+      summary: List Office Activity
+      operationId: listOfficeActivity
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficePage'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/public/business/conversations/{case_id}:
+    put:
+      tags:
+      - business-customer
+      summary: Start
+      operationId: startBusinessConversation
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartConversation'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicConversation'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+    get:
+      tags:
+      - business-customer
+      summary: Read
+      operationId: readBusinessConversation
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      - name: after
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: After
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicConversation'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/public/business/conversations/{case_id}/messages:
+    post:
+      tags:
+      - business-customer
+      summary: Send
+      operationId: sendBusinessMessage
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerMessage'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicConversation'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/public/business/conversations/{case_id}/retest:
+    post:
+      tags:
+      - business-customer
+      summary: Submit Retest
+      operationId: submitBusinessRetest
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RetestResult'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicConversation'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/business/cases:
+    get:
+      tags:
+      - business-workbench
+      summary: Cases
+      operationId: listBusinessCases
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: workflow
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - enum:
+            - inquiry
+            - support
+            - outreach
+            type: string
+          - type: 'null'
+          title: Workflow
+      - name: state
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - enum:
+            - open
+            - clarifying
+            - founder_queue
+            - fde_queue
+            - handling
+            - awaiting_retest
+            - closed
+            type: string
+          - type: 'null'
+          title: State
+      - name: owner
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - enum:
+            - business
+            - founder
+            - fde
+            type: string
+          - type: 'null'
+          title: Owner
+      - name: engagement_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Engagement Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_CaseSummary_'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/business/cases/{case_id}:
+    get:
+      tags:
+      - business-workbench
+      summary: Read Case
+      operationId: readBusinessCase
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      - name: after
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+          title: After
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDetail'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/business/cases/{case_id}/clarification-draft:
+    post:
+      tags:
+      - business-workbench
+      summary: Prepare Clarification
+      operationId: prepareBusinessClarification
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClarificationRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClarificationDraft'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/business/cases/{case_id}/actions:
+    post:
+      tags:
+      - business-workbench
+      summary: Action
+      operationId: actOnBusinessCase
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: \S
+          title: Idempotency-Key
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/TakeOver'
+              - $ref: '#/components/schemas/StaffMessage'
+              - $ref: '#/components/schemas/SendClarification'
+              - $ref: '#/components/schemas/HandoffCommand'
+              - $ref: '#/components/schemas/AcceptHandoff'
+              - $ref: '#/components/schemas/RecordInput'
+              - $ref: '#/components/schemas/ApproveFdeFeedback'
+              - $ref: '#/components/schemas/NotifyRetest'
+              discriminator:
+                propertyName: action
+                mapping:
+                  take_over: '#/components/schemas/TakeOver'
+                  reply: '#/components/schemas/StaffMessage'
+                  note: '#/components/schemas/StaffMessage'
+                  send_clarification: '#/components/schemas/SendClarification'
+                  handoff: '#/components/schemas/HandoffCommand'
+                  accept_handoff: '#/components/schemas/AcceptHandoff'
+                  record_input: '#/components/schemas/RecordInput'
+                  approve_fde_feedback: '#/components/schemas/ApproveFdeFeedback'
+                  notify_retest: '#/components/schemas/NotifyRetest'
+              title: Data
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDetail'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/business/candidate-search:
+    post:
+      tags:
+      - business-workbench
+      summary: Search Candidates
+      operationId: searchBusinessCandidates
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: \S
+          title: Idempotency-Key
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchDistrict'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResults'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/business/candidates:
+    get:
+      tags:
+      - business-workbench
+      summary: List Candidates
+      operationId: listBusinessCandidates
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: adcode
+        in: query
+        required: true
+        schema:
+          type: string
+          pattern: ^[1-9][0-9]{5}$
+          title: Adcode
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateResults'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/business/candidates/{candidate_id}/invite:
+    post:
+      tags:
+      - business-workbench
+      summary: Invite
+      operationId: inviteBusinessCandidate
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Candidate Id
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteCandidate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateView'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/business/cases/{case_id}/assistant:
+    get:
+      tags:
+      - staff-dialogue
+      summary: List Business Assistant
+      operationId: listBusinessAssistant
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogueView'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+    post:
+      tags:
+      - staff-dialogue
+      summary: Ask Business Assistant
+      operationId: askBusinessAssistant
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: case_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Case Id
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: \S
+          title: Idempotency-Key
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffQuestion'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogueReply'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/engagements/{engagement_id}/fde/dialogue:
+    get:
+      tags:
+      - staff-dialogue
+      summary: List Fde Dialogue
+      operationId: listFdeDialogue
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: engagement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Engagement Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogueView'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+    post:
+      tags:
+      - staff-dialogue
+      summary: Ask Fde Dialogue
+      operationId: askFdeDialogue
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: engagement_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Engagement Id
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: \S
+          title: Idempotency-Key
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffQuestion'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogueReply'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/tasks/{task_id}/dialogue:
+    get:
+      tags:
+      - staff-dialogue
+      summary: List Task Dialogue
+      operationId: listTaskDialogue
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Task Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogueView'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+    post:
+      tags:
+      - staff-dialogue
+      summary: Ask Task Dialogue
+      operationId: askTaskDialogue
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: task_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Task Id
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: \S
+          title: Idempotency-Key
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffQuestion'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogueReply'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/knowledge/dialogue:
+    get:
+      tags:
+      - staff-dialogue
+      summary: List Knowledge Dialogue
+      operationId: listKnowledgeDialogue
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: caller_role
+        in: query
+        required: true
+        schema:
+          enum:
+          - business
+          - fde
+          - engineering
+          type: string
+          title: Caller Role
+      - name: purpose
+        in: query
+        required: false
+        schema:
+          enum:
+          - delivery
+          - internal_research
+          - public_marketing
+          type: string
+          default: delivery
+          title: Purpose
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogueView'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+    post:
+      tags:
+      - staff-dialogue
+      summary: Ask Knowledge Dialogue
+      operationId: askKnowledgeDialogue
+      security:
+      - APIKeyCookie: []
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: \S
+          title: Idempotency-Key
+      - name: x-csrf-token
+        in: header
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          description: 必填；缺失或错误返回403
+          title: X-Csrf-Token
+        description: 必填；缺失或错误返回403
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KnowledgeQuestion'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DialogueReply'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Bad Request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unauthorized
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Not Found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Conflict
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Unprocessable Content
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Too Many Requests
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Service Unavailable
+      x-onefde-status: implemented
+  /api/v1/runtime/status:
+    get:
+      tags:
+      - staff-dialogue
+      summary: Runtime Status
+      operationId: runtimeStatus
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeStatus'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - APIKeyCookie: []
+      x-onefde-status: implemented
 components:
   securitySchemes:
     cookieAuth:
@@ -2590,6 +5044,9 @@ components:
       type: apiKey
       in: cookie
       name: __Host-onefde_session
+    HTTPBearer:
+      type: http
+      scheme: bearer
   parameters:
     Csrf:
       name: X-CSRF-Token
@@ -4252,6 +6709,432 @@ components:
           items:
             type: string
           description: 已固定的条目版本引用
+    AcceptHandoff:
+      properties:
+        action:
+          type: string
+          const: accept_handoff
+          title: Action
+        engagement_id:
+          type: string
+          format: uuid
+          title: Engagement Id
+        reported_version:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: \S
+          - type: 'null'
+          title: Reported Version
+        task_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Task Id
+        spec:
+          anyOf:
+          - $ref: '#/components/schemas/TaskSpec'
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - engagement_id
+      title: AcceptHandoff
+    ApproveFdeFeedback:
+      properties:
+        action:
+          type: string
+          const: approve_fde_feedback
+          title: Action
+        fde_work_id:
+          type: string
+          format: uuid
+          title: Fde Work Id
+        expected_last_public_message_id:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Expected Last Public Message Id
+        text:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Text
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - fde_work_id
+      - expected_last_public_message_id
+      - text
+      title: ApproveFdeFeedback
+    BeatView:
+      properties:
+        name:
+          type: string
+          enum:
+          - fde_agent
+          - engineering_worker
+          title: Name
+        state:
+          type: string
+          enum:
+          - running
+          - not_running
+          title: State
+        beat_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Beat At
+        age_seconds:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Age Seconds
+        detail:
+          type: string
+          title: Detail
+      type: object
+      required:
+      - name
+      - state
+      - beat_at
+      - age_seconds
+      - detail
+      title: BeatView
+    CandidateResults:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/CandidateView'
+          type: array
+          title: Items
+      type: object
+      required:
+      - items
+      title: CandidateResults
+    CandidateView:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        source:
+          type: string
+          title: Source
+        adcode:
+          type: string
+          title: Adcode
+        poi_id:
+          type: string
+          title: Poi Id
+        name:
+          type: string
+          title: Name
+        address:
+          type: string
+          title: Address
+        reason:
+          type: string
+          title: Reason
+        queried_at:
+          type: string
+          format: date-time
+          title: Queried At
+        invited_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Invited At
+        invited_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Invited By
+      type: object
+      required:
+      - id
+      - source
+      - adcode
+      - poi_id
+      - name
+      - address
+      - reason
+      - queried_at
+      - invited_at
+      - invited_by
+      title: CandidateView
+    CaseDetail:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        source:
+          type: string
+          enum:
+          - quote_page
+          - invitation
+          title: Source
+        workflow:
+          type: string
+          enum:
+          - inquiry
+          - support
+          - outreach
+          title: Workflow
+        state:
+          type: string
+          enum:
+          - open
+          - clarifying
+          - founder_queue
+          - fde_queue
+          - handling
+          - awaiting_retest
+          - closed
+          title: State
+        owner:
+          type: string
+          enum:
+          - business
+          - founder
+          - fde
+          title: Owner
+        handler:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Handler
+        next_step:
+          type: string
+          title: Next Step
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        engagement_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Engagement Id
+        reported_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reported Version
+        task_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Task Id
+        invitation_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invitation Id
+        handoff:
+          anyOf:
+          - $ref: '#/components/schemas/Handoff'
+          - type: 'null'
+        retest:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Retest
+        messages:
+          items:
+            $ref: '#/components/schemas/InternalMessage'
+          type: array
+          title: Messages
+        last_message_id:
+          type: integer
+          title: Last Message Id
+        has_more:
+          type: boolean
+          title: Has More
+      type: object
+      required:
+      - id
+      - source
+      - workflow
+      - state
+      - owner
+      - handler
+      - next_step
+      - created_at
+      - engagement_id
+      - reported_version
+      - task_id
+      - invitation_id
+      - handoff
+      - retest
+      - messages
+      - last_message_id
+      - has_more
+      title: CaseDetail
+    CaseSummary:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        source:
+          type: string
+          enum:
+          - quote_page
+          - invitation
+          title: Source
+        workflow:
+          type: string
+          enum:
+          - inquiry
+          - support
+          - outreach
+          title: Workflow
+        state:
+          type: string
+          enum:
+          - open
+          - clarifying
+          - founder_queue
+          - fde_queue
+          - handling
+          - awaiting_retest
+          - closed
+          title: State
+        owner:
+          type: string
+          enum:
+          - business
+          - founder
+          - fde
+          title: Owner
+        handler:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Handler
+        next_step:
+          type: string
+          title: Next Step
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - source
+      - workflow
+      - state
+      - owner
+      - handler
+      - next_step
+      - created_at
+      title: CaseSummary
+    ClarificationDraft:
+      properties:
+        source_message_id:
+          type: integer
+          title: Source Message Id
+        last_public_message_id:
+          type: integer
+          title: Last Public Message Id
+        public_reply:
+          type: string
+          title: Public Reply
+        internal_summary:
+          type: string
+          title: Internal Summary
+      type: object
+      required:
+      - source_message_id
+      - last_public_message_id
+      - public_reply
+      - internal_summary
+      title: ClarificationDraft
+    ClarificationRequest:
+      properties:
+        source_message_id:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Source Message Id
+        understanding:
+          type: string
+          maxLength: 500
+          minLength: 1
+          pattern: \S
+          title: Understanding
+        question:
+          anyOf:
+          - type: string
+            maxLength: 500
+            minLength: 1
+            pattern: \S
+          - type: 'null'
+          title: Question
+        kind:
+          type: string
+          enum:
+          - clarify
+          - commitment
+          title: Kind
+      additionalProperties: false
+      type: object
+      required:
+      - source_message_id
+      - understanding
+      - kind
+      title: ClarificationRequest
+    CustomerMessage:
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          title: Request Id
+        text:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Text
+        project_hint:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+            pattern: \S
+          - type: 'null'
+          title: Project Hint
+        version_hint:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: \S
+          - type: 'null'
+          title: Version Hint
+        willing_to_continue:
+          type: boolean
+          title: Willing To Continue
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - request_id
+      - text
+      title: CustomerMessage
     DeliveryDetail:
       properties:
         engagement:
@@ -4363,6 +7246,28 @@ components:
       - spec_version
       - artifact_ids
       title: Dependency
+    DialogueReply:
+      properties:
+        turns:
+          items:
+            $ref: '#/components/schemas/StaffTurnView'
+          type: array
+          title: Turns
+      type: object
+      required:
+      - turns
+      title: DialogueReply
+    DialogueView:
+      properties:
+        turns:
+          items:
+            $ref: '#/components/schemas/StaffTurnView'
+          type: array
+          title: Turns
+      type: object
+      required:
+      - turns
+      title: DialogueView
     FdeToolCall:
       properties:
         tool:
@@ -4422,6 +7327,137 @@ components:
       - actor
       - result
       title: FdeToolResult
+    Handoff:
+      properties:
+        title:
+          type: string
+          minLength: 1
+          pattern: \S
+          title: Title
+        goal:
+          type: string
+          minLength: 1
+          pattern: \S
+          title: Goal
+        sources:
+          items:
+            type: string
+            minLength: 1
+            pattern: \S
+          type: array
+          minItems: 1
+          title: Sources
+        unknowns:
+          items:
+            type: string
+          type: array
+          title: Unknowns
+        is_demo:
+          type: boolean
+          title: Is Demo
+          default: true
+        notes:
+          type: string
+          title: Notes
+          default: ''
+        id:
+          type: string
+          format: uuid
+          title: Id
+        confirmed_facts:
+          items:
+            type: string
+          type: array
+          title: Confirmed Facts
+        product_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Product Version
+        reproduction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reproduction
+        consent_message_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Consent Message Id
+        fact_message_ids:
+          items:
+            type: integer
+          type: array
+          title: Fact Message Ids
+        reproduction_message_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Reproduction Message Id
+      additionalProperties: false
+      type: object
+      required:
+      - title
+      - goal
+      - sources
+      - id
+      - confirmed_facts
+      - product_version
+      - reproduction
+      title: Handoff
+    HandoffCommand:
+      properties:
+        action:
+          type: string
+          const: handoff
+          title: Action
+        title:
+          type: string
+          maxLength: 200
+          minLength: 1
+          pattern: \S
+          title: Title
+        goal:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Goal
+        confirmed_facts:
+          items:
+            type: string
+            maxLength: 4000
+            minLength: 1
+            pattern: \S
+          type: array
+          maxItems: 20
+          title: Confirmed Facts
+        unknowns:
+          items:
+            type: string
+            maxLength: 4000
+            minLength: 1
+            pattern: \S
+          type: array
+          maxItems: 20
+          title: Unknowns
+        reproduction:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+            pattern: \S
+          - type: 'null'
+          title: Reproduction
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - title
+      - goal
+      - confirmed_facts
+      - unknowns
+      title: HandoffCommand
     Health:
       properties:
         status:
@@ -4431,6 +7467,107 @@ components:
           default: ok
       type: object
       title: Health
+    InternalMessage:
+      properties:
+        id:
+          type: integer
+          title: Id
+        kind:
+          type: string
+          enum:
+          - customer
+          - reply
+          - note
+          title: Kind
+        author:
+          type: string
+          title: Author
+        text:
+          type: string
+          title: Text
+        reference:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Reference
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - kind
+      - author
+      - text
+      - reference
+      - created_at
+      title: InternalMessage
+    InviteCandidate:
+      properties: {}
+      additionalProperties: false
+      type: object
+      title: InviteCandidate
+    KnowledgeQuestion:
+      properties:
+        text:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Text
+        caller_role:
+          type: string
+          enum:
+          - business
+          - fde
+          - engineering
+          title: Caller Role
+        purpose:
+          type: string
+          enum:
+          - delivery
+          - internal_research
+          - public_marketing
+          title: Purpose
+          default: delivery
+        case_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Case Id
+        engagement_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Engagement Id
+        task_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Task Id
+        run_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Run Id
+        work_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Work Id
+      additionalProperties: false
+      type: object
+      required:
+      - text
+      - caller_role
+      title: KnowledgeQuestion
     KnowledgeToolCall:
       properties:
         tool:
@@ -4527,6 +7664,205 @@ components:
       - username
       - password
       title: Login
+    NotifyRetest:
+      properties:
+        action:
+          type: string
+          const: notify_retest
+          title: Action
+        artifact_id:
+          type: string
+          format: uuid
+          title: Artifact Id
+        version:
+          type: string
+          maxLength: 128
+          minLength: 1
+          pattern: \S
+          title: Version
+        access_url:
+          type: string
+          maxLength: 2000
+          minLength: 1
+          pattern: \S
+          title: Access Url
+        steps:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Steps
+        access_evidence:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Access Evidence
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - artifact_id
+      - version
+      - access_url
+      - steps
+      - access_evidence
+      title: NotifyRetest
+    OfficeCoverage:
+      properties:
+        description:
+          type: string
+          title: Description
+        case_cap:
+          type: integer
+          title: Case Cap
+        task_cap:
+          type: integer
+          title: Task Cap
+        fde_work_cap:
+          type: integer
+          title: Fde Work Cap
+        run_cap:
+          type: integer
+          title: Run Cap
+        review_cap:
+          type: integer
+          title: Review Cap
+        scanned_cases:
+          type: integer
+          title: Scanned Cases
+        scanned_tasks:
+          type: integer
+          title: Scanned Tasks
+        scanned_fde_works:
+          type: integer
+          title: Scanned Fde Works
+        scanned_runs:
+          type: integer
+          title: Scanned Runs
+        scanned_reviews:
+          type: integer
+          title: Scanned Reviews
+      additionalProperties: false
+      type: object
+      required:
+      - description
+      - case_cap
+      - task_cap
+      - fde_work_cap
+      - run_cap
+      - review_cap
+      - scanned_cases
+      - scanned_tasks
+      - scanned_fde_works
+      - scanned_runs
+      - scanned_reviews
+      title: OfficeCoverage
+    OfficeItem:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: 'Stable feed id: kind:object_id'
+        kind:
+          type: string
+          enum:
+          - case
+          - task
+          - fde_work
+          - run
+          - review
+          title: Kind
+        role:
+          type: string
+          enum:
+          - business
+          - engineering
+          - fde
+          title: Role
+        title:
+          type: string
+          title: Title
+        reason:
+          type: string
+          title: Reason
+        state:
+          type: string
+          title: State
+        object_id:
+          type: string
+          format: uuid
+          title: Object Id
+        engagement_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Engagement Id
+        case_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Case Id
+        task_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Task Id
+        run_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Run Id
+        occurred_at:
+          type: string
+          format: date-time
+          title: Occurred At
+        href:
+          type: string
+          title: Href
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - kind
+      - role
+      - title
+      - reason
+      - state
+      - object_id
+      - occurred_at
+      - href
+      title: OfficeItem
+    OfficePage:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/OfficeItem'
+          type: array
+          title: Items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        read_at:
+          type: string
+          format: date-time
+          title: Read At
+        coverage:
+          $ref: '#/components/schemas/OfficeCoverage'
+      additionalProperties: false
+      type: object
+      required:
+      - items
+      - next_cursor
+      - read_at
+      - coverage
+      title: OfficePage
     Page_Artifact_:
       properties:
         items:
@@ -4544,6 +7880,23 @@ components:
       - items
       - next_cursor
       title: Page[Artifact]
+    Page_CaseSummary_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/CaseSummary'
+          type: array
+          title: Items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - items
+      - next_cursor
+      title: Page[CaseSummary]
     Page_Engagement_:
       properties:
         items:
@@ -4629,6 +7982,286 @@ components:
       - items
       - next_cursor
       title: Page[Task]
+    Page_WorkView_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/WorkView'
+          type: array
+          title: Items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - items
+      - next_cursor
+      title: Page[WorkView]
+    PublicConversation:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        state:
+          type: string
+          enum:
+          - open
+          - awaiting_retest
+          - closed
+          title: State
+        retest_notice_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Retest Notice Id
+        messages:
+          items:
+            $ref: '#/components/schemas/PublicMessage'
+          type: array
+          title: Messages
+        last_message_id:
+          type: integer
+          title: Last Message Id
+        has_more:
+          type: boolean
+          title: Has More
+      type: object
+      required:
+      - id
+      - state
+      - retest_notice_id
+      - messages
+      - last_message_id
+      - has_more
+      title: PublicConversation
+    PublicMessage:
+      properties:
+        id:
+          type: integer
+          title: Id
+        kind:
+          type: string
+          enum:
+          - customer
+          - reply
+          title: Kind
+        text:
+          type: string
+          title: Text
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - kind
+      - text
+      - created_at
+      title: PublicMessage
+    RecordInput:
+      properties:
+        action:
+          type: string
+          const: record_input
+          title: Action
+        message_id:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Message Id
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - message_id
+      title: RecordInput
+    RetestResult:
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          title: Request Id
+        notice_id:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Notice Id
+        passed:
+          type: boolean
+          title: Passed
+        text:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Text
+      additionalProperties: false
+      type: object
+      required:
+      - request_id
+      - notice_id
+      - passed
+      - text
+      title: RetestResult
+    ReviewCheck:
+      properties:
+        command:
+          type: string
+          title: Command
+        exit_code:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Exit Code
+        timeout:
+          type: boolean
+          title: Timeout
+      type: object
+      required:
+      - command
+      - exit_code
+      - timeout
+      title: ReviewCheck
+    RunReviewEvidence:
+      properties:
+        artifact_id:
+          type: string
+          format: uuid
+          title: Artifact Id
+        artifact_sha256:
+          type: string
+          title: Artifact Sha256
+        baseline_sha256:
+          type: string
+          title: Baseline Sha256
+        mode:
+          type: string
+          enum:
+          - engineering
+          - deterministic
+          title: Mode
+        design:
+          type: string
+          title: Design
+        diff:
+          type: string
+          title: Diff
+        diff_truncated:
+          type: boolean
+          title: Diff Truncated
+        self_checks:
+          items:
+            $ref: '#/components/schemas/ReviewCheck'
+          type: array
+          title: Self Checks
+        validation_checks:
+          items:
+            $ref: '#/components/schemas/ReviewCheck'
+          type: array
+          title: Validation Checks
+        validation_passed:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Validation Passed
+        guide_revision:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Guide Revision
+        assembly_revision:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Assembly Revision
+        baseline_origin:
+          anyOf:
+          - type: string
+            enum:
+            - accepted_artifact
+            - trusted_starter
+          - type: 'null'
+          title: Baseline Origin
+        baseline_artifact_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Baseline Artifact Id
+        known_differences:
+          items:
+            type: string
+          type: array
+          title: Known Differences
+      type: object
+      required:
+      - artifact_id
+      - artifact_sha256
+      - baseline_sha256
+      - mode
+      - design
+      - diff
+      - diff_truncated
+      - self_checks
+      - validation_checks
+      - validation_passed
+      title: RunReviewEvidence
+    RuntimeStatus:
+      properties:
+        fde_agent:
+          $ref: '#/components/schemas/BeatView'
+        engineering_worker:
+          $ref: '#/components/schemas/BeatView'
+      type: object
+      required:
+      - fde_agent
+      - engineering_worker
+      title: RuntimeStatus
+    SearchDistrict:
+      properties:
+        adcode:
+          type: string
+          pattern: ^[1-9][0-9]{5}$
+          title: Adcode
+        sample:
+          type: boolean
+          title: Sample
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - adcode
+      title: SearchDistrict
+    SendClarification:
+      properties:
+        action:
+          type: string
+          const: send_clarification
+          title: Action
+        text:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Text
+        source_message_id:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Source Message Id
+        expected_last_public_message_id:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Expected Last Public Message Id
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - text
+      - source_message_id
+      - expected_last_public_message_id
+      title: SendClarification
     SequencePage_RunEvent_:
       properties:
         items:
@@ -4692,6 +8325,158 @@ components:
       - last_sequence
       - has_more
       title: SequencePage[TaskInput]
+    StaffMessage:
+      properties:
+        action:
+          type: string
+          enum:
+          - reply
+          - note
+          title: Action
+        text:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Text
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      - text
+      title: StaffMessage
+    StaffQuestion:
+      properties:
+        text:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Text
+      additionalProperties: false
+      type: object
+      required:
+      - text
+      title: StaffQuestion
+    StaffTurnView:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        role:
+          type: string
+          enum:
+          - business
+          - fde
+          - engineering
+          - knowledge
+          title: Role
+        author:
+          type: string
+          title: Author
+        text:
+          type: string
+          title: Text
+        basis:
+          additionalProperties: true
+          type: object
+          title: Basis
+        adapter:
+          type: string
+          enum:
+          - staff
+          - scripted
+          - live
+          title: Adapter
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - role
+      - author
+      - text
+      - basis
+      - adapter
+      - created_at
+      title: StaffTurnView
+    StartConversation:
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          title: Request Id
+        text:
+          type: string
+          maxLength: 4000
+          minLength: 1
+          pattern: \S
+          title: Text
+        project_hint:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+            pattern: \S
+          - type: 'null'
+          title: Project Hint
+        version_hint:
+          anyOf:
+          - type: string
+            maxLength: 128
+            minLength: 1
+            pattern: \S
+          - type: 'null'
+          title: Version Hint
+        willing_to_continue:
+          type: boolean
+          title: Willing To Continue
+          default: false
+        invitation_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Invitation Id
+      additionalProperties: false
+      type: object
+      required:
+      - request_id
+      - text
+      title: StartConversation
+    StartWork:
+      properties:
+        goal:
+          anyOf:
+          - type: string
+            maxLength: 4000
+            minLength: 1
+            pattern: \S
+          - type: 'null'
+          title: Goal
+        case_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Case Id
+      additionalProperties: false
+      type: object
+      title: StartWork
+    TakeOver:
+      properties:
+        action:
+          type: string
+          const: take_over
+          title: Action
+      additionalProperties: false
+      type: object
+      required:
+      - action
+      title: TakeOver
     TaskInputRecorded:
       properties:
         input:
@@ -4768,3 +8553,71 @@ components:
       - reason
       - created_at
       title: TaskVersion
+    WorkView:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        engagement_id:
+          type: string
+          format: uuid
+          title: Engagement Id
+        case_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Case Id
+        task_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Task Id
+        goal:
+          type: string
+          title: Goal
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        state:
+          type: string
+          enum:
+          - pending
+          - processing
+          - reported
+          title: State
+        report:
+          additionalProperties: true
+          type: object
+          title: Report
+        trace:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Trace
+        calls:
+          type: integer
+          title: Calls
+        usage:
+          additionalProperties:
+            type: integer
+          type: object
+          title: Usage
+      type: object
+      required:
+      - id
+      - engagement_id
+      - case_id
+      - task_id
+      - goal
+      - created_at
+      - state
+      - report
+      - trace
+      - calls
+      - usage
+      title: WorkView

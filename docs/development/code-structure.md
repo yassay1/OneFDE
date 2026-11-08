@@ -22,12 +22,14 @@ Python应用为`backend/src/onefde`，通过`uv sync --locked`可编辑安装。
 | `modules/engagements/` | 项目模型、契约、查询、创建服务和路由 |
 | `modules/tasks/` | Task/Input/版本/Run/评审及相关元数据；对外命令入口`service.py`，查询入口`queries.py` |
 | `modules/fde/` | P1薄FDE受控工具与项目交付详情聚合；调用tasks/engagements公开服务，不认领Worker作业、不接SDK |
+| `modules/business/` | 客户会话和待办、规则路由、复试与候选。FDE 接单经现有 Task 服务，路由持有事务边界 |
 | `modules/knowledge/` | P3文件型能力库检索、权限过滤、Business交接；不接向量库/模型，不派发工程 |
+| `modules/dialogue/` | 四个员工的问答记录。读取 Business、FDE、Task 和 Knowledge 的公开查询，不反向让 FDE 依赖 Knowledge。替身在 `infrastructure/runtime/staff_chat.py`，默认不访问模型 |
 | `modules/tasks/commands/` | tasks、inputs、runs、reviews四组写用例；不接HTTP对象，不自行commit/rollback |
 | `modules/tasks/dispatch.py`、`configuration.py` | C2作业认领/租约/回填规则、不可变模型配置供给；调用方提交，未实现外部执行 |
 | `modules/tasks/policies.py` | 原有状态、版本、依赖等规则，函数语义保持不变 |
 | `modules/tasks/locking.py`、`events.py`、`versions.py`等 | 事务内锁、事件、版本及输入/产物辅助，供命令复用 |
-| `migrations/` | 原两份迁移不变，C2新增d5454eda0523；env.py从安装包汇总metadata |
+| `migrations/` | 链尾 `a7c4e1b90d22`。顺序：C0+C1a `d3a2bfe5f985`、C1b `4bf8db3c4ef3`、C2 `d5454eda0523`、Business 会话 `f3afd81339dd`、报价售后 `71e7bc20e982`、复用验证 `b91f643af772`、FDE Agent `ce99d539d71a`、Business Agent `f2ee3d9000b1`、员工对话 `a7c4e1b90d22`。`env.py` 从安装包汇总 metadata |
 | `tests/support/` | 测试数据工厂、常量、ORM汇总及确定性控制适配 |
 | `tests/integration/` | 原数据库/API/事务/迁移测试和独立PostgreSQL fixture |
 | `tests/unit/` | 内部结果/私有文件/配置/停止边界；SDK绑定用真实SDK类型和资源替身，不调用模型 |
@@ -35,7 +37,7 @@ Python应用为`backend/src/onefde`，通过`uv sync --locked`可编辑安装。
 | `tests/e2e/` | 原19/35项HTTP进程场景；新增scripts.c2_smoke使用真实控制器+明确模拟执行 |
 | `scripts/` | 开发检查入口与OpenAPI导出；生产包不导入它们 |
 
-小模块保持router/schemas/models/service；任务模块因实际职责较多进一步拆分。当前Run、输入和评审仍围绕Task保持同事务一致性，不因表名不同创建独立服务。Worker只通过公开服务入口操作控制状态；SDK/文件实现留在基础设施，通过core执行端口返回事实。真实Linux/模型接入未验证，私有文件已可测试，不表示已接对象存储。
+小模块保持router/schemas/models/service；任务模块因实际职责较多进一步拆分。当前Run、输入和评审仍围绕Task保持同事务一致性，不因表名不同创建独立服务。Worker只通过公开服务入口操作控制状态；SDK/文件实现留在基础设施，通过core执行端口返回事实。本地真实模型记录见 [测试与验收](../operations/testing.md)。私有文件已可测试，不表示已接对象存储。
 
 ## 依赖与事务
 
@@ -68,4 +70,8 @@ uv run --locked ruff check src tests scripts migrations
 uv build --out-dir work/dist
 ```
 
-完整配置/HTTP示例见 [后端README](../../backend/README.md)。旧app.main/app.cli导入路径已迁移；HTTP地址、字段、状态码、Cookie策略和数据库迁移head不变。历史验证文档保留当时命令，当前操作以本文件和后端README为准。
+完整配置和 HTTP 示例见 [后端README](../../backend/README.md)。旧 `app.main` / `app.cli` 导入路径已迁移。结构重构当时保持 HTTP 地址、字段、状态码和 Cookie 策略。当前迁移链尾以本文件的迁移表为准，当前启动和检查命令以本文件和后端 README 为准。历史验证文档保留当时命令。
+
+报价售后自动协作入口为 `entrypoints/quote_support.py`，负责本地运行、事务装配和测试入口核验。`modules/fde/quote_support.py` 通过 Case 和 Task 服务推进固定模板。工程认领守卫由 Worker 装配，Dispatcher 保持派发归属。
+
+通用 FDE 的模型循环由 `entrypoints/fde_agent.py` 装配。`modules/fde/agent_work.py` 负责工作范围、租约和授权，`agent_tools.py` 校验并调用现有业务命令。Business 模型循环入口是 `entrypoints/business_agent.py`。复用交付入口是 `entrypoints/reuse_delivery.py`。兼容传输留在基础设施。工程归档和 Run 装配只在 `modules/tasks/assembly.py`；测试直接导入该模块。

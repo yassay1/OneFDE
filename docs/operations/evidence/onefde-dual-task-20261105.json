@@ -1,0 +1,132 @@
+{
+  "checked_at": "2026-11-05T21:10:54.053769+08:00",
+  "status": "passed",
+  "browser": {
+    "browser": "Chrome/156.0.8078.80",
+    "database": "onefde_dual_task_test",
+    "model_calls": 0,
+    "engagement_id": "ab2af9b6-3ede-4386-b56d-f7e6b9f6597e",
+    "first_task_id": "0275daf7-ecab-451c-ab82-68bf71d5bbb9",
+    "first_run_id": "21b2bb22-c6bb-41c2-81b0-97fdd9c5e46d",
+    "first_artifact": {
+      "id": "3c315c18-4519-4784-a794-1b375ac975bd",
+      "engagement_id": "ab2af9b6-3ede-4386-b56d-f7e6b9f6597e",
+      "run_id": "21b2bb22-c6bb-41c2-81b0-97fdd9c5e46d",
+      "name": "workspace.tar.gz",
+      "kind": "source-snapshot",
+      "sha256": "60b8df28817863f89e3f8f0d5fcedb6eeb77ee188f8a630b6270caf940c117de",
+      "size_bytes": 8985
+    },
+    "first_state": "succeeded",
+    "first_delivery_before_acceptance": "rejected",
+    "unreachable_delivery": "rejected",
+    "first_delivery_replay": "one message",
+    "first_browser_export": {
+      "sha256": "82cb6e738d61783a46b49e3d27ee8baf77944d03084c73cc0ec24bd2b7ff4b55",
+      "rows": [
+        [
+          "示例供应商A",
+          "8.0",
+          "false"
+        ],
+        [
+          "示例供应商B",
+          "7.5",
+          "true"
+        ]
+      ]
+    },
+    "support_case_id": "301b592f-2ac9-4f5e-873c-03c0c997d056",
+    "support_task_id": "3c38489c-1779-4824-97d6-30ad860cc14f",
+    "first_support_run_id": "a5cc9e54-d7f9-4fc5-a86a-b12258a747d2",
+    "support_run_id": "978c647e-9e5b-4141-96a9-301048d19e39",
+    "support_spec_version": 2,
+    "support_artifact": {
+      "id": "d0340dba-57da-49fb-bb1e-9adac6fdf158",
+      "engagement_id": "ab2af9b6-3ede-4386-b56d-f7e6b9f6597e",
+      "run_id": "978c647e-9e5b-4141-96a9-301048d19e39",
+      "name": "workspace.tar.gz",
+      "kind": "source-snapshot",
+      "sha256": "71385cdb7cb99ab49619a38fcb477cfd470e8eebb1ea06c5d4c2fc769090861c",
+      "size_bytes": 9232
+    },
+    "support_state": "succeeded",
+    "support_case_state": "closed",
+    "notice_id": 14,
+    "feedback_id": 15,
+    "project_list_switch": true,
+    "refresh_preserves_task": true,
+    "business_deep_link": true,
+    "stale_review_rejected": true,
+    "foreign_artifact_rejected": true,
+    "browser_request_changes": true,
+    "browser_accept": true
+  },
+  "database": {
+    "reuse_verification": {
+      "stopped": true,
+      "resources": [
+        {
+          "role": "validation",
+          "container_id": "69f41a5b9172d3a2842bac6be88df6eef227fd14990f484e083846d101592b69"
+        }
+      ],
+      "validation": {
+        "passed": true,
+        "results": [
+          {
+            "id": "auto-1",
+            "cwd": "/workspace",
+            "command": "node products/demo-supplier-quotes/check.mjs",
+            "timeout": false,
+            "exit_code": 0
+          }
+        ],
+        "stopped": true,
+        "comparison": {
+          "added": [],
+          "match": true,
+          "changed": [],
+          "removed": [],
+          "archive_digest": "c99577df511be1c6ae3004405e668c250e4e00f4a883ee117d97924013d6be37",
+          "current_digest": "c99577df511be1c6ae3004405e668c250e4e00f4a883ee117d97924013d6be37"
+        },
+        "error_code": null,
+        "source_unchanged": true,
+        "source_digest_after": "c99577df511be1c6ae3004405e668c250e4e00f4a883ee117d97924013d6be37",
+        "source_digest_before": "c99577df511be1c6ae3004405e668c250e4e00f4a883ee117d97924013d6be37"
+      },
+      "reuse_asset": "fresh-quote-compare-csv@1.1.0",
+      "model_called": false,
+      "source_sha256": "60b8df28817863f89e3f8f0d5fcedb6eeb77ee188f8a630b6270caf940c117de"
+    },
+    "support_review_history": [
+      {
+        "id": "b17f8425-c659-469e-9e52-4c08d52076b7",
+        "verdict": "request_changes",
+        "run_id": "a5cc9e54-d7f9-4fc5-a86a-b12258a747d2"
+      },
+      {
+        "id": "13958cce-f312-48e8-8fdd-a1a2c4c68b42",
+        "verdict": "accept",
+        "run_id": "978c647e-9e5b-4141-96a9-301048d19e39"
+      }
+    ],
+    "database_revision": "b91f643af772"
+  },
+  "historical_task_and_notice_unchanged": true,
+  "model_calls": 0,
+  "checks": {
+    "exact_command": "passed",
+    "compound_prefix": "rejected",
+    "semicolon_masking": "rejected",
+    "newline_chain": "rejected",
+    "wrong_cwd": "rejected",
+    "nonzero": "rejected",
+    "timeout": "rejected"
+  },
+  "notes": [
+    "First delivery used a real offline validation container; after-sales engineering was an explicitly deterministic fixture.",
+    "First test invocation of the SDK attempted a non-model price-map download and fell back to local data; the verification CLI now selects the local map before SDK import."
+  ]
+}

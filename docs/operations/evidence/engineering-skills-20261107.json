@@ -1,0 +1,119 @@
+{
+  "date": "2026-11-07",
+  "scope": "Engineering skill integration; no-model verification only",
+  "manifest": {
+    "revision": "engineering-skills-v1",
+    "skills": [
+      {
+        "name": "systematic-debugging",
+        "version": "onefde-1",
+        "sha256": "709a0cada44380778b87201c0384d40a9538b12277d41284de7af2a9c930b3de",
+        "source": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/systematic-debugging/SKILL.md",
+        "upstream_commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+        "upstream_sha256": "51c6435d98c83c42c96ba7c35725a0b2c376cd487fb1a4e6bd0ddbe7e33ef202",
+        "license": "MIT",
+        "adaptation": "Shortened and adapted by OneFDE for bounded Runs; no upstream helper scripts or plugin orchestration included."
+      },
+      {
+        "name": "verification-before-completion",
+        "version": "onefde-1",
+        "sha256": "603a1ad16e8b91b09ec63b62702716501330077cf589e923e9c28eebfcd554fd",
+        "source": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/verification-before-completion/SKILL.md",
+        "upstream_commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+        "upstream_sha256": "2befe7fc55bcadaa3d97dd9e8efeb633d2561c0ebe74c5a8b17c4d9e7e4520b3",
+        "license": "MIT",
+        "adaptation": "Shortened and adapted by OneFDE for bounded Runs; no upstream helper scripts or plugin orchestration included."
+      },
+      {
+        "name": "webapp-testing",
+        "version": "onefde-1",
+        "sha256": "af88824e29e3a5b7c6df4d77265f0f81d2aa4c012805929a905b17a27d05c2d6",
+        "source": "https://github.com/anthropics/skills/blob/2c5958ecac7cee2b583967a2c4981d0f4a75c579/skills/webapp-testing/SKILL.md",
+        "upstream_commit": "2c5958ecac7cee2b583967a2c4981d0f4a75c579",
+        "upstream_sha256": "51b7349e77ec63b7744a6f63647e7566a0b4d2e301121cc10e8c2113af6556a2",
+        "license": "Apache-2.0",
+        "adaptation": "Shortened and adapted by OneFDE for bounded Runs; no upstream helper scripts or plugin orchestration included."
+      },
+      {
+        "name": "frontend-design",
+        "version": "onefde-1",
+        "sha256": "a8836e18c91fe35862df3d133681782a8b3828efc707d2fecaf1cc0a311687b3",
+        "source": "https://github.com/anthropics/skills/blob/2c5958ecac7cee2b583967a2c4981d0f4a75c579/skills/frontend-design/SKILL.md",
+        "upstream_commit": "2c5958ecac7cee2b583967a2c4981d0f4a75c579",
+        "upstream_sha256": "d91970639e9f5c37682ac7ab60094d35f1c7c1f38d731bd56396563aee10c1d3",
+        "license": "Apache-2.0",
+        "adaptation": "Shortened and adapted by OneFDE for bounded Runs; no upstream helper scripts or plugin orchestration included."
+      },
+      {
+        "name": "onefde-engineering-closeout",
+        "version": "onefde-1",
+        "sha256": "f0cd885530a0064d631d122e016091e4e8b9afcfa6883b4369d1039d38aed27f",
+        "source": "OneFDE authored",
+        "license": "project"
+      }
+    ],
+    "files": {
+      "frontend-design/LICENSE.txt": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+      "frontend-design/SKILL.md": "a8836e18c91fe35862df3d133681782a8b3828efc707d2fecaf1cc0a311687b3",
+      "onefde-engineering-closeout/SKILL.md": "f0cd885530a0064d631d122e016091e4e8b9afcfa6883b4369d1039d38aed27f",
+      "systematic-debugging/LICENSE.txt": "a37e0e9697144819e1d965176ac4ae5bc3fa02d11e7812036bbcadf6dafe2400",
+      "systematic-debugging/SKILL.md": "709a0cada44380778b87201c0384d40a9538b12277d41284de7af2a9c930b3de",
+      "verification-before-completion/LICENSE.txt": "a37e0e9697144819e1d965176ac4ae5bc3fa02d11e7812036bbcadf6dafe2400",
+      "verification-before-completion/SKILL.md": "603a1ad16e8b91b09ec63b62702716501330077cf589e923e9c28eebfcd554fd",
+      "webapp-testing/LICENSE.txt": "bc6b3af2f331cbc7fb0da1344efb2cbe5877a31498b4d70dbc7000f3405a1362",
+      "webapp-testing/SKILL.md": "af88824e29e3a5b7c6df4d77265f0f81d2aa4c012805929a905b17a27d05c2d6"
+    }
+  },
+  "model_requests": 0,
+  "cost_cny": 0,
+  "real_business_task_run_created": false,
+  "checks": {
+    "skill_format": "5 passed",
+    "targeted_sdk_and_runtime_regression": "43 passed",
+    "unit_and_architecture": "87 passed",
+    "ruff_lint": "passed",
+    "ruff_format": "5 files already formatted",
+    "openapi": "all three export checks passed; HTTP schema unchanged",
+    "backend_build": "sdist and wheel passed",
+    "wheel_data": "all 9 skill/license files matched hashes; 5 skills"
+  },
+  "sdk_tests": {
+    "version": "1.59.0",
+    "native_executor": "All five invoked with real InvokeSkillExecutor after JSON roundtrip; no LLM",
+    "adapter": "Fake Conversation and Docker, real SDK Agent/AgentContext/Skill; original limits, closeout, failed submission and stop checks passed",
+    "invalid_bundle": "changed content, missing file, unknown catalog and escaping path rejected"
+  },
+  "real_agent_server": {
+    "model_calls": 0,
+    "real_task_run_created": false,
+    "network": "onefde-engineering-offline",
+    "generation_started": false,
+    "remote_catalog_roundtrip": [
+      "systematic-debugging",
+      "verification-before-completion",
+      "webapp-testing",
+      "frontend-design",
+      "onefde-engineering-closeout"
+    ],
+    "initial_event_types": [
+      "ConversationStateUpdateEvent"
+    ],
+    "browser_dependency_probe": "{\"playwright_importable\": false, \"chromium_on_path\": true}\n",
+    "containers_stopped": true,
+    "container_count": 1
+  },
+  "local_worker": {
+    "image": "sha256:a223d9804874cddd1c98589e9e16f1644725b0d594f240d20e33a4bdb23175dc",
+    "state": "running/healthy",
+    "environment_check_blockers": [],
+    "model_execution_enabled": false,
+    "claims_jobs": false,
+    "installed_catalog_check": "valid; five skills"
+  },
+  "limitations": [
+    "No real model task was run. Skill selection, compliance and quality/cost improvement remain unverified.",
+    "Remote server accepted the serialized skill catalog; native executor invocations were checked in the installed SDK, not via remote LLM tool selection.",
+    "Pinned Agent Server has Chromium on PATH but no Playwright Python package. Browser scenarios need project tools/dependencies; no repeated runtime installations or browser success claims."
+  ],
+  "verification_guide": "docs/operations/engineering-skills.md"
+}

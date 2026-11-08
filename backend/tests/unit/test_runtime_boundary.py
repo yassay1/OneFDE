@@ -116,6 +116,17 @@ def test_worker_settings_fail_closed_without_environment(tmp_path, monkeypatch):
         WorkerSettings(_env_file=None, lease_seconds=3, heartbeat_seconds=5)
 
 
+def test_reviewed_browser_image_capability_is_explicit():
+    from onefde.worker.config import BROWSER_AGENT_SERVER_IMAGE
+
+    base = WorkerSettings(_env_file=None)
+    browser = WorkerSettings(_env_file=None, server_image=BROWSER_AGENT_SERVER_IMAGE)
+    assert base.browser_support is None
+    assert browser.browser_support["executable_path"] == "/usr/bin/chromium"
+    with pytest.raises(ValidationError):
+        WorkerSettings(_env_file=None, server_image="onefde-agent-browser:latest")
+
+
 def test_session_environment_is_allowlisted_and_restored(monkeypatch):
     monkeypatch.setenv("OH_SESSION_API_KEYS_0", "existing-fixture")
     monkeypatch.setenv("ONEFDE_WORKER_DATABASE_URL", "must-not-be-forwarded")

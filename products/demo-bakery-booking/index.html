@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>工坊搅拌机预约</title>
+<style>
+body{font:1rem/1.5 system-ui,sans-serif;margin:2rem auto;padding:0 1rem;max-width:35rem;background:#fbf8f1;color:#30241b}
+form,section{background:white;border:1px solid #c6b9a6;padding:1rem;margin:1rem 0;border-radius:.5rem}
+label{display:block;margin:.4rem 0}button,input{font:inherit;padding:.4rem}button{margin:.3rem;cursor:pointer}li{padding:.25rem 0}
+</style>
+<main>
+<h1>工坊搅拌机预约</h1>
+<p>查看今天哪些时段已被预约。你可以取消自己的预约。</p>
+<form id="login">
+  <label>试用账号 <input id="staff" required></label>
+  <label>试用码 <input id="code" type="password" required></label>
+  <button>登录</button>
+</form>
+<div id="schedule" hidden>
+  <form id="reserve">
+    <label>开始时间 <input id="start" type="time" required></label>
+    <label>结束时间 <input id="end" type="time" required></label>
+    <button>预约</button>
+  </form>
+  <section><h2 id="date">今天的预约</h2><ul id="items"></ul></section>
+</div>
+<p id="status" role="status"></p>
+</main>
+<script>
+const byId = id => document.getElementById(id);
+const status = byId("status");
+let pending = null;
+async function call(url, payload) {
+  const response = await fetch(url, payload ? {
+    method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)
+  } : {});
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.message);
+  return result;
+}
+async function update() {
+  const {day, items} = await call("/api/bookings");
+  byId("login").hidden = true;
+  byId("schedule").hidden = false;
+  byId("date").textContent = day + " 的预约";
+  byId("items").replaceChildren(...items.map(item => {
+    const li = document.createElement("li");
+    li.textContent = item.start + "–" + item.end + (item.mine ? "（我的预约）" : "（已预约）");
+    if (item.mine) {
+      const cancel = document.createElement("button");
+      cancel.textContent = "取消预约";
+      cancel.onclick = () => handle(async () => {
+        status.textContent = (await call("/api/cancel", {id:item.id})).message;
+        await update();
+      });
+      li.append(cancel);
+    }
+    return li;
+  }));
+}
+async function handle(action) {
+  try { await action(); }
+  catch (error) { status.textContent = error.message; }
+}
+byId("login").onsubmit = event => {
+  event.preventDefault();
+  handle(async () => {
+    await call("/api/session", {staff:byId("staff").value, code:byId("code").value});
+    await update();
+    byId("code").value = "";
+    status.textContent = "已登录，可以预约。";
+  });
+};
+byId("reserve").onsubmit = event => {
+  event.preventDefault();
+  if (byId("reserve").querySelector("button").disabled) return;
+  const button = byId("reserve").querySelector("button");
+  button.disabled = true;
+  const start = byId("start").value;
+  const end = byId("end").value;
+  if (!pending || pending.start !== start || pending.end !== end) {
+    pending = {start, end, request_key: crypto.randomUUID()};
+  }
+  handle(async () => {
+    try {
+      status.textContent = (await call("/api/bookings", pending)).message;
+      pending = null;
+      await update();
+    } finally {
+      button.disabled = false;
+    }
+  });
+};
+update().catch(() => {});
+</script>
+</html>

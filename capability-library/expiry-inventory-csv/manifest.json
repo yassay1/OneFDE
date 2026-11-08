@@ -1,0 +1,51 @@
+{
+  "id": "expiry-inventory-csv",
+  "name": "临期商品清单 CSV",
+  "type": "business_module",
+  "version": "1.0.0",
+  "updated_at": "2026-11-05",
+  "visibility": "internal",
+  "reuse_scope": "cross_project_internal",
+  "verification_status": "limited",
+  "problem": "按商家确认的基准日识别库存 CSV 中需处理的批次",
+  "applicable_when": [
+    "仅限可信模拟数据和已验证用例",
+    "UTF-8 四列 CSV",
+    "无首尾空格且年份不早于 0100 的 YYYY-MM-DD",
+    "第三天纳入，第四天排除"
+  ],
+  "not_applicable_when": [
+    "Excel 日期序号或多种日期格式",
+    "自动处置库存或触发提醒",
+    "不受信任的 CSV 或需要电子表格公式处理",
+    "需要在导入时校验首尾空格或 0100 年以前的日期"
+  ],
+  "inputs": [
+    "CSV: 商品,批次,到期日,数量",
+    "基准日 YYYY-MM-DD"
+  ],
+  "outputs": [
+    "带行号的分类结果",
+    "需处理批次 CSV"
+  ],
+  "implementation_ref": "products/demo-expiry-inventory",
+  "implementation_archive_sha256": "52c74edbd6af36a915330b441cedae51826b24341638304e43776481b7762883",
+  "source_engagement": "91f62890-5863-42cc-a2c9-4a1fedfc2af8",
+  "source_task": "218e0ac8-9633-4103-a910-8d25a26910d1",
+  "source_run": "dc29330c-fe54-42f9-93e5-e79ee3e6d652",
+  "source_artifact": "23874cb3-cb4d-42bb-bdda-0f8b97ada31a",
+  "evidence": [
+    "docs/operations/evidence/onefde-expiry-chain-20261105.json"
+  ],
+  "verified_samples": [
+    "inventory.csv",
+    "second-store CSV in acceptance evidence"
+  ],
+  "keywords": [
+    "临期商品清单",
+    "库存",
+    "批次",
+    "CSV",
+    "到期日"
+  ]
+}

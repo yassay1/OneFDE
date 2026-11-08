@@ -1,6 +1,6 @@
 # OneFDE 首版推荐技术方案与架构
 
-本稿连接 [PRD](../product/PRD.md)、[关键交互](../design/design.md)与[数据模型](data-model.md)。2026年11月4日C0+C1b持久控制、本地环境及Engineering真实网页提交/接受已有证据，见[CA验证](../operations/coding-agent-verification.md)；P1已落地薄FDE受控工具与交付详情API（`modules/fde`），尚无独立FDE模型循环。P2已有独立静态报价产品与FDE平台控制链（确定性Run回填，见[控制证据](../operations/evidence/p2-quote-control.json)）。P3已有文件型能力库条目与`modules/knowledge`受控检索/权限/Business交接，第二项目复用见[P3证据](../operations/evidence/p3-reuse-recheck.json)。真实模型Engineering与工作台前端仍未实现；无向量库。固定SDK边界见[ADR0006](ADR/0006-c2-worker-sdk-boundary.md)。下列组合是开发默认路线，推荐范围不等于已运行成果。
+本稿连接 [PRD](../product/PRD.md)、[关键交互](../design/design.md)与[数据模型](data-model.md)。实现进度以[实施计划](../development/implementation-plan.md)为准，逐步证据以[测试与验收](../operations/testing.md)为准。下列组合是开发默认路线，推荐范围不等于已运行成果。固定 SDK 边界见[ADR0006](ADR/0006-c2-worker-sdk-boundary.md)。无向量库。
 
 用户已确认[黑客松实施切片](../product/hackathon-proposal.md)，范围以PRD为准：优先薄FDE—Engineering—客户产品主链，再补三角色可查询的Knowledge与Business最小交接。复用现有Task/Input/Run、受控工具、固定SDK和单ECS+Compose边界；不增加四套常驻进程、通用图编排器或第五个协调模型。不能因现有owner_role=fde字段或工具白名单就称完整FDE Agent（含模型会话）已完成。
 
@@ -115,7 +115,7 @@ Domain Service 与 Task Service 分开命名，是为了区分“客户业务依
 | 开发与检查 | uv、pnpm；pytest、Vitest、Playwright | 依赖与锁文件随实现产生；控制逻辑用确定性测试，少量真实端到端验收，不跑全量上游测试 |
 | 首个客户报价工具 | 独立 React 静态应用、SheetJS Community Edition | 浏览器解析结构化文件；同一库承接 Excel/CSV，不先加客户服务端；文件类型范围与导出格式按项目规则确认 |
 
-C0+C1b后端与数据库已有安装锁和运行证据；C2通过可选worker extra锁定SDK/workspace/tools 1.59.0及Agent Server镜像digest，但真实执行仍未验证。其余组合仍为推荐。SDK要求Python >=3.12，仓库使用Python3.13；不独立升级Pydantic/LiteLLM破坏发布组合。绑定、限额与具体取舍见 [ADR0006](ADR/0006-c2-worker-sdk-boundary.md)。
+C0+C1b 后端与数据库已有安装锁。C2 通过可选 worker extra 锁定 SDK/workspace/tools 1.59.0 及 Agent Server 镜像 digest。本地真实执行记录见[测试与验收](../operations/testing.md)。其余组合仍为推荐。SDK 要求 Python >=3.12，仓库使用 Python 3.13；不独立升级 Pydantic/LiteLLM 破坏发布组合。绑定、限额与具体取舍见 [ADR0006](ADR/0006-c2-worker-sdk-boundary.md)。
 
 React 官方说明 Vite 路线仍需自行选择路由与数据获取；本项目明确采用上述库，不自行造框架。[React 说明](https://react.dev/learn/build-a-react-app-from-scratch)、[Ant Design](https://ant.design/docs/react/introduce/)、[TanStack Query](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)
 
@@ -261,12 +261,16 @@ Coordinator 按[状态模型](data-model.md)处理超时、取消和失联。网
 
 ## 阶段 C 接入与实现检查
 
-上游已有真实模型集成测试、文件操作测试和 DockerWorkspace 示例。直接复用其能力，在实际接入时用一个小任务确认当前配置；不单设一轮重复验证工具执行、容器或 API 兼容存在性的预研。任务幂等、运行归属、业务规则等自有逻辑在开发中做针对性检查；基本持久化保留，广泛故障注入、通用 DAG 和并发压力测试按实际需要后置。修订后的安排见[实施计划](../development/implementation-plan.md)。
+上游已有真实模型集成测试、文件操作测试和 DockerWorkspace 示例。直接复用其能力，在实际接入时用一个小任务确认当前配置。任务幂等、运行归属和业务规则在开发中做针对性检查。修订后的安排和已运行范围见[实施计划](../development/implementation-plan.md)。
 
-上述完整执行/恢复链路尚未实现或运行；C0+C1a 后端已本地检查。模型/账号、SDK精确依赖、执行额度和域名仍为后续接入配置项。关键选择记录在 [ADR 0001](ADR/0001-coordination.md)、[ADR 0002](ADR/0002-model-compatibility.md)、[ADR 0003](ADR/0003-execution-validation.md) 和 [ADR 0004](ADR/0004-platform-stack.md)。
+关键选择记录在 [ADR 0001](ADR/0001-coordination.md)、[ADR 0002](ADR/0002-model-compatibility.md)、[ADR 0003](ADR/0003-execution-validation.md) 和 [ADR 0004](ADR/0004-platform-stack.md)。
 
 最小 HTTP 契约见 [openapi.yaml](openapi.yaml)，物理映射与状态不变量见[数据模型](data-model.md)，环境边界、发布和回退见[部署设计](../operations/deployment.md)。当前 YAML 是设计稿；实现后由 FastAPI/Pydantic 生成并导出同一路径，生成结果与文档保持一致，不长期维护两套字段定义。
 
 ## 已落地的代码组织
 
 C1b后按业务模块拆分到backend/src/onefde，入口与基础设施分开，Run/Input/评审仍围绕Task保持事务一致性。详细入口见 [代码组织](../development/code-structure.md)，决定见 [ADR0005](ADR/0005-backend-code-structure.md)。只改变Python包/文件位置与依赖方向，没有新增业务接口、表结构或C2执行能力。
+
+## 报价售后自动触发试点
+
+FDE 可按受信登记的报价售后授权处理固定 CSV 故障。消费者用现有会话交接、客户消息和 Run 结果作为持久来源，按 Case 锁及阶段回执恢复。Task Service 和 Dispatcher 继续管理工程版本、运行占用与派发，创始人接受工程提交。测试入口由可信侧物化并核验后，Business 通过原会话通知。对象、恢复条件和当前范围见[数据模型](data-model.md#报价自动售后试点状态)。

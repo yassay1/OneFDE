@@ -30,3 +30,7 @@ node check.mjs
 ## 与平台交付的关系
 
 本目录是可操作客户产物与确定性检查。平台 FDE 控制链（建 Task、采用修改、两次提交/评审）由 `backend/tests/integration/test_p2_quote_fde_delivery.py` 验证，证据见 [p2-quote-control.json](../../docs/operations/evidence/p2-quote-control.json)。该路径使用确定性 Run 回填，**不是** OpenHands/模型工程；获授权后再替换为真实 Engineering Run。
+
+## Business 会话
+
+启动开发 API 后，在独立报价页使用「联系 Business」。首次发送后可收藏本单跟进链接，返回继续提问或提交复试。[双 Origin 启动与验收](../../docs/operations/business-v1.md)。

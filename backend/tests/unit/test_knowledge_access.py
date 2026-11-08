@@ -4,7 +4,9 @@ from onefde.modules.knowledge import access, catalog
 def test_restricted_never_listed_or_fetched():
     catalog.clear_cache()
     restricted = next(
-        a for a in catalog.load_manifests() if a["id"] == "fixture-restricted-supplier-notes"
+        a
+        for a in catalog.load_manifests()
+        if a["id"] == "fixture-restricted-supplier-notes"
     )
     assert access.can_list(restricted, purpose="delivery") is False
     assert access.project_for_get(restricted, purpose="delivery") is None

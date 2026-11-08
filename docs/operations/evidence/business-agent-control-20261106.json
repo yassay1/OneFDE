@@ -1,0 +1,57 @@
+{
+  "scope": "isolated PostgreSQL scripted models",
+  "product": "demo-supplier-quotes",
+  "invitation_id": "f96b3bd2-e31e-4560-8192-cd31ed33e7c8",
+  "case_id": "03390c4d-d24f-4259-8c4d-0f72be2f6f62",
+  "engagement_id": "57b69444-c8b7-4fe5-a699-64c8ac95ef88",
+  "first_customer_message_id": 56,
+  "clarification_message_id": 57,
+  "consent_message_id": 58,
+  "handoff_id": "09211789-31b3-421e-b0e7-84728446b3a5",
+  "fde_work_id": "2ec26f47-d39f-4968-a646-ed02092993f9",
+  "fde_next_step": "先核实规格是否一致和导出范围，再形成工程规格。",
+  "approved_feedback_note_id": 61,
+  "business_followup_message_id": 62,
+  "business_trace": [
+    {
+      "tool": "read_conversation",
+      "event_id": 56
+    },
+    {
+      "tool": "lookup_faq",
+      "status": "version_missing_or_unmatched",
+      "sources": [],
+      "event_id": 56
+    },
+    {
+      "tool": "clarify",
+      "focus": [
+        "input_and_output",
+        "consent"
+      ],
+      "event_id": 56,
+      "message_id": 57
+    },
+    {
+      "tool": "read_conversation",
+      "event_id": 58
+    },
+    {
+      "tool": "handoff_fde",
+      "event_id": 58,
+      "handoff_id": "09211789-31b3-421e-b0e7-84728446b3a5",
+      "message_id": 60,
+      "fde_work_id": "2ec26f47-d39f-4968-a646-ed02092993f9"
+    },
+    {
+      "tool": "relay_approved_fde_feedback",
+      "event_id": 61,
+      "message_id": 62,
+      "fde_work_id": "2ec26f47-d39f-4968-a646-ed02092993f9"
+    }
+  ],
+  "business_scripted_calls": 5,
+  "provider_calls": 0,
+  "billable_tokens": 0,
+  "cost_usd": 0
+}

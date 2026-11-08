@@ -9,10 +9,12 @@ import pytest
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
+from onefde.core.clock import now
 from onefde.core.errors import ApiException
 from onefde.core.execution import ExecutionReport, RuntimeUnavailable
 from onefde.infrastructure.artifacts import PrivateArtifactStore
 from onefde.modules.tasks import models as m
+from onefde.modules.tasks import schemas as s
 from onefde.modules.tasks import service as tasks
 from onefde.worker.config import WorkerSettings
 from onefde.worker.controller import Worker
@@ -153,6 +155,115 @@ def test_durable_completion_replay_and_conflict(control):
         assert stored.result_digest and stored.completed_at and stored.result_payload
 
 
+@pytest.mark.parametrize("gate", ["authorized", "denied", "pending", "wrong-source"])
+def test_iteration_recovery_pins_candidate_and_never_requeues_twice(control, gate):
+    c = control
+    task_id = UUID(c.tid)
+    c.action("queue")
+    initial = {
+        "assembly_revision": "standard-v1",
+        "task_id": c.tid,
+        "engagement_id": c.eid if gate != "wrong-source" else str(uuid4()),
+        "sha256": "a" * 64,
+    }
+    with Session(c.app.state.engine) as db, db.begin():
+        run = tasks.action(
+            db,
+            task_id,
+            s.TaskAction(
+                command="start",
+                expected_revision=db.get(m.Task, task_id).revision,
+                expected_run_id=None,
+                model_profile_revision_id=UUID(c.profile),
+            ),
+            "founder",
+            initial_source=initial,
+        ).run
+    job = claim(c)
+    if gate == "pending":
+        c.input()
+    result = {
+        **report(),
+        "error_code": "ITERATION_LIMIT_REACHED",
+        "artifacts": [
+            {
+                "kind": "source-snapshot",
+                "name": "workspace.tar.gz",
+                "sha256": "b" * 64,
+                "size_bytes": 10,
+            }
+        ],
+    }
+    proof = {
+        "stopped": True,
+        "stop_reason": "ITERATION_LIMIT_REACHED",
+        "source_digest": "c" * 64,
+    }
+    authorized = []
+    policy = {
+        "expires_at": (now() + timedelta(minutes=10)).isoformat(),
+        "max_cost_usd": 0.10,
+        "max_requests": 9,
+    }
+
+    def authorize(db, previous):
+        assert previous.id == run.id
+        return None if gate == "denied" else (authorized.append, policy)
+
+    completion = (
+        *args(job),
+        result,
+        (f"engagements/{c.eid}/runs/{run.id}/candidate",),
+        proof,
+        authorize,
+    )
+    tx(c, tasks.complete_claim, *completion)
+    tx(c, tasks.complete_claim, *completion)
+    if gate == "authorized":
+        assert len(authorized) == 1
+        recovered = claim(c, "restarted-worker")
+        assert recovered["run_id"] == authorized[0]
+        assert recovered["task_id"] == task_id
+        assert recovered["snapshot"]["spec_version"] == run.task_spec_version
+        engineering = recovered["snapshot"]["engineering"]
+        assert engineering["initial_source"] == initial
+        assert engineering["recovery_policy"] == policy
+        assert engineering["prior_source"]["run_id"] == str(run.id)
+        assert engineering["prior_source"]["sha256"] == "b" * 64
+        assert claim(c, "duplicate-worker") is None
+    else:
+        assert not authorized and claim(c, "restarted-worker") is None
+
+
+def test_recovery_claim_cannot_extend_original_limits():
+    clock = now()
+    task_id = uuid4()
+    settings = WorkerSettings(
+        _env_file=None,
+        recovery_task_id=task_id,
+        recovery_expires_at=clock + timedelta(hours=1),
+        recovery_total_cost_usd=0.20,
+        max_cost_usd=0.10,
+        max_requests=9,
+    )
+    policy = {
+        "expires_at": (clock + timedelta(minutes=1)).isoformat(),
+        "max_cost_usd": 0.10,
+        "max_requests": 9,
+    }
+    assert settings.recovery_claim_allowed(task_id, clock, policy)
+    assert not settings.recovery_claim_allowed(uuid4(), clock, policy)
+    assert not settings.recovery_claim_allowed(
+        task_id, clock + timedelta(minutes=2), policy
+    )
+    assert not settings.recovery_claim_allowed(
+        task_id, clock, {**policy, "max_requests": 8}
+    )
+    assert not settings.recovery_claim_allowed(
+        task_id, clock, {**policy, "max_cost_usd": 0.05}
+    )
+
+
 def test_completion_rollback_does_not_release_slot(control):
     c = control
     run = c.start()
@@ -231,7 +342,8 @@ def test_worker_persists_stop_and_artifacts_via_http(control, tmp_path, mode):
         settings,
         FakeAdapter(c, tmp_path, stop=mode == "cancel", corrupt=mode == "corrupt"),
     )
-    assert worker.run_once() is True
+    assert worker.run_once(expected_run_id=uuid4()) is False
+    assert worker.run_once(expected_run_id=UUID(run["id"])) is True
     assert worker.run_once() is False
     result = c.client.get("/api/v1/runs/" + run["id"]).json()
     assert (

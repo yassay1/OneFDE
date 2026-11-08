@@ -1,0 +1,11 @@
+{
+  "transport": "real loopback Uvicorn and Chrome",
+  "model": "scripted fixture",
+  "case_id": "d2051384-ae76-42a6-a17b-1bbb18223644",
+  "consent_id": 3,
+  "handoff_id": "2a8d71da-e076-4e81-9b87-c8328fca4383",
+  "fde_work_id": "f6835d20-1b45-48a3-862b-82018c30d81a",
+  "followup_message_id": 7,
+  "provider_calls": 0,
+  "approval_from_workbench": true
+}

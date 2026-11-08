@@ -190,6 +190,14 @@ class TaskAction(Input):
         return self
 
 
+class VerificationStart(Input):
+    """Trusted, in-process start command for an approved archive."""
+
+    command: Literal["start"] = "start"
+    expected_revision: Revision
+    model_profile_revision_id: None = None
+
+
 class ActionAccepted(Input):
     operation_id: UUID
     task: Task
@@ -250,6 +258,30 @@ class TaskEvent(BaseModel):
     ]
     summary: str
     created_at: datetime
+
+
+class ReviewCheck(BaseModel):
+    command: str
+    exit_code: int | None
+    timeout: bool
+
+
+class RunReviewEvidence(BaseModel):
+    artifact_id: UUID
+    artifact_sha256: str
+    baseline_sha256: str
+    mode: Literal["engineering", "deterministic"]
+    design: str
+    diff: str
+    diff_truncated: bool
+    self_checks: list[ReviewCheck]
+    validation_checks: list[ReviewCheck]
+    validation_passed: bool | None
+    guide_revision: str | None = None
+    assembly_revision: str | None = None
+    baseline_origin: Literal["accepted_artifact", "trusted_starter"] | None = None
+    baseline_artifact_id: UUID | None = None
+    known_differences: list[str] = Field(default_factory=list)
 
 
 class RunEvent(BaseModel):

@@ -1,0 +1,36 @@
+{
+  "run_id": "b4174deb-3f23-435e-acfc-5deb259314b5",
+  "provider": "mimo",
+  "model": "mimo-v2.6-pro",
+  "request_allowance": 10,
+  "sdk_usage_records_including_warmup": 11,
+  "distinct_response_ids": 11,
+  "estimated_usd_including_warmup": 0.03432846,
+  "prompt_tokens_including_warmup": 76372,
+  "completion_tokens_including_warmup": 1272,
+  "phases": [
+    {
+      "session_id": "a1b3531f-ae40-428e-b2be-a4a8c891ae52",
+      "allowance": 4,
+      "sdk_status": "finished",
+      "sdk_records": 4,
+      "estimated_usd": 0.008894009999999999,
+      "prompt_tokens": 20016,
+      "completion_tokens": 215,
+      "cache_read_tokens": 12544
+    },
+    {
+      "session_id": "b4174deb-3f23-435e-acfc-5deb259314b5",
+      "allowance": 6,
+      "sdk_status": "error",
+      "sdk_records": 7,
+      "estimated_usd": 0.02543445,
+      "prompt_tokens": 56356,
+      "completion_tokens": 1057,
+      "cache_read_tokens": 46720
+    }
+  ],
+  "billing_note": "11 distinct SDK response records; authorized ceiling 10 exceeded by 1. SDK iteration allowance is not an HTTP request cap. USD value is SDK estimate, not provider invoice. No further Engineering model calls.",
+  "authorization_compliant": false,
+  "request_limit_exceeded_by": 1
+}

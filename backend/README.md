@@ -2,7 +2,7 @@
 
 Windows上的本地工程环境采用[专用Ubuntu WSL2开发流程](local-wsl/README.md)，与下面既有Windows控制库独立；当前模型执行关闭。环境边界见[ADR0007](../docs/architecture/ADR/0007-local-wsl-development.md)。
 
-已实现单创始人 Cookie 会话、Engagement、工程 Task、输入记录/采用、不可变规格版本、Run/待派发记录、轻量评审和有序事件。Task 创建为 draft，固定 `owner_role=fde`、`executor_role=engineering`。C2新增独立Worker认领/心跳/停止确认/回填及固定OpenHands接线；真实Linux/模型冒烟受环境阻塞。202仅表示持久接单。Worker操作与限制见 [Worker手册](WORKER.md)，本轮证据见 [C2验证](../docs/operations/c2-verification.md)。
+已实现单创始人 Cookie 会话、Engagement、工程 Task、输入记录/采用、不可变规格版本、Run/待派发记录、轻量评审和有序事件。Task 创建为 draft，固定 `owner_role=fde`、`executor_role=engineering`。C2 起由独立 Worker 认领、心跳、停止确认和回填。202 只表示持久接单。后续本地演练见 [测试与验收](../docs/operations/testing.md)。Worker 操作见 [Worker手册](WORKER.md)。
 
 ## 首次本地启动（PowerShell）
 
@@ -23,6 +23,8 @@ uv run --locked alembic upgrade head
 uv run --locked alembic check
 uv run --locked uvicorn onefde.entrypoints.api:create_app --factory --host 127.0.0.1 --port 8000
 ```
+
+构建薄工作台后再启动 API。在 `frontend` 执行 `npm install --no-audit --no-fund` 和 `npm run build`。`frontend/dist` 存在时，API 在同一进程提供页面。浏览器打开 `ONEFDE_TRUSTED_ORIGIN`（当前开发配置是 [http://localhost:8000](http://localhost:8000)）。用 `http://127.0.0.1:8000` 打开时，Origin 与可信来源不一致，登录会被拒绝。报价产品另开 `python deploy/verify_product_origin.py --serve`，只从页面链接进入 [http://127.0.0.1:8765](http://127.0.0.1:8765)。
 
 浏览器打开 [开发接口文档](http://localhost:8000/docs)。Swagger 提供已实现接口和字段说明；POST 要求可信 Origin、JSON、登录后的 X-CSRF-Token，创建另要求 Idempotency-Key。建议用下面的 HTTP 示例完整操作，尤其登出需显式 Content-Type。`/health` 仅代表进程存活，不检查数据库或未来执行环境。
 
@@ -86,13 +88,13 @@ pytest 从 `ONEFDE_TEST_DATABASE_URL` 读取独立 PostgreSQL 测试库，自动
 - 默认生产要求 HTTPS、`__Host-onefde_session`、Secure/HttpOnly/Path=/、SameSite=Lax、无 Domain。只有显式 development + cookie_secure=false 使用 `onefde_dev_session`。生产将环境改为 production，可信 Origin 设实际 HTTPS 源，cookie_secure=true；本轮无公网部署。无通配 CORS。
 - 运行 `uv run --locked python -m onefde.entrypoints.cli prune-expired` 删除已过期会话和幂等正文。过期校验立即生效，不依赖清理；当前为人工维护命令，没有自动调度。
 - 非空 dependencies 明确409；related_task_id 必须存在且同项目。capability_versions 仅保存引用，不提供能力检索或有效性认证。输入/错误不回显密码，统一包含 code/message/request_id，字段错误仅给 loc/type。
-- TaskInput/Run/版本/评审/事件与待派发控制保持原契约；独立Worker按配置消费，不在API进程执行模型。尚无前端、报价规则、发布接口、下载签名或对象存储接入。
+- TaskInput/Run/版本/评审/事件与待派发控制保持原契约；独立 Worker 按配置消费，不在 API 进程执行模型。薄工作台在 `frontend/`，报价规则在 `products/`。发布接口、下载签名和对象存储仍未接入。
 
 实际执行证据见 [C1b验证记录](../docs/operations/c1b-verification.md)；前轮固定参考版本和C1a证据保留在 [C0+C1a记录](../docs/operations/c0-c1a-verification.md)。
 
 ## C1b 的使用与边界
 
-已有环境执行 `uv run --locked alembic upgrade head`，当前head为d5454eda0523。C1b的4bf8db3c4ef3保留旧项目/草稿并回填不可变版本1，C2只扩展作业认领/回填字段。已有相关历史时降级会明确拒绝，避免删掉事实；需要回退时使用审阅过的备份或前向迁移，不直接删除历史。
+已有环境执行 `uv run --locked alembic upgrade head`。当前 head 是 `f2ee3d9000b1`，完整顺序见 [代码组织](../docs/development/code-structure.md)。已有相关历史时降级会明确拒绝，避免删掉事实；需要回退时使用审阅过的备份或前向迁移。
 
 所有写命令沿用 Cookie、Origin、JSON、CSRF 和 Idempotency-Key。任务写入另带当前 `expected_revision`；同键重放先于版本/状态检查。不要用旧响应的 revision 继续新命令，先读当前 Task。新增接口：
 
@@ -140,12 +142,16 @@ Invoke-RestMethod "$base/tasks/$($task.id)/events" -WebSession $browser
 
 ## 代码组织与重构
 
-后端为正式安装包`src/onefde`，使用auth/engagements/tasks业务模块、入口装配与基础设施适配。修改代码前按 [代码组织与依赖规则](../docs/development/code-structure.md) 找到所属模块；C1b后的结构重构保持原业务和两份迁移不变，历史证据见 [结构重构验证](../docs/operations/structure-refactor-verification.md)。之后C2按该边界新增worker控制器、SDK/私有产物适配及第三份增量迁移，原测试继续保留。
+后端为正式安装包 `src/onefde`。修改代码前按 [代码组织](../docs/development/code-structure.md) 找到所属模块。结构重构的历史证据见 [结构重构验证](../docs/operations/structure-refactor-verification.md)。
 
 `uv sync --locked`会可编辑安装当前包；无须设置PYTHONPATH或把src注入sys.path。需要分发检查时执行`uv build --out-dir work/dist`。仅验证纯规则和依赖可运行`uv run --locked pytest tests/unit tests/architecture -q`，不要求数据库；完整集成检查仍使用独立PostgreSQL测试库。
 
 ## 本地单机Compose
 
-DeepSeek的用户配置入口为本目录`.env`：只填写`DEEPSEEK_API_KEY=`；官方地址和`deepseek-flash`默认值已准备。其余字段同步、受限secret挂载及接入由维护Agent按[Compose手册](../deploy/README.md)完成，不需要用户编辑WSL内部文件。保存配置不自动调用模型，费用/在线出口与真实C2仍需后续验证。
+本地 Engineering 的 DeepSeek 和小米 MiMo 凭据都在 Windows 的本目录 `.env` 填写。地址和模型已预配，私有凭据同步及每轮 Run 的模型选择见 [Compose 手册](../deploy/README.md#本地-engineering-模型配置)。
 
-API/PG/可信Worker的容器化、ecs_shared安全/资源验证及重启操作见[Compose手册](../deploy/README.md)，阶段结果与证据见[单机验收](../docs/operations/single-ecs-verification.md)。这是独立演示项目，API仅本地8002；Worker为不消费作业的standby，模型与费用仍未配置，C2真实工程未完成。原开发数据库保留，不对Compose开发库运行清表pytest。
+API/PG/可信 Worker 的容器化、安全边界和重启操作见 [Compose手册](../deploy/README.md)，阶段结果见 [单机验收](../docs/operations/single-ecs-verification.md)。这是独立演示项目，API 仅本地 8002。原开发数据库保留，不对 Compose 开发库运行清表 pytest。模型调用另行授权。
+
+## Business 本地闭环
+
+先迁移到当前 head，再构建工作台并运行两个独立 Origin。默认客户 Origin 为 `http://127.0.0.1:8765`。操作、配置和隔离测试见 [Business 本地验收](../docs/operations/business-v1.md)。

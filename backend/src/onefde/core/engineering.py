@@ -2,12 +2,19 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 
 ROLE_REVISION = "engineering-role-v1"
 CONTEXT_REVISION = "engineering-context-v1"
 COMMAND_PREFIX = re.compile(r"^\[(?:auto|check)\]\s*(.+)$", re.IGNORECASE | re.DOTALL)
 REVIEW_PREFIX = re.compile(r"^\[review\]\s*(.+)$", re.IGNORECASE | re.DOTALL)
+
+
+def check_revision(checks: list[dict]) -> str:
+    payload = json.dumps(checks, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(payload).hexdigest()
 
 
 def derive_checks(spec: dict) -> list[dict]:

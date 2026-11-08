@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>临期商品清单</title>
+<style>
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 24px; color: #1f2328; }
+  h1 { font-size: 20px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px; }
+  label { font-size: 14px; }
+  #summary { margin: 12px 0; font-size: 14px; }
+  #summary.error { color: #b42318; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { border: 1px solid #d0d7de; padding: 6px 10px; text-align: left; }
+  th { background: #f6f8fa; }
+  tr.status-expired td { background: #fde8e8; }
+  tr.status-today td { background: #fff4e5; }
+  tr.status-soon td { background: #fffbe6; }
+  tr.status-review td { background: #eef2ff; }
+  button { padding: 6px 14px; font-size: 14px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>临期商品清单</h1>
+<div class="controls">
+  <label>库存 CSV：<input type="file" id="file" accept=".csv,text/csv"></label>
+  <label>基准日：<input type="date" id="as-of"></label>
+  <button type="button" id="run">生成清单</button>
+  <button type="button" id="export" disabled>导出需处理批次</button>
+</div>
+<div id="summary"></div>
+<table id="results">
+  <thead>
+    <tr>
+      <th>商品</th><th>批次</th><th>到期日</th><th>数量</th><th>状态</th><th>原始行号</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<script src="expiry.js"></script>
+<script>
+(function () {
+  'use strict';
+  var api = window.Expiry;
+  var fileInput = document.getElementById('file');
+  var asOfInput = document.getElementById('as-of');
+  var runBtn = document.getElementById('run');
+  var exportBtn = document.getElementById('export');
+  var summary = document.getElementById('summary');
+  var tbody = document.querySelector('#results tbody');
+  var currentRows = [];
+
+  function setSummary(text, isError) {
+    summary.textContent = text;
+    summary.className = isError ? 'error' : '';
+  }
+
+  function render(rows) {
+    tbody.textContent = '';
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      tr.className = 'status-' + row.status;
+      [row.product, row.batch, row.expires, row.quantity, api.STATUS_LABELS[row.status], String(row.sourceLine)]
+        .forEach(function (value) {
+          var td = document.createElement('td');
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+      tbody.appendChild(tr);
+    });
+  }
+
+  function counts(rows) {
+    var c = { expired: 0, today: 0, soon: 0, later: 0, review: 0 };
+    rows.forEach(function (r) { c[r.status] += 1; });
+    return c;
+  }
+
+  runBtn.addEventListener('click', function () {
+    var file = fileInput.files && fileInput.files[0];
+    if (!file) { setSummary('请先选择库存 CSV 文件。', true); return; }
+    if (!asOfInput.value) { setSummary('请选择基准日。', true); return; }
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var rows = api.analyzeInventory(String(reader.result), asOfInput.value);
+        currentRows = rows;
+        render(rows);
+        var c = counts(rows);
+        setSummary(
+          '共 ' + rows.length + ' 个批次：已过期 ' + c.expired + '，今日到期 ' + c.today +
+          '，临期 ' + c.soon + '，其余 ' + c.later + '，待核对 ' + c.review + '。',
+          false
+        );
+        exportBtn.disabled = false;
+      } catch (err) {
+        currentRows = [];
+        render([]);
+        exportBtn.disabled = true;
+        setSummary('处理失败：' + (err && err.message ? err.message : String(err)), true);
+      }
+    };
+    reader.onerror = function () {
+      setSummary('读取文件失败。', true);
+    };
+    reader.readAsText(file, 'UTF-8');
+  });
+
+  exportBtn.addEventListener('click', function () {
+    var text = api.exportInventory(currentRows);
+    var blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'expiry-result.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 0);
+  });
+})();
+</script>
+</body>
+</html>

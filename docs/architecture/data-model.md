@@ -1,8 +1,8 @@
 # OneFDE 首版数据模型与状态约束
 
-2026 年 11 月 4 日协作推荐基线；C0+C1b持久控制已有验证，C2新增Worker认领/租约/停止确认/结果回填及固定SDK绑定，本地无模型环境已验证，真实模型工程尚未执行，运维解锁仍未实现，见 [C2验证](../operations/c2-verification.md)。本文件是对象、版本和生命周期的权威来源；HTTP字段以 [OpenAPI](openapi.yaml) 为准。PostgreSQL是业务事实源，SDK Session、作业租约和页面消息均不替代业务状态。
+对象、版本和生命周期以本文件为准，实现进度以[实施计划](../development/implementation-plan.md)为准。HTTP 字段以 [OpenAPI](openapi.yaml) 为准。PostgreSQL 是业务事实源，SDK Session、作业租约和页面消息均不替代业务状态。运维解锁仍按 [C2验证](../operations/c2-verification.md) 的当时边界理解，后续演练不自动改变该限制。
 
-Engineering内部上下文清单、结果提案和检查证据见[Coding Agent设计](coding-agent.md)。已通过现有Run快照的`engineering`字段、执行端口与作业`proof`承载清单/检查覆盖/验证结果，**不新增表、HTTP字段或生命周期状态**；固定源码验证属于同一Run的执行阶段，资源以`dispatch_jobs.runtime_ref.resources[]`登记。无模型证据见[CA验证](../operations/coding-agent-verification.md)；真实模型仍未验收。
+Engineering 内部上下文清单、结果提案和检查证据见[Coding Agent设计](coding-agent.md)。已通过现有 Run 快照的 `engineering` 字段、执行端口与作业 `proof` 承载清单、检查覆盖和验证结果，不新增表、HTTP 字段或生命周期状态。固定源码验证属于同一 Run 的执行阶段，资源以 `dispatch_jobs.runtime_ref.resources[]` 登记。运行证据见[测试与验收](../operations/testing.md)。
 
 ## 身份与边界
 
@@ -31,6 +31,8 @@ Knowledge 是支持 Business/FDE/Engineering 的执行角色，不是新的存�
 后续知识工具需要记录实际角色/请求主体、调用ID、工作归属、问题、用途/受众、获准来源版本、答复和采用依据。已有 Task/Run 时关联原工作；Business 公司级短咨询可关联原请求/经营记录，不必伪造 Engagement。公司级长任务与非工程 Task 的 HTTP 创建入口仍属后续扩展，不改变当前首个工程契约。
 
 来源/资产最小授权元数据包含归属对象、可见范围、可复用范围、允许用途/公开授权、事实/验证状态、版本及来源引用；这是后续逻辑约束，不表示首迁移已实现一套资料管理系统。派生答复/候选资产继续保留来源限制。具体访问与输出规则以[知识服务约定](../../capability-library/README.md)为唯一来源，运行日志记录检查结果及获准引用，不回显被拒资料的正文/标题/链接。
+
+员工对话存在 `staff_turns`：角色、锚点、作者、正文、依据、适配器名称和时间。Business 锚点是 Case，FDE 是项目，Engineering 是 Task，Knowledge 是角色加用途。这些记录只供员工刷新后读回。它们不是客户消息、AgentWork、TaskInput、Run 或能力版本。助手依据只保存当时读到的字段。`runtime_beats` 只记录 `fde_agent` 与 `engineering_worker` 的最近心跳；没有心跳表示没有可证明的在跑进程，不把未认领写成已完成或正在执行。默认适配器是不访问模型的替身。
 
 现有元数据/上下文快照和受控事件可承载首版咨询记录，不为每次读库建立 Task、新表或变更原 Task.spec_version。若建议影响已确认输入、工程范围或授权，仍走 TaskInput 与所有者采用；选用资产后固定版本并做实际检查。有效授权变化或跨项目/公开用途转换时重新过滤或重建 Session 上下文。
 
@@ -79,6 +81,12 @@ queue 仅记录就绪，不自动执行。start 在同一事务内建立 Run/作
 cancel 取消整个工作；stop_for_update 只请求结束本轮以处理修改。后者先记 Run cancel_requested，确认停止后归 completed/superseded、Task 回 draft；不能误把 Task 关闭。采用输入但没有任何 apply_ids、只有拒绝时，仅更新处理记录与 revision，不增加 spec_version。
 
 首版 succeeded/cancelled 关闭后不重开，也不追加改变范围的输入；后续 Task 通过 related_task_id 关联原任务和明确代码/产物版本。这是本项目简化历史和权限校验的选择，不宣称所有项目系统都如此。
+
+试点可由受信初始源码登记评审文件范围。Worker 从固定源码和基线提取受控的文本差异及设计说明，随本轮派发结果保存。认证查询只为已完成的工程提交返回证据，并核对同 Run 源码归档摘要。历史无此证据的 Run 返回空结果，评审沿用原契约。
+
+标准装配 `standard-v1` 在现有 Run 快照固定工程指南、基线来源、摘要及评审范围。受信装配绑定 Engagement 和 Task。关联工作只能登记同项目原 Task 已接受的源码，新任务可登记校验过的本地起始归档。Task Service 继续校验 revision、待采用输入和运行槽。
+
+受信入口可为已授权的固定能力排队并启动无模型验证 Run。快照固定资产版本、归档摘要和登记检查，模型修订为空。离线验证通过后保存同一归档并进入现有评审。接受与入口核验完成后，Business 在原交接会话登记首交。历史 Run 保留原模型修订。
 
 ## Run 生命周期与业务等待
 
@@ -162,3 +170,29 @@ PostgreSQL 17 + SQLAlchemy/Alembic 管理；JSONB 保存演进中的规格与快
 迁移d5454eda0523只扩展dispatch_jobs：claim_owner/claim_token/lease_until、claimed_at/completed_at/attempts、runtime_ref、result_digest/result_payload及轮询索引。token不是写入工程文件的fencing，过期不允许自动换代重执行；现场不明保持interrupted占用。已回填作业同owner/token/结果摘要可重放，不同结果冲突；停止意图在回填事务内重新核对，保留已持久产物后归一为cancelled/superseded。
 
 模型配置由受信任CLI供给，只存端点/secret_ref/限额，未真实验证时保持configured。Worker在私有本地不可变blob中保存源码/结果回执并检查SHA-256/大小，再同事务登记元数据；停止证据和终端退出码在作业结果中保存，状态摘要仍走原有事件。每Task保留工作区，每Run新SDK Conversation与独立Session目录；不自动复用Session/解锁interrupted。S3、下载签名和跨节点产物服务仍未实现。操作与检查见 [Worker手册](../../backend/WORKER.md) 和 [C2验证](../operations/c2-verification.md)。
+
+## Business 首版
+
+- `business_cases` 持久化来源、工作流、负责人、实际接手人、状态与下一步。客户首次发消息创建会话，客户凭证保存摘要并绑定本单。邀请关联候选门店。项目、客户版本和 Task 由工作台核实关联，客户自填线索随原话保存。
+- `business_messages` 按会话追加客户原话、对外回复与内部备注。客户可读前两类。引用承载 FAQ 及版本、客户线索、TaskInput 与复试证据。每单客户请求 ID 唯一，重试核对原负载。会话写入串行加锁，状态与消息同事务提交。
+- 交接快照复用目标、来源及未知项字段，记录已确认事实和适用的复现内容。重复转交返回原快照。FDE 确认后经现有 Task 服务创建或校验关联，范围变更经 TaskInput 待采用。
+- 修复通知绑定已接受的 Task 产物、Run、规格版本、摘要、发布地址和访问检查证据。客户复试绑定通知消息。通过时关闭，失败回同一待办的 FDE 队列；新修复任务保留前一 Task 关联。
+- `business_candidates` 持久化区县搜索的候选来源、地点 ID、地址、筛选理由及查询时间。邀请保存创始人和生成时间，链接仅传递归因。
+
+## 报价自动售后试点状态
+
+`fde_quote_support` 以 Case 为主键，保存获准的模拟 Engagement、配置修订、到期时间、固定源码引用和阶段回执。受信 CLI 先登记会话，业务身份记为 `service:fde:quote-support`。Case/Message 持有交接和反馈，TaskInput 持有待采用答案，Task/Run/DispatchJob 持有工程和执行事实。消费者按 Case 行锁串行推进，当前阶段与业务命令结果同事务写入。接单、排队、启动、答案登记和采用各自可独立恢复，Run 仍由 Task Service 创建。
+
+自动认领按本 Case、Run 及授权有效期复核。人工接管或到期时，消费者经现有停止命令处理已登记 Run。现场不明继续占用全局工程槽。评审证据写入内部会话备注，引用本轮 Run、规格和固定产物。复测回执绑定接受记录、产物摘要与回环地址。续办保留旧 Task、通知与反馈引用。操作入口见[Business 手册](../operations/business-v1.md#报价-csv-自动售后试点)。
+
+## 通用 FDE 工作
+
+`fde_agent_work` 关联 Engagement、可选 Case 和一个 Task，保留原目标、已读与已处理的业务水位、处理租约、操作回执、建议和模型用量。客户原话与工程事实仍归各自业务对象。新消息或 Task 变化触发续办，租约隔离不同进程的工具写入。评审建议引用当前规格、Run 和固定产物，保留独立验证结果，正式评审走 Task 命令。
+
+`fde_agent_grants` 以 Work 为单位，固定模型修订、到期时间、发送与 Run 回执、费用上限和源码/检查清单。自动能力只在隔离模拟库启用。Dispatcher 认领前复核同一授权及原会话水位。 [运行与授权](../operations/fde-agent-v1.md)
+
+## Business Agent 会话续办
+
+`business_agent_grants` 按预登记的 Case UUID 保存模拟项目范围、模型修订、有效期、配额、租约和脱敏回执。原话和回复仍在 `business_messages`。模型在事务外运行。每次提交动作前按 Case 行锁复核最新公开消息、负责人、状态和租约。发送或交接与已处理消息回执同事务提交。
+
+Business 交接在 Case 保存原话引用、继续意愿消息、已确认原话片段、未知项、版本及复现。已有获准项目时同事务登记 FDE Work。获准的方案反馈存内部消息并绑定当前公开消息水位，Business 在原 Case 按批准原文转达。售后通知继续走接受产物和复试流程。 [运行与验收](../operations/business-v1.md#business-agent-模拟验收)
