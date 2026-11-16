@@ -1,3 +1,7 @@
+# 面向使用者的项目首页（2026-11-16）
+
+根 README 以水果店比价案例说明工作台使用者、门店使用的独立工具、交付角色和本地体验入口。已核对相对链接及截图均存在于当前 GitHub 主分支，按首页命令启动的报价工具与三个静态资源均返回 HTTP 200。
+
 # 四员工对话闭环（2026-11-08）
 
 四个现有对话区可以多轮提问，刷新后按 Case、项目、Task 或 Knowledge 用途读回。问答写入 `staff_turns`，不写客户消息、AgentWork、TaskInput 或 Run。默认 `ONEFDE_STAFF_CHAT_MODE=scripted`，替身不访问模型。`runtime_beats` 只在既有消费者和 Worker 循环里写心跳；本轮没有启动这两个进程。没有心跳时页面写明待处理且无人认领。演示库已前向迁移到 `a7c4e1b90d22`。`pytest` 226 项通过，`ruff` 与 `export_openapi --check` 通过，`frontend` 的 `npm run build` 退出 0，产物 `index-DYJ1_ZzS.js`。浏览器在 `localhost:8003` 走了四条替身流程。未点击发送回复、登记目标、采用、拒绝或准备任务。
